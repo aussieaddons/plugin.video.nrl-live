@@ -1,2 +1,18 @@
 # plugin.video.nrl-live
 NRL Digital Pass addon for Kodi
+
+You will need a Telstra NRL Digital Pass to use this add-on. Most Telstra Mobile customers are eligble for a free subscription with their plan. Please see their [website](https://www.telstra.com.au/tv-movies-music/sport/sports-offer-eoi) for details.
+
+The plugin has two streaming modes which can be set in the add-on's settings - Apple's http live streaming (HLS) and Adobe's http dynamic streaming (HDS). HLS has a lower maximum quality, HDS is higher. The trade off is that you can seek freely through the video with HLS whereas HDS you can't. Pausing seems to be fine though, at least for short periods of time. For live videos only HLS is available in this add-on, which doesn't matter as the live HDS stream offers the same bitrates anyway.
+
+Live streams are broadcast with a black border encoded into the video. This is how Telstra/NRL have it set up on their end. Fortunately Kodi can deal with this by zooming the video. A zoom of 1.23 seems to be the sweet spot.
+
+## How to install
+
+The best way is to grab my repo zip from [here](https://github.com/glennguy/repo/raw/master/repository.glenns-kodi-addons/repository.glenns-kodi-addons-0.1.0.zip) and install it through Kodi - System - Settings - Addons - Install from zip file, then install the addon by going to System - Settings - Addons - Install from repository - Glenn's Kodi Add-ons - Video add-ons - NRL Live
+
+For the settings you will need to enter your Telstra ID credentials. You can use your username or email address in the username field.
+
+## Issues
+
+Please let me know of any errors by opening an [issues](https://github.com/glennguy/plugin.video.nrl-live/issues) ticket. It would be great if you could attach a debug log file as well.
