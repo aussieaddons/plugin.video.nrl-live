@@ -113,6 +113,8 @@ def get_afl_user_token():
     
     loginJson = fetch_afl_json(config.LOGIN_URL, loginData)
     data = json.loads(loginJson)
+    if data['responseCode'] == 1:
+        return 'invalid'
     sessionId = data['data'].get('artifactValue')
     
     import comm
@@ -120,6 +122,8 @@ def get_afl_user_token():
     opener.addheaders = [('x-media-mis-token', apiToken)]
     res = opener.open(config.SESSION_URL.format(urllib.quote(sessionId)))
     data = json.loads(res.read())
+    if len(data['subscriptions']) == 0:
+        return 'nosub'
     return data['subscriptions'][0].get('uuid')
     
 def get_afl_embed_token(userToken, videoId):
@@ -143,7 +147,7 @@ def get_m3u8_streams(secureTokenUrl):
     res = opener.open(secureTokenUrl, None)
     data = res.readlines()
     return data
-   
+
 def parse_m3u8_streams(data, live, secureTokenUrl):
     """ Parse the retrieved m3u8 stream list into a list of dictionaries
         then return the url for the highest quality stream. Different 
