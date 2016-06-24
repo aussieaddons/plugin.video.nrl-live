@@ -6,7 +6,7 @@ You will need a Telstra NRL Digital Pass to use this add-on. Most Telstra Mobile
 
 ##How to install
 
-The best way is to grab my repo zip from [here](https://github.com/glennguy/repo/raw/master/repository.glenns-kodi-addons/repository.glenns-kodi-addons-0.1.0.zip) and install it through Kodi - System - Settings - Addons - Install from zip file, then install the addon by going to System - Settings - Addons - Install from repository - Glenn's Kodi Add-ons - Video add-ons - NRL Live
+UPDATE: NRL Live is now available from the Catch Up TV AU repository located [here](https://github.com/xbmc-catchuptv-au/repo). Head on over and follow the instructions to install the repo, then install the add-on. 
 
 ##Settings
 
