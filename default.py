@@ -251,7 +251,7 @@ def list_rounds(category, year, comp):
         create to current date"""
     listing = []
      
-    if year == '2016':
+    if year == '2017':
         noRounds = get_round_no()
     else:
         noRounds = 30
