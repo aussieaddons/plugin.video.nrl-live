@@ -18,7 +18,9 @@
 
 import urllib
 import urllib2
+import requests
 import cookielib
+import ssl
 
 import StringIO
 import time
@@ -32,26 +34,33 @@ import base64
 import config
 import xbmcaddon
 import xbmc
+import telstra_auth
 
 cj = cookielib.CookieJar()
 handler = urllib2.HTTPCookieProcessor(cj)
 opener = urllib2.build_opener(handler)
 addon = xbmcaddon.Addon()
+username = addon.getSetting('LIVE_USERNAME')
+password = addon.getSetting('LIVE_PASSWORD')
+phone_number = addon.getSetting('LIVE_PHONE_NUMBER')
 
 # NRL specific ooyala functions
 
 def fetch_nrl_xml(url, data):
-    """ send http POST and return the xml response as string
-        remove first 3 characters as these are junk??"""
-    req = urllib2.Request(url, data, config.HEADERS)
+    """ send http POST and return the xml response as string with
+        removed utf-8 BOM"""
+    req = requests.post(url, data=data, headers=config.HEADERS, verify=False)
     xbmc.log("Fetching URL: {0}".format(url))
-    res = urllib2.urlopen(req)
-    return res.read()[3:]
-
-def get_nrl_user_token(username, password):
+    return req.text[1:]
+    
+def get_nrl_user_token(username, password, phone_number):
     """send user login info and retrieve user id for session"""
+    telstra = addon.getSetting('SUBSCRIPTION_TYPE')
+    if telstra:
+        return telstra_auth.get_token(username, password, phone_number)
+
     loginXml = fetch_nrl_xml(config.LOGIN_URL, 
-                         config.LOGIN_DATA.format(username, password))
+                         config.LOGIN_DATA).format(username, password)
     tree = ET.fromstring(loginXml)
     if not tree.find('ErrorCode') == None:
         if tree.find('ErrorCode').text == '1':
@@ -92,6 +101,7 @@ def get_nrl_embed_token(userToken, videoId):
     """send our user token to get our embed token, including api key"""
     xml = fetch_nrl_xml(config.EMBED_TOKEN_URL.format(videoId), 
                     create_nrl_userid_xml(userToken))
+    print xml
     tree = ET.fromstring(xml)
     return tree.find('Token').text
 
@@ -106,31 +116,52 @@ def fetch_afl_json(url, data):
     return res.read()
 
 def get_afl_user_token():
-    """send user login info and retrieve user id for session"""
-    loginData = {'userIdentifierType': 'EMAIL'}
-    loginData['authToken'] = addon.getSetting('password')
-    loginData['userIdentifier'] = addon.getSetting('username')
+    """ Send user login info and retrieve user id for session
+        Paying subscribers (tesltra=False) continue to use old
+        authenication method"""
+    api_token = comm.fetch_token()
+    opener.addheaders = [('x-media-mis-token', api_token)]
+    telstra = addon.getSetting('SUBSCRIPTION_TYPE')
     
-    loginJson = fetch_afl_json(config.LOGIN_URL, loginData)
-    data = json.loads(loginJson)
-    if data['responseCode'] == 1:
-        return 'invalid'
-    sessionId = data['data'].get('artifactValue')
+    if telstra: 
+        return telstra_auth.get_token(username, password, phone_number)
     
-    import comm
-    apiToken = comm.fetch_token()
-    opener.addheaders = [('x-media-mis-token', apiToken)]
-    res = opener.open(config.SESSION_URL.format(urllib.quote(sessionId)))
-    data = json.loads(res.read())
-    if len(data['subscriptions']) == 0:
-        return 'nosub'
-    return data['subscriptions'][0].get('uuid')
+    login_data = {'userIdentifier': addon.getSetting('LIVE_USERNAME'),
+                    'authToken': addon.getSetting('LIVE_PASSWORD'),
+                    'userIdentifierType': 'EMAIL',}
+    login_json = fetch_afl_json(config.LOGIN_URL, login_data)
+    data = json.loads(login_json)
+    session_id = data['data'].get('artifactValue')
     
+    try:
+        res = opener.open(config.SESSION_URL.format(urllib.quote(session_id)))
+        data = json.loads(res.read())
+        try:
+            return data['subscriptions'][0].get('uuid')
+        
+        except IndexError as e:
+            raise AFLVideoException('AFL Live Pass subscription has expired')
+         
+    except urllib2.HTTPError as e:
+        # Attempt to parse response even with a HTTP 400
+        try:
+            data = json.loads(e.read())
+            if 'techMessage' in data:
+                raise AFLVideoException('Failed to fetch live streaming '
+                                        'token: %s' % data.get('techMessage'))
+            if 'userMessage' in data:
+                raise AFLVideoException('Failed to fetch live streaming '
+                                        'token: %s' % data.get('userMessage'))
+        except Exception as e:
+            raise e
+
+    raise Exception('Failed to fetch AFL Live streaming token')
+
 def get_afl_embed_token(userToken, videoId):
     """send our user token to get our embed token, including api key"""
     res = opener.open(config.EMBED_TOKEN_URL.format(userToken, videoId))
     data = json.loads(res.read())
-    return data.get('token')
+    return urllib.quote(data.get('token'))
 
 #common ooyala functions
  
@@ -157,11 +188,11 @@ def parse_m3u8_streams(data, live, secureTokenUrl):
         qual = xbmcaddon.Addon().getSetting('LIVEQUALITY')
     else:
         qual = xbmcaddon.Addon().getSetting('HLSQUALITY')
-
+    if '#EXT-X-VERSION:3\n' in data:
+        data.remove('#EXT-X-VERSION:3\n')
     count = 1
     m3uList = []
     prependLive = secureTokenUrl[:secureTokenUrl.find('index-root')]
-    
     while count < len(data):
         line = data[count]
         line = line.strip('#EXT-X-STREAM-INF:')
@@ -184,7 +215,8 @@ def parse_m3u8_streams(data, live, secureTokenUrl):
         count += 2
     
     sorted_m3uList = sorted(m3uList, key=lambda k: int(k['BANDWIDTH']))
-    stream = sorted_m3uList[int(qual)]['URL'][:-2]   
+    print sorted_m3uList
+    stream = sorted_m3uList[int(qual)]['URL'][:-1]   
     return stream
 
 def cookies_to_string(cookiejar):
@@ -209,23 +241,10 @@ def get_m3u8_playlist(videoId, live, loginToken, mode):
         
     authorizeUrl = config.AUTH_URL.format(config.PCODE, videoId, embedToken)
     secureTokenUrl = get_secure_token(authorizeUrl, videoId)
+
+    if 'chunklist.m3u8' in secureTokenUrl:
+        return secureTokenUrl
+
     m3u8Data = get_m3u8_streams(secureTokenUrl)
     m3u8PlaylistUrl = parse_m3u8_streams(m3u8Data, live, secureTokenUrl)
-    pipe = cookies_to_string(cj)
-    return m3u8PlaylistUrl+pipe
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return m3u8PlaylistUrl

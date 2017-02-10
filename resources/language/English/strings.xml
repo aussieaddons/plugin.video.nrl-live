@@ -14,4 +14,6 @@
 	<string id="32050">NRL Digital Pass Login</string>
 	<string id="32020">Username / Email Address</string>
     <string id="32030">Password</string>
+    <string id="32060">Phone Number</string>
+    <string id="32070">Subscription Type</string>
 </strings>

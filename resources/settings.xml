@@ -3,11 +3,13 @@
     <category label="32000">
 		<setting label="32031" type="bool"	 id="firstrun" default="true" visible="false"/>
 		<setting label="32040" type="labelenum"   id="streammethod" lvalues="32041|32042"/>
-		<setting id="LIVEQUALITY" type="enum" label="32043" values="Audio Only (50k/s) |Lowest (266k/s)|Low (368k/s) |Medium (522k/s)|Medium High (738k/s) |High (1Mb/s) |Highest (1.6Mb/s)" default="6" />
+		<setting id="LIVEQUALITY" type="enum" label="32043" values="Lowest (300k/s)|Low (450k/s) |Medium (660k/s) |High (1Mb/s) |Highest (1.6Mb/s)" default="4" />
 		<setting id="HLSQUALITY" type="enum" label="32044" values="Audio Only (32k/s) |Lowest (350k/s)|Low (450k/s) |Medium (600k/s)|Highest (950k/s)" default="4" />
 		<setting id="HDSQUALITY" type="enum" label="32045" values="Lowest (168k/s) |Very Low (236k/s)|Low (400k/s) |Medium (700k/s)|High (1.1Mb/s) |Very High (1.8Mb/s) |Highest (2.4Mb/s)" default="6" />
 		<setting label="32050" type="lsep"/>
-		<setting label="32020" type="text"   id="username" subsetting="true" default=""/>
-        <setting label="32030" type="text"   id="password" subsetting="true" option="hidden"  enable="!eq(-10,)" default=""/>
+		<setting label="32020" type="text"   id="LIVE_USERNAME" subsetting="true" default=""/>
+        <setting label="32030" type="text"   id="LIVE_PASSWORD" subsetting="true" option="hidden"  enable="!eq(-10,)" default=""/>
+        <setting label="32060" type="text"   id="LIVE_PHONE_NUMBER" subsetting="true" default=""/>
+        <setting label="32070" type="enum"   id="SUBSCRIPTION_TYPE" subsetting="true" values="Paid|Free offer"default="1"/>
     </category>
 </settings>

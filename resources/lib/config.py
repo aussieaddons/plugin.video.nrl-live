@@ -24,15 +24,15 @@ HDS_REPLAY_QUALITY =   {'0': 168,
                         '6': 0}
 
 # url to send our Digital Pass info to
-LOGIN_URL = ('https://mis-live-nrl.yinzcam.com/V1/Auth/Subscription?ff=mobile'
-            '&mnc=1&app_version=3.0.0&carrier=Telstra+Mobile&version=4.3'
-            '&width=1080&height=1776&os_version=5.1&mcc=505'
-            '&application=NRL_LIVE&os=Android&format=XML')
+LOGIN_URL = ('https://signon-live-nrl.yinzcam.com/V1/Auth/Subscription?ff=mobile'
+            '&mnc=1&app_version=3.3.0&carrier=Telstra+Mobile&version=4.7'
+            '&width=1080&height=1776&os_version=6.0&mcc=505'
+            '&application=NRL_LIVE&os=Android')
 
 # XML template to insert username and password into
-LOGIN_DATA =("<?xml version='1.0' encoding='UTF-8'?><Subscriber><Product/>"
-            "<AppId/><Type>TDI</Type><Receipt/><User>{0}</User><Password>"
-            "{1}</Password></Subscriber>")
+LOGIN_DATA =("<?xml version='1.0' encoding='UTF-8'?><Subscriber><Type>TDI</Type>"
+            "<User>{0}</User><Password>{1}</Password></Subscriber><Email>{0}"
+            "</Email><AdobeCheckResult>0</AdobeCheckResult></Subscriber>")
 
 # url used to request ooyala token
 EMBED_TOKEN_URL =('https://mis-live-nrl.yinzcam.com/V1/Auth/MediaToken?id={0}'
@@ -49,9 +49,9 @@ AUTH_URL = ('http://player.ooyala.com/sas/player_api/v1/authorization/'
 # main url for xml that contains all our video metadata            
 XML_URL =  ('http://app-live-nrl.yinzcam.com/V1/Media/VideoList?&mediaTypes=V&'
             '&compId={0}{1}&category={2}&year={3}&carrier=Telstra+Mobile'
-            '&height=1776&error=26&os=Android&a=-184.41070&ff=mobile'
-            '&mnc=1&b=113.84670&app_version=3.0.1&version=4.3&width=1080'
-            '&os_version=5.1&mcc=505&application=NRL_LIVE')
+            '&height=1776&error=20&os=Android&a=-184.41070&ff=mobile'
+            '&mnc=1&b=113.84670&app_version=3.3.0&version=4.7&width=1080'
+            '&os_version=6.0&mcc=505&application=NRL_LIVE')
             
 # url for xml that contains match scores
 SCORE_URL = ('http://app-live-nrl.yinzcam.com/V1/Game/Scores?carrier='
@@ -69,13 +69,12 @@ SHORTLIST_URL = ('http://app-live-nrl.yinzcam.com/V1/Media/ShortList?carrier='
 SMIL_URL = "http://player.ooyala.com/nuplayer?embedCode={0}"
 
 # not sure that these are needed atm??
-HEADERS = { 'User-Agent' : ('Dalvik/2.1.0 (Linux; U; '
-            'Android 5.1; HTC_0PJA10 Build/LMY47O)') }
+HEADERS = { 'User-Agent' : 'Dalvik/2.1.0 (Linux; U; Android 6.0; HTC One_M8 Build/MRA58K.H15)', 'Content-Type': 'application/xml', 'Accept': 'application/json', 'Accept-Encoding': 'gzip' }
 
 # ooyala provider indentifier code used in contructing request uris            
 PCODE = 'BudDUxOt2GEh8L5PMMpcbz1wJFwm'
 
-YEARS = ['2013', '2014', '2015', '2016']
+YEARS = ['2013', '2014', '2015', '2016', '2017']
 
 CATEGORIES = {'1 Live matches': 'LiveMatches',
                 '2 Full Match Replays': 'Matches',
@@ -94,3 +93,28 @@ COMPS = {'1 Telstra Premiership': '1',
             '8 State or Origin U20': '31',
             '9 Four Nations'    : '41'}
             
+
+# New auth config for 2017
+
+NEW_LOGIN_DATA1 = '<Subscriber><Type>MSISDN</Type><AdobeCheckResult>0</AdobeCheckResult></Subscriber>'
+NEW_LOGIN_DATA2 = '<Subscriber><Type>TOKEN</Type><User>{0}</User></Subscriber>'
+YINZCAM_AUTH_ORDER = ['Content-Type', 'Accept', 'Connection', 'Content-Length', 'User-Agent', 'Host', 'Accept-Encoding']
+YINZCAM_AUTH_URL = 'https://signon-live-nrl.yinzcam.com/v1/Auth/Subscription?ff=mobile&mnc=1&app_version=3.3.0&carrier=Telstra+Mobile&version=4.7&width=1080&height=1776&os_version=6.0&mcc=505&application=NRL_LIVE&os=Android'
+YINZCAM_AUTH_HEADERS = {'Content-Type': 'application/xml', 'Accept': 'application/json', 'Connection': 'close', 'Content-Length': 'placeholder', 'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 6.0; HTC One_M8 Build/MRA58K.H15)', 'Host': 'signon-live-nrl.yinzcam.com', 'Accept-Encoding': 'gzip'}
+SIGNON_HEADERS = {'Host': 'signon.telstra.com', 'Connection': 'keep-alive', 'Cache-Control': 'max-age=0', 'Origin': 'https://signon.telstra.com', 'Upgrade-Insecure-Requests': '1', 
+                        'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; HTC One_M8 Build/MRA58K.H15; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/56.0.2924.87 Mobile Safari/537.36', 
+                        'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 
+                        'Referer': 'https://signon.telstra.com/login?goto=https%3A%2F%2Fsignon.telstra.com%2Ffederation%2Fsaml2%3FSPID%3Dtelstramedia&gotoNoTok=', 'Accept-Encoding': 'gzip, deflate', 
+                        'Accept-Language': 'en-AU,en-US;q=0.8'}
+SIGNON_URL = 'https://signon.telstra.com/login'
+SIGNON_DATA = {'goto': 'https://signon.telstra.com/federation/saml2?SPID=telstramedia', 'gotoOnFail': '', 'username': None, 'password': None}
+SAML_LOGIN_URL = 'https://hub.telstra.com.au/login/saml_login'
+SAML_LOGIN_HEADERS = {'Host': 'hub.telstra.com.au', 'Connection': 'keep-alive', 'Cache-Control': 'max-age=0', 'Origin': 'https://signon.telstra.com', 'Upgrade-Insecure-Requests': '1', 
+                        'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; HTC One_M8 Build/MRA58K.H15; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/56.0.2924.87 Mobile Safari/537.36', 
+                        'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 
+                        'Referer': 'https://signon.telstra.com/federation/saml2?SPID=telstramedia', 'Accept-Encoding': 'gzip, deflate', 'Accept-Language': 'en-AU,en-US;q=0.8', 'X-Requested-With': 'com.telstra.nrl'}
+MEDIA_ORDER_HEADERS = {'Content-Type': 'application/json', 'Accept': 'application/json, text/plain, */*', 'Host': 'api.telstra.com', 'Connection': 'keep-alive', 'Origin': 'https://hub.telstra.com.au',
+                        'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; HTC One_M8 Build/MRA58K.H15; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/56.0.2924.87 Mobile Safari/537.36', 
+                        'Accept-Encoding': 'gzip, deflate', 'Accept-Language': 'en-AU,en-US;q=0.8', 'X-Requested-With': 'com.telstra.nrl'}
+MEDIA_ORDER_URL = 'https://api.telstra.com/v1/media-commerce/orders'
+MEDIA_ORDER_JSON = '{{"serviceId":"{0}","serviceType":"MSISDN","offer":{{"id":"{1}"}},"pai":"{2}"}}'

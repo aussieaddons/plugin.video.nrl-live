@@ -47,6 +47,7 @@ addonPath = xbmcaddon.Addon().getAddonInfo("path")
 fanart = os.path.join(addonPath, 'fanart.jpg')
 username = addon.getSetting('username')
 password = addon.getSetting('password')
+phone_number = addon.getSetting('phoneno')
 
 
 class game():
@@ -119,9 +120,9 @@ def get_url(category, year, comp, rnd, shortList):
 def get_round_no():
     """ calculate what the current NRL round is"""
     date = datetime.date.today()
-    r1 = datetime.date(2016,3,3)
+    r1 = datetime.date(2017,3,2)
     dateDelta = datetime.date.toordinal(date) - datetime.date.toordinal(r1)
-    if datetime.date.toordinal(date) >= 736089: # 2 weeks between rd 9 and 10
+    if datetime.date.toordinal(date) >= 736453: # 2 weeks between rd 9 and 10
         return (dateDelta // 7)
     else: 
         return (dateDelta // 7) + 1
@@ -144,41 +145,29 @@ def parse_round(category, year, comp, rnd=-1, live=False, shortList = False):
         xbmcplugin.addSortMethod(_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
         
     for elem in tree.findall("MediaSection"):
-        
         for gm in elem.findall('Item'):
-            
             # remove items with no video eg. news articles
             if not gm.attrib['Type'] == 'V':
                 continue
             
             g = game()       
-            
             g.title = gm.find('Title').text.encode('ascii', 'replace')
-            
             if gm.find('Description'):
                 g.desc = gm.find('Description').text.encode('ascii', 'replace')
-            
             # remove PSA videos
             if g.title.startswith('Better Choices'):
                 continue
-            
             g.videoID = gm.find('Video').attrib['Id']
-            
             g.live = gm.find('LiveNow').text
-            
             # keep live videos out of other submenus and vice versa
             if live == False and g.live == 'true':
                 continue
             if live == True and g.live == 'false':
                 continue
-            
             g.thumbLarge = gm.find('FullImageUrl').text
-            
             g.time = gm.find('Date').text.encode('utf-8', 'replace')
-            
             # add game start time and current score to live match entries
-            if g.live == 'true':
-                
+            if g.live == 'true': 
                 # only use live videos that are actual matches
                 if gm.find('NavigateUrl'):
                     idString = gm.find('NavigateUrl').text
@@ -280,7 +269,7 @@ def play_video(videoId, live):
     Play a video by the provided path.
     :param path: str
     """
-    loginToken = ooyalahelper.get_nrl_user_token(username, password)
+    loginToken = ooyalahelper.get_nrl_user_token(username, password, phone_number)
     
     if loginToken == 'invalid':
         xbmcgui.Dialog().ok(addonname, ('Invalid username/password. '
