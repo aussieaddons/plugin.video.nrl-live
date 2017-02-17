@@ -178,7 +178,7 @@ def get_m3u8_streams(secureTokenUrl):
     res = opener.open(secureTokenUrl, None)
     data = res.readlines()
     return data
-
+   
 def parse_m3u8_streams(data, live, secureTokenUrl):
     """ Parse the retrieved m3u8 stream list into a list of dictionaries
         then return the url for the highest quality stream. Different 
@@ -193,6 +193,7 @@ def parse_m3u8_streams(data, live, secureTokenUrl):
     count = 1
     m3uList = []
     prependLive = secureTokenUrl[:secureTokenUrl.find('index-root')]
+    print data
     while count < len(data):
         line = data[count]
         line = line.strip('#EXT-X-STREAM-INF:')
@@ -248,3 +249,19 @@ def get_m3u8_playlist(videoId, live, loginToken, mode):
     m3u8Data = get_m3u8_streams(secureTokenUrl)
     m3u8PlaylistUrl = parse_m3u8_streams(m3u8Data, live, secureTokenUrl)
     return m3u8PlaylistUrl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -3,7 +3,10 @@ import requests
 import collections
 import json
 import urlparse
+import urllib
 import config
+import re
+from bs4 import BeautifulSoup
 
 
 class SortedHTTPAdapter(requests.adapters.HTTPAdapter):
@@ -43,12 +46,10 @@ def get_token(username, password, phone_number):
     signon_data = config.SIGNON_DATA
     signon_data.update({'username': username, 'password': password})
     signon = session.post(config.SIGNON_URL, data=signon_data)
-    start_index = signon.text.find('SAMLResponse')+21
-    end_index = signon.text[start_index:].find('>')-1+start_index
-    saml_base64 = signon.text[start_index:end_index].replace(
-                                                    '&#xa;', '%0D%0A').replace(
-                                                    '&#x3d;', '%3D').replace(
-                                                    '&#x2b;', '%2B')
+    soup = BeautifulSoup(signon.text, 'html.parser')
+    saml_response = soup.find(attrs={'name': 'SAMLResponse'}).get('value')
+    saml_base64 = urllib.quote(saml_response)
+
     
     # Send the SAML login data and retrieve the auth token from the response
     session.headers = config.SAML_LOGIN_HEADERS
@@ -56,10 +57,9 @@ def get_token(username, password, phone_number):
     saml_login = session.post(config.SAML_LOGIN_URL, 
                             data='SAMLResponse={0}'.format(saml_base64))
     confirm_url = saml_login.url
-    start_index = saml_login.text.find('apiToken')+12
-    end_index = saml_login.text[start_index:].find('"')+start_index
-    auth_token = saml_login.text[start_index:end_index]
-
+    auth_token_match = re.search('apiToken = "(\w+)"', saml_login.text)
+    auth_token = auth_token_match.group(1)
+    
     # 'Order' the subscription package to activate our token/login
     offer_id = dict(urlparse.parse_qsl(urlparse.urlsplit(msisdn_url)[3]))['offerId']
     media_order_headers = config.MEDIA_ORDER_HEADERS
