@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <string id="32000">Login details</string>
+    <string id="32000">Live Pass Details</string>
+    <string id="32001">Streaming Settings</string>
 	<string id="32005">NRL</string>
     <string id="32010">Settings</string>
     
 	<string id="32031">firstrun</string>
-	<string id="32040">Streaming Method</string>
+	<string id="32040">Replay Streaming Method</string>
 	<string id="32041">HLS (Lower quality)</string>
 	<string id="32042">HDS (Higher quality, no seeking)</string>
 	<string id="32043">Live Match Stream Quality (HLS)</string>
@@ -14,6 +15,5 @@
 	<string id="32050">NRL Digital Pass Login</string>
 	<string id="32020">Username / Email Address</string>
     <string id="32030">Password</string>
-    <string id="32060">Phone Number</string>
     <string id="32070">Subscription Type</string>
 </strings>

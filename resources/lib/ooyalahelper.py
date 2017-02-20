@@ -1,18 +1,18 @@
-# Ooyalahelper module copyright 2016 Glenn Guy
+# Copyright 2016 Glenn Guy
+# This file is part of NRL Live Kodi Addon
 #
-# Ooyalahelper module is free software: you can redistribute it and/or modify
+# NRL Live is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Ooyalahelper module is distributed in the hope that it will be useful,
+# NRL Live is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Ooyalahelper module. If not, see <http://www.gnu.org/licenses/>.
-
+# along with NRL Live.  If not, see <http://www.gnu.org/licenses/>.
 
 # This module contains functions for interacting with the Ooyala API
 
@@ -32,42 +32,61 @@ import json
 import base64
 
 import config
+import utils
 import xbmcaddon
 import xbmc
 import telstra_auth
+from exception import NRLException
 
-cj = cookielib.CookieJar()
-handler = urllib2.HTTPCookieProcessor(cj)
-opener = urllib2.build_opener(handler)
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from requests.packages.urllib3.poolmanager import PoolManager
+
+
+class TLSv1Adapter(HTTPAdapter):
+    def init_poolmanager(self, connections, maxsize, block=False):
+        self.poolmanager = PoolManager(num_pools=connections,
+                                       maxsize=maxsize,
+                                       block=block,
+                                       ssl_version=ssl.PROTOCOL_TLSv1)
+
+
+# Ignore InsecureRequestWarning warnings
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+session = requests.Session()
+session.mount('https://', TLSv1Adapter(max_retries=3))
+session.verify = False
+
 addon = xbmcaddon.Addon()
 username = addon.getSetting('LIVE_USERNAME')
 password = addon.getSetting('LIVE_PASSWORD')
-phone_number = addon.getSetting('LIVE_PHONE_NUMBER')
 
-# NRL specific ooyala functions
 
 def fetch_nrl_xml(url, data):
     """ send http POST and return the xml response as string with
         removed utf-8 BOM"""
-    req = requests.post(url, data=data, headers=config.HEADERS, verify=False)
-    xbmc.log("Fetching URL: {0}".format(url))
+    req = session.post(url, data=data, headers=config.YINZCAM_AUTH_HEADERS, verify=False)
+    utils.log("Fetching URL: {0}".format(url))
     return req.text[1:]
     
-def get_nrl_user_token(username, password, phone_number):
+def get_nrl_user_token():
     """send user login info and retrieve user id for session"""
-    telstra = addon.getSetting('SUBSCRIPTION_TYPE')
-    if telstra:
-        return telstra_auth.get_token(username, password, phone_number)
-
-    loginXml = fetch_nrl_xml(config.LOGIN_URL, 
-                         config.LOGIN_DATA).format(username, password)
-    tree = ET.fromstring(loginXml)
-    if not tree.find('ErrorCode') == None:
-        if tree.find('ErrorCode').text == '1':
-            return 'invalid'
-        elif tree.find('ErrorCode').text == 'MIS_EMPTY':
-            return 'nosub'
-    return tree.find('UserToken').text
+    free_sub = int(addon.getSetting('SUBSCRIPTION_TYPE'))
+    
+    if free_sub:
+        return telstra_auth.get_free_token(username, password)
+    
+    login_resp = telstra_auth.get_paid_token(username, password)
+    json_data = json.loads(login_resp)
+    if 'ErrorCode' in json_data:
+        if json_data.get('ErrorCode') == 'MIS_EMPTY':
+            raise Exception('No paid subscription found on this Telstra ID')
+        if json_data.get('ErrorCode') == '5':
+            raise Exception('Please check your username '
+                            'and password in the settings')
+        raise Exception(json_data.get('ErrorMessage'))
+    return json_data.get('UserToken')
+    
 
 def create_nrl_userid_xml(userId):
     """ create a small xml file to send with http POST 
@@ -84,16 +103,16 @@ def create_nrl_userid_xml(userId):
 def fetch_nrl_smil(videoId):
     """ contact ooyala server and retrieve smil data to be decoded"""
     url = config.SMIL_URL.format(videoId)
-    xbmc.log("Fetching URL: {0}".format(url))
-    res = urllib2.urlopen(url)
-    return res.read()
+    utils.log("Fetching URL: {0}".format(url))
+    res = session.get(url)
+    return res.text
 
 def get_nrl_hds_url(encryptedSmil):
     """ decrypt smil data and return HDS url from the xml data"""
     from ooyala import ooyalaCrypto
     decrypt = ooyalaCrypto.ooyalaCrypto()
-    smilXml = decrypt.ooyalaDecrypt(encryptedSmil)
-    tree = ET.fromstring(smilXml)
+    smil_xml = decrypt.ooyalaDecrypt(encryptedSmil)
+    tree = ET.fromstring(smil_xml)
     return tree.find('content').find('video').find('httpDynamicStreamUrl').text
 
 
@@ -101,82 +120,23 @@ def get_nrl_embed_token(userToken, videoId):
     """send our user token to get our embed token, including api key"""
     xml = fetch_nrl_xml(config.EMBED_TOKEN_URL.format(videoId), 
                     create_nrl_userid_xml(userToken))
-    print xml
     tree = ET.fromstring(xml)
     return tree.find('Token').text
-
-# AFL ooyala functions
-
-def fetch_afl_json(url, data):
-    """ send http POST and return the json response data"""
-    data = urllib.urlencode(data)
-    req = urllib2.Request(url, data, config.HEADERS)
-    res = urllib2.urlopen(req)
-    xbmc.log("Fetching URL: {0}".format(url))
-    return res.read()
-
-def get_afl_user_token():
-    """ Send user login info and retrieve user id for session
-        Paying subscribers (tesltra=False) continue to use old
-        authenication method"""
-    api_token = comm.fetch_token()
-    opener.addheaders = [('x-media-mis-token', api_token)]
-    telstra = addon.getSetting('SUBSCRIPTION_TYPE')
-    
-    if telstra: 
-        return telstra_auth.get_token(username, password, phone_number)
-    
-    login_data = {'userIdentifier': addon.getSetting('LIVE_USERNAME'),
-                    'authToken': addon.getSetting('LIVE_PASSWORD'),
-                    'userIdentifierType': 'EMAIL',}
-    login_json = fetch_afl_json(config.LOGIN_URL, login_data)
-    data = json.loads(login_json)
-    session_id = data['data'].get('artifactValue')
-    
-    try:
-        res = opener.open(config.SESSION_URL.format(urllib.quote(session_id)))
-        data = json.loads(res.read())
-        try:
-            return data['subscriptions'][0].get('uuid')
-        
-        except IndexError as e:
-            raise AFLVideoException('AFL Live Pass subscription has expired')
-         
-    except urllib2.HTTPError as e:
-        # Attempt to parse response even with a HTTP 400
-        try:
-            data = json.loads(e.read())
-            if 'techMessage' in data:
-                raise AFLVideoException('Failed to fetch live streaming '
-                                        'token: %s' % data.get('techMessage'))
-            if 'userMessage' in data:
-                raise AFLVideoException('Failed to fetch live streaming '
-                                        'token: %s' % data.get('userMessage'))
-        except Exception as e:
-            raise e
-
-    raise Exception('Failed to fetch AFL Live streaming token')
-
-def get_afl_embed_token(userToken, videoId):
-    """send our user token to get our embed token, including api key"""
-    res = opener.open(config.EMBED_TOKEN_URL.format(userToken, videoId))
-    data = json.loads(res.read())
-    return urllib.quote(data.get('token'))
 
 #common ooyala functions
  
 def get_secure_token(secureUrl, videoId):
     """send our embed token back with a few other url encoded parameters"""
-    res = opener.open(secureUrl,None)
-    data = res.read()
+    res = session.get(secureUrl)
+    data = res.text
     parsed_json = json.loads(data)
     iosToken =  parsed_json['authorization_data'][videoId]['streams'][0]['url']['data']
     return base64.b64decode(iosToken)
 
 def get_m3u8_streams(secureTokenUrl):
     """ fetch our m3u8 file which contains streams of various qualities"""
-    res = opener.open(secureTokenUrl, None)
-    data = res.readlines()
+    res = session.get(secureTokenUrl)
+    data = res.text.splitlines()
     return data
    
 def parse_m3u8_streams(data, live, secureTokenUrl):
@@ -184,16 +144,15 @@ def parse_m3u8_streams(data, live, secureTokenUrl):
         then return the url for the highest quality stream. Different 
         handling is required of live m3u8 files as they seem to only contain
         the destination filename and not the domain/path."""
-    if live == 'true':
+    if live:
         qual = xbmcaddon.Addon().getSetting('LIVEQUALITY')
     else:
         qual = xbmcaddon.Addon().getSetting('HLSQUALITY')
-    if '#EXT-X-VERSION:3\n' in data:
-        data.remove('#EXT-X-VERSION:3\n')
+    if '#EXT-X-VERSION:3' in data:
+        data.remove('#EXT-X-VERSION:3')
     count = 1
     m3uList = []
     prependLive = secureTokenUrl[:secureTokenUrl.find('index-root')]
-    print data
     while count < len(data):
         line = data[count]
         line = line.strip('#EXT-X-STREAM-INF:')
@@ -207,7 +166,7 @@ def parse_m3u8_streams(data, live, secureTokenUrl):
         line = line.split(',')
         linelist = [i.split('=') for i in line]
         
-        if live == 'false':
+        if not live:
             linelist.append(['URL',data[count+1]])
         else:
             linelist.append(['URL',prependLive+data[count+1]])
@@ -216,52 +175,21 @@ def parse_m3u8_streams(data, live, secureTokenUrl):
         count += 2
     
     sorted_m3uList = sorted(m3uList, key=lambda k: int(k['BANDWIDTH']))
-    print sorted_m3uList
-    stream = sorted_m3uList[int(qual)]['URL'][:-1]   
+    stream = sorted_m3uList[int(qual)]['URL']
     return stream
-
-def cookies_to_string(cookiejar):
-    result = "|Cookie=Cookie: "
-    for cookie in cookiejar:
-        result += cookie.name
-        result += '='
-        result += cookie.value
-        result += ';'
-    result = result[:-1]
-    return result 
-    
-def get_m3u8_playlist(videoId, live, loginToken, mode):
+   
+def get_m3u8_playlist(video_id, live):
     """ Main function to call other functions that will return us our m3u8 HLS
         playlist as a string, which we can then write to a file for Kodi
         to use"""
-    if mode == 'AFL':
-        embedToken = get_afl_embed_token(loginToken, videoId)
-        
-    elif mode == 'NRL':
-        embedToken = get_nrl_embed_token(loginToken, videoId)
-        
-    authorizeUrl = config.AUTH_URL.format(config.PCODE, videoId, embedToken)
-    secureTokenUrl = get_secure_token(authorizeUrl, videoId)
+    login_token = get_nrl_user_token()
+    embed_token = get_nrl_embed_token(login_token, video_id)
+    authorize_url = config.AUTH_URL.format(config.PCODE, video_id, embed_token)
+    secure_token_url = get_secure_token(authorize_url, video_id)
 
-    if 'chunklist.m3u8' in secureTokenUrl:
-        return secureTokenUrl
+    if 'chunklist.m3u8' in secure_token_url:
+        return secure_token_url
 
-    m3u8Data = get_m3u8_streams(secureTokenUrl)
-    m3u8PlaylistUrl = parse_m3u8_streams(m3u8Data, live, secureTokenUrl)
-    return m3u8PlaylistUrl
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    m3u8_data = get_m3u8_streams(secure_token_url)
+    m3u8_playlist_url = parse_m3u8_streams(m3u8_data, live, secure_token_url)
+    return m3u8_playlist_url
