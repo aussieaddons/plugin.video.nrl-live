@@ -47,7 +47,7 @@ def list_matches(params, live=False):
             if live and g.live == 'false':
                 continue
             g.thumb = gm.find('FullImageUrl').text
-            g.time = gm.find('Date').text.encode('utf-8', 'replace')
+            g.time = utils.ensure_ascii(gm.find('Date').text)
             # add game start time and current score to live match entries
             if g.live: 
                 # only use live videos that are actual matches

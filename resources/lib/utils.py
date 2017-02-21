@@ -50,7 +50,7 @@ def make_url(d):
 
 def ensure_ascii(s):
     if isinstance(s, unicode):
-        return unicodedata.normalize('NFKD', value).encode('ascii','ignore')
+        return unicodedata.normalize('NFKD', s).encode('ascii','ignore')
     else:
         return s
 
