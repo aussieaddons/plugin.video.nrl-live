@@ -21,6 +21,7 @@ import xbmcplugin
 import xbmcaddon
 import comm
 import sys
+import os
 import urlparse
 
 _url = sys.argv[0]
@@ -37,8 +38,8 @@ def make_matches_list(params, live=False):
         
         for event in upcoming:
             thumb = os.path.join(addonPath, 'resources', 'soon.jpg')
-            li = xbmcgui.ListItem(event, iconImage = thumb)
-            url = '{0}?action=listmatches{1}'.format(_url, m.make_kodi_url())
+            li = xbmcgui.ListItem(event.title, iconImage = thumb)
+            url = '{0}?action=listmatches{1}'.format(_url, event.make_kodi_url())
             is_folder = False
             listing.append((url, li, is_folder))
         xbmcplugin.addSortMethod(_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)

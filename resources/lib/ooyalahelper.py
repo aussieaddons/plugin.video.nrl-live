@@ -25,7 +25,6 @@ import ssl
 import StringIO
 import time
 import os
-
 from urlparse import parse_qsl
 import xml.etree.ElementTree as ET
 import json
@@ -42,19 +41,9 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from requests.packages.urllib3.poolmanager import PoolManager
 
-
-class TLSv1Adapter(HTTPAdapter):
-    def init_poolmanager(self, connections, maxsize, block=False):
-        self.poolmanager = PoolManager(num_pools=connections,
-                                       maxsize=maxsize,
-                                       block=block,
-                                       ssl_version=ssl.PROTOCOL_TLSv1)
-
-
 # Ignore InsecureRequestWarning warnings
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 session = requests.Session()
-session.mount('https://', TLSv1Adapter(max_retries=3))
 session.verify = False
 
 addon = xbmcaddon.Addon()

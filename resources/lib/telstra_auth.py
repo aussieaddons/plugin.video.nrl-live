@@ -42,7 +42,7 @@ class TelstraAuthException(Exception):
     pass
 
 
-class SortedHTTPAdapter(requests.adapters.HTTPAdapter):
+class SortedHTTPAdapter(HTTPAdapter):
     def add_headers(self, request, **kwargs):
         if header_order:
             header_list = request.headers.items()
@@ -69,7 +69,8 @@ def get_free_token(username, password):
         Ooyala embed tokens"""
     session = requests.Session()
     session.verify = False
-    session.mount("https://", SortedHTTPAdapter())
+    global header_order
+    session.mount("https://", SortedHTTPAdapter(max_retries=5))
         
     # Send our first login request to Yinzcam, recieve (unactivated) token
     # and 'msisdn' URL
