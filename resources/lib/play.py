@@ -29,7 +29,10 @@ def play_video(params):
     """
     Play a video by the provided path.
     :param path: str
-    """   
+    """
+    if 'dummy' in params:
+        if params['dummy'] == 'True':
+            return
     try:
         stream_method = addon.getSetting('streammethod')
         if stream_method == '':
