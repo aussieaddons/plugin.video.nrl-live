@@ -8,7 +8,7 @@
   </category>
   <category label="32001">
     <setting id="LIVEQUALITY" type="enum" label="32043" values="Lowest (300k/s)|Low (450k/s) |Medium (660k/s) |High (1Mb/s) |Highest (1.6Mb/s)" default="4" />
-    <setting label="32040" type="labelenum" id="streammethod" lvalues="32041|32042"/>
+    <setting label="32040" type="labelenum" id="streammethod" lvalues="32041|32042" default="HLS (Lower quality)"/>
 	<setting id="HLSQUALITY" type="enum" label="32044" values="Audio Only (32k/s) |Lowest (350k/s)|Low (450k/s) |Medium (600k/s)|Highest (950k/s)" default="4" />
 	<setting id="HDSQUALITY" type="enum" label="32045" values="Lowest (168k/s) |Very Low (236k/s)|Low (400k/s) |Medium (700k/s)|High (1.1Mb/s) |Very High (1.8Mb/s) |Highest (2.4Mb/s)" default="6" />
   </category>

@@ -32,6 +32,8 @@ def play_video(params):
     """   
     try:
         stream_method = addon.getSetting('streammethod')
+        if stream_method == '':
+            addon.setSetting('streammethod', 'HLS (Lower quality)')
         
         live = params['live'] == 'true'
         video_id = params['video_id']
