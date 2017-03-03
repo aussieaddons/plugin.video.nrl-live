@@ -16,7 +16,7 @@
 
 import version
 
-NAME = 'AFL Video'
+NAME = 'NRL Live'
 ADDON_ID = 'plugin.video.nrl-live'
 VERSION = version.VERSION
 
@@ -137,7 +137,10 @@ SIGNON_HEADERS = {'Host': 'signon.telstra.com',
                         
 SIGNON_URL = 'https://signon.telstra.com/login'
 
-SIGNON_DATA = {'goto': 'https://signon.telstra.com/federation/saml2?SPID=telstramedia', 'gotoOnFail': '', 'username': None, 'password': None}
+SIGNON_DATA = {'goto': 'https://signon.telstra.com/federation/saml2?SPID=telstramedia', 
+               'gotoOnFail': '', 
+               'username': None, 
+               'password': None}
 
 SAML_LOGIN_URL = 'https://hub.telstra.com.au/login/saml_login'
 

@@ -38,6 +38,15 @@ pattern = re.compile("&(\w+?);")
 #   held by another thread.
 throwaway = time.strptime('20140101', '%Y%m%d')
 
+
+def get_airtime(timestamp):
+    delta = (time.mktime(time.localtime()) - time.mktime(time.gmtime())) / 3600
+    ts = datetime.datetime.fromtimestamp(time.mktime(
+                                        time.strptime(timestamp[:-1],
+                                        "%Y-%m-%dT%H:%M:%S")))
+    ts += datetime.timedelta(hours=delta)
+    return ts.strftime("%A @ %I:%M %p").replace(' 0', ' ')
+
 def make_url(d):
     pairs = []
     for k, v in d.iteritems():

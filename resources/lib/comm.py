@@ -36,7 +36,7 @@ def list_matches(params, live=False):
                 continue
             g = classes.game()       
             g.title = gm.find('Title').text.encode('ascii', 'replace')
-            if gm.find('Description'):
+            if gm.find('Description') is not None:
                 g.desc = gm.find('Description').text.encode('ascii', 'replace')
             # remove PSA videos
             if g.title.startswith('Better Choices'):
@@ -49,18 +49,19 @@ def list_matches(params, live=False):
             if live and g.live == 'false':
                 continue
             g.thumb = gm.find('FullImageUrl').text
-            g.time = utils.ensure_ascii(gm.find('Date').text)
+            game_date = utils.ensure_ascii(gm.find('Date').text)
+            g.time = game_date[game_date.find('  ')+2:]
             # add game start time and current score to live match entries
             if g.live: 
                 # only use live videos that are actual matches
-                if gm.find('NavigateUrl'):
+                if gm.find('NavigateUrl') is not None:
                     id_string = gm.find('NavigateUrl').text
                     start = id_string.find('=')+1
                     end = id_string.find('&')
                     g.match_id = id_string[start:end]
                     g.score = get_score(g.match_id)
-                    g.title = '[COLOR red]Live Now:[/COLOR] {0} @{1} {2}'.format(
-                    g.title, g.time[g.time.find(chr(128)):], g.score)    
+                    title = '[COLOR green][LIVE NOW:][/COLOR] {0} {1}'
+                    g.title = title.format(g.title.replace(' LIVE', ''), g.score)    
             listing.append(g)
     return listing
 
@@ -76,20 +77,14 @@ def get_upcoming():
         for subelem in elem.findall("Game"):
             if subelem.find('PercentComplete').text == '0':
                 g = classes.game()
-                home = subelem.find('HomeTeam').attrib['FullName']
-                away = subelem.find('AwayTeam').attrib['FullName']
+                home = subelem.find('HomeTeam').attrib['Name']
+                away = subelem.find('AwayTeam').attrib['Name']
                 timestamp = subelem.find('Timestamp').text
                 #convert zulu to local time
-                delta = (time.mktime(
-                        time.localtime()) - time.mktime(time.gmtime())) / 3600
-                ts = datetime.datetime.fromtimestamp(
-                    time.mktime(time.strptime(timestamp[:-1],
-                     "%Y-%m-%dT%H:%M:%S")))
-                ts += datetime.timedelta(hours=delta)
-                airTime = ts.strftime("%A @ %I:%M %p")
-                returnString = ('[COLOR red]Upcoming:[COLOR] '
-                                '{0} v {1} - [COLOR yellow]{2}[/COLOR]')
-                g.title = returnString.format(home, away, airTime)
+                airtime = utils.get_airtime(timestamp)
+                title = ('[COLOR red]Upcoming:[/COLOR] '
+                         '{0} v {1} - [COLOR yellow]{2}[/COLOR]')
+                g.title = title.format(home, away, airtime)
                 g.dummy = True
                 listing.append(g)
     return listing
