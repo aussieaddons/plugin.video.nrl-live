@@ -134,9 +134,16 @@ def parse_m3u8_streams(data, live, secureTokenUrl):
         handling is required of live m3u8 files as they seem to only contain
         the destination filename and not the domain/path."""
     if live:
-        qual = xbmcaddon.Addon().getSetting('LIVEQUALITY')
+        qual = int(addon.getSetting('LIVEQUALITY'))
+        if qual >= 5:
+            addon.setSetting('LIVEQUALITY', '4')
+            qual = 4
     else:
-        qual = xbmcaddon.Addon().getSetting('HLSQUALITY')
+        qual = int(addon.getSetting('HLSQUALITY'))
+        if qual >= 5:
+            addon.setSetting('HLSQUALITY', '4')
+            qual = 4
+
     if '#EXT-X-VERSION:3' in data:
         data.remove('#EXT-X-VERSION:3')
     count = 1
@@ -164,7 +171,7 @@ def parse_m3u8_streams(data, live, secureTokenUrl):
         count += 2
     
     sorted_m3uList = sorted(m3uList, key=lambda k: int(k['BANDWIDTH']))
-    stream = sorted_m3uList[int(qual)]['URL']
+    stream = sorted_m3uList[qual]['URL']
     return stream
    
 def get_m3u8_playlist(video_id, live):

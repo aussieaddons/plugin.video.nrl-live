@@ -41,6 +41,7 @@ throwaway = time.strptime('20140101', '%Y%m%d')
 
 def get_airtime(timestamp):
     delta = (time.mktime(time.localtime()) - time.mktime(time.gmtime())) / 3600
+    if time.daylight: delta += 1
     ts = datetime.datetime.fromtimestamp(time.mktime(
                                         time.strptime(timestamp[:-1],
                                         "%Y-%m-%dT%H:%M:%S")))
