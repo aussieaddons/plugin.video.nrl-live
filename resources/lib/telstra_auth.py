@@ -69,7 +69,7 @@ def get_free_token(username, password):
         Ooyala embed tokens"""
     session = requests.Session()
     session.verify = False
-    global header_order
+    #global header_order - disabled for now - no ordered dicts in python 2.6
     session.mount("https://", SortedHTTPAdapter(max_retries=5))
         
     # Send our first login request to Yinzcam, recieve (unactivated) token
