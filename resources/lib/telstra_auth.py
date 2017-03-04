@@ -32,7 +32,6 @@ from requests.packages.urllib3.poolmanager import PoolManager
 
 # Ignore InsecureRequestWarning warnings
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-header_order = None
 
 
 class TelstraAuthException(Exception):
@@ -42,22 +41,18 @@ class TelstraAuthException(Exception):
     pass
 
 
-class SortedHTTPAdapter(HTTPAdapter):
-    def add_headers(self, request, **kwargs):
-        if header_order:
-            header_list = request.headers.items()
-            for item in header_list:
-                if item[0] not in header_order:
-                    header_list.remove(item)
-            request.headers = collections.OrderedDict(
-                sorted(header_list, key=lambda x: header_order.index(x[0])))
+class TLSv1Adapter(HTTPAdapter):
+    def init_poolmanager(self, connections, maxsize, block=False):
+        self.poolmanager = PoolManager(num_pools=connections,
+                                       maxsize=maxsize,
+                                       block=block,
+                                       ssl_version=ssl.PROTOCOL_TLSv1)
 
         
 def get_paid_token(username, password):
     session = requests.Session()
     session.verify = False
-    session.mount("https://", SortedHTTPAdapter())
-    header_order = config.YINZCAM_AUTH_ORDER
+    session.mount("https://", TLSv1Adapter(max_retries=5))
     session.headers = config.YINZCAM_AUTH_HEADERS
     data = config.LOGIN_DATA.format(username, password)
     auth_resp = session.post(config.YINZCAM_AUTH_URL, data=data)
@@ -69,13 +64,11 @@ def get_free_token(username, password):
         Ooyala embed tokens"""
     session = requests.Session()
     session.verify = False
-    #global header_order - disabled for now - no ordered dicts in python 2.6
-    session.mount("https://", SortedHTTPAdapter(max_retries=5))
+    session.mount("https://", TLSv1Adapter(max_retries=5))
         
     # Send our first login request to Yinzcam, recieve (unactivated) token
     # and 'msisdn' URL
     
-    header_order = config.YINZCAM_AUTH_ORDER
     session.headers = config.YINZCAM_AUTH_HEADERS
     auth_resp = session.post(config.YINZCAM_AUTH_URL, data=config.NEW_LOGIN_DATA1)
     jsondata = json.loads(auth_resp.text)
@@ -84,7 +77,6 @@ def get_free_token(username, password):
         raise TelstraAuthException('Unable to get token from NRL API')
     
     msisdn_url = jsondata.get('MsisdnUrl')
-    header_order = None
     
     # Sign in to telstra.com to recieve cookies, get the SAML auth, and 
     # modify the escape characters so we can send it back later
@@ -161,10 +153,8 @@ def get_free_token(username, password):
                                                 ph_no, offer_id, token))
 
     # Sign in to Yinzcam with our activated token. Token is valid for 28 days
-    header_order = config.YINZCAM_AUTH_ORDER
     session.headers = config.YINZCAM_AUTH_HEADERS
     session.post(config.YINZCAM_AUTH_URL, 
                 data=config.NEW_LOGIN_DATA2.format(token))
-    header_order = None
 
     return token
