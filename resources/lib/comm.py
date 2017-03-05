@@ -68,7 +68,7 @@ def list_matches(params, live=False):
 def get_upcoming():
     """ similar to get_score but this time we are searching for upcoming live
         match info"""
-    utils.log("Fetching URL: ".format(config.SCORE_URL))
+    utils.log("Fetching URL: {0}".format(config.SCORE_URL))
     response = urllib2.urlopen(config.SCORE_URL)
     tree = ET.fromstring(response.read())
     listing = []
@@ -91,7 +91,7 @@ def get_upcoming():
 
 def get_score(match_id):
     """fetch score xml and return the scores for corresponding match IDs"""
-    utils.log("Fetching URL: ".format(config.SCORE_URL))
+    utils.log("Fetching URL: {0}".format(config.SCORE_URL))
     response = urllib2.urlopen(config.SCORE_URL)
     tree = ET.fromstring(response.read())
 

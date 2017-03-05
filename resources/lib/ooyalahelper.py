@@ -75,6 +75,7 @@ def get_nrl_user_token():
         raise Exception(json_data.get('ErrorMessage'))
     token = json_data.get('UserToken')
     addon.setSetting('TOKEN', token)
+    utils.log('Using token: {0}******'.format(token[:-6]))
     return token
     
 
@@ -114,9 +115,13 @@ def get_nrl_embed_token(userToken, videoId):
     try:
         req = session.post(url, data=data, headers=config.YINZCAM_AUTH_HEADERS, verify=False)
         xml = req.text[1:]
-        tree = ET.fromstring(xml)
+        try:
+            tree = ET.fromstring(xml)
+        except ET.ParseError as e:
+            utils.log('Embed token response is: {0}'.format(xml))
+            raise e
         if tree.find('ErrorCode') is not None:
-            utils.log('ERrorcode not found')
+            utils.log('Errorcode found: {0}'.format(xml))
             raise NRLException()
         token = tree.find('Token').text
     except NRLException:
@@ -130,8 +135,12 @@ def get_secure_token(secure_url, videoId):
     """send our embed token back with a few other url encoded parameters"""
     res = session.get(secure_url)
     data = res.text
-    parsed_json = json.loads(data)
-    token =  parsed_json['authorization_data'][videoId]['streams'][0]['url']['data']
+    try:
+        parsed_json = json.loads(data)
+        token =  parsed_json['authorization_data'][videoId]['streams'][0]['url']['data']
+    except KeyError as e:
+        utils.log('Parsed json data: {0}'.format(parsed_json))
+        raise e
     return base64.b64decode(token)
 
 def get_m3u8_streams(secure_token_url):
