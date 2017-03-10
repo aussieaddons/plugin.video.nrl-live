@@ -21,7 +21,7 @@ import sys
 import config
 import ooyalahelper
 import utils
-from f4mproxy.F4mProxy import f4mProxyHelper
+
 addon = xbmcaddon.Addon()
 _handle = int(sys.argv[1])
 
@@ -34,27 +34,11 @@ def play_video(params):
         if params['dummy'] == 'True':
             return
     try:
-        stream_method = addon.getSetting('streammethod')
-        if stream_method == '':
-            addon.setSetting('streammethod', 'HLS (Lower quality)')
-        
         live = params['live'] == 'true'
         video_id = params['video_id']
-        if stream_method == 'HLS (Lower quality)' or live:
-            
-            playlist = ooyalahelper.get_m3u8_playlist(video_id, live)
-            play_item = xbmcgui.ListItem(path=playlist)
-            xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)
+        playlist = ooyalahelper.get_m3u8_playlist(video_id, live)
+        play_item = xbmcgui.ListItem(path=playlist)
+        xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)
         
-        elif stream_method == 'HDS (Higher quality, no seeking)':
-            ooyalahelper.get_nrl_user_token()
-            qual = addon.getSetting('HDSQUALITY')
-            smil = ooyalahelper.fetch_nrl_smil(video_id)            
-            url = ooyalahelper.get_nrl_hds_url(smil)
-            player=f4mProxyHelper()
-            urltoplay,item=player.playF4mLink(url, '', setResolved=True, 
-                                        maxbitrate=config.HDS_REPLAY_QUALITY[qual])
-            play_item = xbmcgui.ListItem(path=urltoplay)
-            xbmcplugin.setResolvedUrl(_handle, True, play_item)
     except Exception as e:
         utils.handle_error('', e)

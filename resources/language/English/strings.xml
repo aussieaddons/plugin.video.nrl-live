@@ -2,18 +2,16 @@
 <strings>
     <string id="32000">Live Pass Details</string>
     <string id="32001">Streaming Settings</string>
+    <string id="32002">Debugging</string>
 	<string id="32005">NRL</string>
     <string id="32010">Settings</string>
     
 	<string id="32031">firstrun</string>
-	<string id="32040">Replay Streaming Method</string>
-	<string id="32041">HLS (Lower quality)</string>
-	<string id="32042">HDS (Higher quality, no seeking)</string>
-	<string id="32043">Live Match Stream Quality (HLS)</string>
-	<string id="32044">Replay Stream Quality (HLS)</string>
-	<string id="32045">Replay Stream Quality (HDS)</string>
+    <string id="32032">Remove stored login token</string>
+	<string id="32043">Live Match Stream Quality</string>
+	<string id="32044">Replay Stream Quality</string>
 	<string id="32050">NRL Digital Pass Login</string>
-	<string id="32020">Username / Email Address</string>
-    <string id="32030">Password</string>
+	<string id="32020">Telstra ID Username</string>
+    <string id="32030">Telstra ID Password</string>
     <string id="32070">Subscription Type</string>
 </strings>

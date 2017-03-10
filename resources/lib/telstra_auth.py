@@ -23,6 +23,7 @@ import config
 import re
 import ssl
 import utils
+import xbmcgui
 from bs4 import BeautifulSoup
 
 from requests.adapters import HTTPAdapter
@@ -65,6 +66,10 @@ def get_free_token(username, password):
     session = requests.Session()
     session.verify = False
     session.mount("https://", TLSv1Adapter(max_retries=5))
+    
+    prog_dialog = xbmcgui.DialogProgress()
+    prog_dialog.create('Logging in with Telstra ID')
+    prog_dialog.update(1, 'Obtaining user token')
         
     # Send our first login request to Yinzcam, recieve (unactivated) token
     # and 'msisdn' URL
@@ -77,6 +82,7 @@ def get_free_token(username, password):
         raise TelstraAuthException('Unable to get token from NRL API')
     
     msisdn_url = jsondata.get('MsisdnUrl')
+    prog_dialog.update(20, 'Signing on to telstra.com')
     
     # Sign in to telstra.com to recieve cookies, get the SAML auth, and 
     # modify the escape characters so we can send it back later
@@ -106,6 +112,7 @@ def get_free_token(username, password):
     soup = BeautifulSoup(signon.text, 'html.parser')
     saml_response = soup.find(attrs={'name': 'SAMLResponse'}).get('value')
     saml_base64 = urllib.quote(saml_response)
+    prog_dialog.update(40, 'Obtaining API token')
 
     
     # Send the SAML login data and retrieve the auth token from the response
@@ -118,6 +125,7 @@ def get_free_token(username, password):
     confirm_url = saml_login.url
     auth_token_match = re.search('apiToken = "(\w+)"', saml_login.text)
     auth_token = auth_token_match.group(1)
+    prog_dialog.update(60, 'Determining eligible services')
     
     # 'Order' the subscription package to activate our token/login
     offer_id = dict(urlparse.parse_qsl(urlparse.urlsplit(msisdn_url)[3]))['offerId']
@@ -148,6 +156,7 @@ def get_free_token(username, password):
             ph_no = [x['value'] for x in data if x['name'] == 'ServiceId'][0]
     except:
         raise TelstraAuthException('Unable to determine eligible services')
+    prog_dialog.update(80, 'Obtaining Live Pass')
     
     session.post(config.MEDIA_ORDER_URL, data=config.MEDIA_ORDER_JSON.format(
                                                 ph_no, offer_id, token))
@@ -156,5 +165,7 @@ def get_free_token(username, password):
     session.headers = config.YINZCAM_AUTH_HEADERS
     session.post(config.YINZCAM_AUTH_URL, 
                 data=config.NEW_LOGIN_DATA2.format(token))
-
+    prog_dialog.update(100, 'Finished!')
+    prog_dialog.close()
+    session.close()
     return token

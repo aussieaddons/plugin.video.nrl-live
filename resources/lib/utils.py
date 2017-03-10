@@ -30,6 +30,7 @@ import xbmcgui
 import config
 import issue_reporter
 from exception import NRLException
+from telstra_auth import TelstraAuthException
 
 pattern = re.compile("&(\w+?);")
 
@@ -216,7 +217,8 @@ def handle_error(msg, exc=None):
                 send_error = False
 
         # Any non-fatal errors, don't allow issue reporting
-        if isinstance(exc, NRLException):
+        if (isinstance(exc, NRLException) or 
+            isinstance(exc, TelstraAuthException)):
             send_error = False
 
         if send_error:

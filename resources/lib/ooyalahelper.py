@@ -41,6 +41,13 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from requests.packages.urllib3.poolmanager import PoolManager
 
+try:
+   import StorageServer
+except:
+    utils.log("script.common.plugin.cache not found!")
+    import storageserverdummy as StorageServer
+cache = StorageServer.StorageServer(config.ADDON_ID, 1)
+   
 # Ignore InsecureRequestWarning warnings
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 session = requests.Session()
@@ -50,31 +57,33 @@ addon = xbmcaddon.Addon()
 username = addon.getSetting('LIVE_USERNAME')
 password = addon.getSetting('LIVE_PASSWORD')
 
+def clear_token():
+    """Remove stored token from cache storage"""
+    cache.delete('NRLTOKEN')
 
-def get_nrl_user_token():
-    """send user login info and retrieve user id for session"""
-    stored_token = addon.getSetting('TOKEN')
+def get_user_token():
+    """send user login info and retrieve token for session"""
+    stored_token = cache.get('NRLTOKEN')
     if stored_token != '':
+        utils.log('Using token: {0}******'.format(token[:-6]))
         return stored_token
     
     free_sub = int(addon.getSetting('SUBSCRIPTION_TYPE'))
     
     if free_sub:
         token = telstra_auth.get_free_token(username, password)
-        addon.setSetting('TOKEN', token)
-        return token
-    
-    login_resp = telstra_auth.get_paid_token(username, password)
-    json_data = json.loads(login_resp)
-    if 'ErrorCode' in json_data:
-        if json_data.get('ErrorCode') == 'MIS_EMPTY':
-            raise Exception('No paid subscription found on this Telstra ID')
-        if json_data.get('ErrorCode') == '5':
-            raise Exception('Please check your username '
-                            'and password in the settings')
-        raise Exception(json_data.get('ErrorMessage'))
-    token = json_data.get('UserToken')
-    addon.setSetting('TOKEN', token)
+    else:
+        login_resp = telstra_auth.get_paid_token(username, password)
+        json_data = json.loads(login_resp)
+        if 'ErrorCode' in json_data:
+            if json_data.get('ErrorCode') == 'MIS_EMPTY':
+                raise Exception('No paid subscription found on this Telstra ID')
+            if json_data.get('ErrorCode') == '5':
+                raise Exception('Please check your username '
+                                'and password in the settings')
+            raise Exception(json_data.get('ErrorMessage'))
+        token = json_data.get('UserToken')
+    cache.set('NRLTOKEN', token)
     utils.log('Using token: {0}******'.format(token[:-6]))
     return token
     
@@ -91,23 +100,7 @@ def create_nrl_userid_xml(user_id):
     output = fakefile.getvalue()
     return output
 
-def fetch_nrl_smil(video_id):
-    """ contact ooyala server and retrieve smil data to be decoded"""
-    url = config.SMIL_URL.format(video_id)
-    utils.log("Fetching URL: {0}".format(url))
-    res = session.get(url)
-    return res.text
-
-def get_nrl_hds_url(encryptedSmil):
-    """ decrypt smil data and return HDS url from the xml data"""
-    from ooyala import ooyalaCrypto
-    decrypt = ooyalaCrypto.ooyalaCrypto()
-    smil_xml = decrypt.ooyalaDecrypt(encryptedSmil)
-    tree = ET.fromstring(smil_xml)
-    return tree.find('content').find('video').find('httpDynamicStreamUrl').text
-
-
-def get_nrl_embed_token(userToken, videoId):
+def get_embed_token(userToken, videoId):
     """send our user token to get our embed token, including api key"""
     data = create_nrl_userid_xml(userToken)
     url = config.EMBED_TOKEN_URL.format(videoId)
@@ -119,13 +112,14 @@ def get_nrl_embed_token(userToken, videoId):
             tree = ET.fromstring(xml)
         except ET.ParseError as e:
             utils.log('Embed token response is: {0}'.format(xml))
+            cache.delete('NRLTOKEN')
             raise e
         if tree.find('ErrorCode') is not None:
             utils.log('Errorcode found: {0}'.format(xml))
             raise NRLException()
         token = tree.find('Token').text
     except NRLException:
-        addon.setSetting('TOKEN', '')
+        cache.delete('NRLTOKEN')
         raise Exception('Login token has expired, please try again')
     return token
 
@@ -156,14 +150,12 @@ def parse_m3u8_streams(data, live, secure_token_url):
         the destination filename and not the domain/path."""
     if live:
         qual = int(addon.getSetting('LIVEQUALITY'))
-        if qual >= 5:
-            addon.setSetting('LIVEQUALITY', '4')
-            qual = 4
+        if qual == config.MAX_LIVEQUAL:
+            qual = -1
     else:
-        qual = int(addon.getSetting('HLSQUALITY'))
-        if qual >= 5:
-            addon.setSetting('HLSQUALITY', '4')
-            qual = 4
+        qual = int(addon.getSetting('REPLAYQUALITY'))
+        if qual == config.MAX_REPLAYQUAL:
+            qual = -1
 
     if '#EXT-X-VERSION:3' in data:
         data.remove('#EXT-X-VERSION:3')
@@ -199,8 +191,8 @@ def get_m3u8_playlist(video_id, live):
     """ Main function to call other functions that will return us our m3u8 HLS
         playlist as a string, which we can then write to a file for Kodi
         to use"""
-    login_token = get_nrl_user_token()
-    embed_token = get_nrl_embed_token(login_token, video_id)
+    login_token = get_user_token()
+    embed_token = get_embed_token(login_token, video_id)
     authorize_url = config.AUTH_URL.format(config.PCODE, video_id, embed_token)
     secure_token_url = get_secure_token(authorize_url, video_id)
 

@@ -43,7 +43,6 @@ import matches
 import utils
 import submenus
 import categories
-from f4mproxy.F4mProxy import f4mProxyHelper
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
@@ -79,15 +78,17 @@ def router(paramstring):
             matches.make_matches_list(params)
         elif params['action'] == 'listmatches':
             play.play_video(params)
+        elif params['action'] == 'cleartoken':
+            ooyalahelper.clear_token()
     else:
         categories.list_categories()
 
 if __name__ == '__main__':
     if addon.getSetting('firstrun') == 'true':
         xbmcgui.Dialog().ok(addonname, ('Please enter your NRL Digital '
-                                    'Pass (Tesltra ID) username '),(
-                                    ' and password to access the content in'
-                                    ' this service.'))
+                                        'Pass (Telstra ID) username and '
+                                        'password to access the content in '
+                                        'this service.'))
         addon.openSettings()
         addon.setSetting('firstrun', 'false')
     router(sys.argv[2][1:])

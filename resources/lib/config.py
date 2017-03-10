@@ -25,15 +25,8 @@ ISSUE_API_URL = GITHUB_API_URL + '/issues'
 ISSUE_API_AUTH = 'eGJtY2JvdDo1OTQxNTJjMTBhZGFiNGRlN2M0YWZkZDYwZGQ5NDFkNWY4YmIzOGFj'
 GIST_API_URL = 'https://api.github.com/gists'
 
-
-# Bitrates for Adobe HDS streams - 0 is max (2400)
-HDS_REPLAY_QUALITY =   {'0': 168,
-                        '1': 236,
-                        '2': 400,
-                        '3': 700,
-                        '4': 1100,
-                        '5': 1800,
-                        '6': 0}
+MAX_LIVEQUAL = 4
+MAX_REPLAYQUAL = 7
 
 # url to send our Digital Pass info to
 LOGIN_URL = ('https://signon-live-nrl.yinzcam.com/V1/Auth/Subscription?ff=mobile'
@@ -51,10 +44,9 @@ EMBED_TOKEN_URL =('https://mis-live-nrl.yinzcam.com/V1/Auth/MediaToken?id={0}'
             '&application=NRL_LIVE&os=Android&format=XML')
 
 # url used to request playlist
-AUTH_URL = ('http://player.ooyala.com/sas/player_api/v1/authorization/'
-            'embed_code/{0}/{1}?device=android_html&domain=http://'
-            'nrl.production.NRL%20Live.androidphone&embedToken={2}'
-            '&supportedFormats=wv_wvm,mp4,wv_hls,m3u8,wv_mp4')
+AUTH_URL = ('http://player.ooyala.com/sas/player_api/v2/authorization/'
+            'embed_code/{0}/{1}?device=html5&domain=www.nrl.com&embedToken={2}'
+            '&supportedFormats=m3u8')
 
 # main url for xml that contains all our video metadata            
 XML_URL =  ('http://app-live-nrl.yinzcam.com/V1/Media/VideoList?&mediaTypes=V&'
@@ -77,9 +69,6 @@ SHORTLIST_URL = ('http://app-live-nrl.yinzcam.com/V1/Media/ShortList?carrier='
 
 # used for HDS metadata retrieval
 SMIL_URL = "http://player.ooyala.com/nuplayer?embedCode={0}"
-
-# not sure that these are needed atm??
-HEADERS = { 'User-Agent' : 'Dalvik/2.1.0 (Linux; U; Android 6.0; HTC One_M8 Build/MRA58K.H15)', 'Content-Type': 'application/xml', 'Accept': 'application/json', 'Accept-Encoding': 'gzip' }
 
 # ooyala provider indentifier code used in contructing request uris            
 PCODE = 'BudDUxOt2GEh8L5PMMpcbz1wJFwm'
