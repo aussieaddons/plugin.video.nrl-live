@@ -65,7 +65,7 @@ def get_user_token():
     """send user login info and retrieve token for session"""
     stored_token = cache.get('NRLTOKEN')
     if stored_token != '':
-        utils.log('Using token: {0}******'.format(token[:-6]))
+        utils.log('Using token: {0}******'.format(stored_token[:-6]))
         return stored_token
     
     free_sub = int(addon.getSetting('SUBSCRIPTION_TYPE'))
