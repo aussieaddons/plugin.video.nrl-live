@@ -124,9 +124,18 @@ def get_secure_token(secure_url, videoId):
         parsed_json = json.loads(data)
         token = (parsed_json['authorization_data'][videoId]
                  ['streams'][0]['url']['data'])
-    except KeyError as e:
+    except KeyError:
         utils.log('Parsed json data: {0}'.format(parsed_json))
-        raise e
+        try:
+            auth_msg = parsed_json['authorization_data'][videoId]['message']
+            if auth_msg == 'unauthorizedlocation':
+                country = parsed_json['user_info']['country']
+                raise Exception('Unauthorised location for streaming. '
+                                'Detected location is: {0}. '
+                                'Please check VPN/smart DNS settings '
+                                ' and try again'.format(country))
+        except Exception as e:
+            raise e
     return base64.b64decode(token)
 
 
@@ -178,7 +187,12 @@ def parse_m3u8_streams(data, live, secure_token_url):
         count += 2
 
     sorted_m3u_list = sorted(m3u_list, key=lambda k: int(k['BANDWIDTH']))
-    stream = sorted_m3u_list[qual]['URL']
+    try:
+        stream = sorted_m3u_list[qual]['URL']
+    except IndexError as e:
+        utils.log('Quality setting: {0}'.format(qual))
+        utils.log('Sorted m3u8 list: {0}'.format(sorted_m3u_list))
+        raise e
     return stream
 
 

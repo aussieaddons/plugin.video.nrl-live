@@ -123,7 +123,11 @@ def get_free_token(username, password):
 
     confirm_url = saml_login.url
     auth_token_match = re.search('apiToken = "(\w+)"', saml_login.text)
-    auth_token = auth_token_match.group(1)
+    try:
+        auth_token = auth_token_match.group(1)
+    except AttributeError as e:
+        utils.log('SAML login response: {0}'.format(saml_login.text))
+        raise e
     prog_dialog.update(60, 'Determining eligible services')
 
     # 'Order' the subscription package to activate our token/login
