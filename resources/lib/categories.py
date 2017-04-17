@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NRL Live.  If not, see <http://www.gnu.org/licenses/>.
 
-import xbmc
 import xbmcgui
 import xbmcplugin
 import config
@@ -22,6 +21,7 @@ import sys
 
 _handle = int(sys.argv[1])
 _url = sys.argv[0]
+
 
 def list_categories():
     listing = []
@@ -32,6 +32,6 @@ def list_categories():
         url = urlString.format(_url, categories[category])
         is_folder = True
         listing.append((url, li, is_folder))
-        
+
     xbmcplugin.addDirectoryItems(_handle, listing, len(listing))
     xbmcplugin.endOfDirectory(_handle)

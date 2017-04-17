@@ -16,38 +16,25 @@
 
 # This module contains functions for interacting with the Ooyala API
 
-import urllib
-import urllib2
 import requests
-import cookielib
-import ssl
-
 import StringIO
-import time
-import os
-from urlparse import parse_qsl
 import xml.etree.ElementTree as ET
 import json
 import base64
-
 import config
 import utils
 import xbmcaddon
-import xbmc
 import telstra_auth
 from exception import NRLException
-
-from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-from requests.packages.urllib3.poolmanager import PoolManager
 
 try:
-   import StorageServer
+    import StorageServer
 except:
     utils.log("script.common.plugin.cache not found!")
     import storageserverdummy as StorageServer
 cache = StorageServer.StorageServer(config.ADDON_ID, 1)
-   
+
 # Ignore InsecureRequestWarning warnings
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 session = requests.Session()
@@ -57,9 +44,11 @@ addon = xbmcaddon.Addon()
 username = addon.getSetting('LIVE_USERNAME')
 password = addon.getSetting('LIVE_PASSWORD')
 
+
 def clear_token():
     """Remove stored token from cache storage"""
     cache.delete('NRLTOKEN')
+
 
 def get_user_token():
     """send user login info and retrieve token for session"""
@@ -67,9 +56,9 @@ def get_user_token():
     if stored_token != '':
         utils.log('Using token: {0}******'.format(stored_token[:-6]))
         return stored_token
-    
+
     free_sub = int(addon.getSetting('SUBSCRIPTION_TYPE'))
-    
+
     if free_sub:
         token = telstra_auth.get_free_token(username, password)
     else:
@@ -77,7 +66,8 @@ def get_user_token():
         json_data = json.loads(login_resp)
         if 'ErrorCode' in json_data:
             if json_data.get('ErrorCode') == 'MIS_EMPTY':
-                raise Exception('No paid subscription found on this Telstra ID')
+                raise Exception('No paid subscription found '
+                                'on this Telstra ID')
             if json_data.get('ErrorCode') == '5':
                 raise Exception('Please check your username '
                                 'and password in the settings')
@@ -86,10 +76,10 @@ def get_user_token():
     cache.set('NRLTOKEN', token)
     utils.log('Using token: {0}******'.format(token[:-6]))
     return token
-    
+
 
 def create_nrl_userid_xml(user_id):
-    """ create a small xml file to send with http POST 
+    """ create a small xml file to send with http POST
         when starting a new video request"""
     root = ET.Element('Subscription')
     ut = ET.SubElement(root, 'UserToken')
@@ -100,13 +90,15 @@ def create_nrl_userid_xml(user_id):
     output = fakefile.getvalue()
     return output
 
+
 def get_embed_token(userToken, videoId):
     """send our user token to get our embed token, including api key"""
     data = create_nrl_userid_xml(userToken)
     url = config.EMBED_TOKEN_URL.format(videoId)
     utils.log("Fetching URL: {0}".format(url))
     try:
-        req = session.post(url, data=data, headers=config.YINZCAM_AUTH_HEADERS, verify=False)
+        req = session.post(
+            url, data=data, headers=config.YINZCAM_AUTH_HEADERS, verify=False)
         xml = req.text[1:]
         try:
             tree = ET.fromstring(xml)
@@ -123,29 +115,31 @@ def get_embed_token(userToken, videoId):
         raise Exception('Login token has expired, please try again')
     return token
 
-#common ooyala functions
- 
+
 def get_secure_token(secure_url, videoId):
     """send our embed token back with a few other url encoded parameters"""
     res = session.get(secure_url)
     data = res.text
     try:
         parsed_json = json.loads(data)
-        token =  parsed_json['authorization_data'][videoId]['streams'][0]['url']['data']
+        token = (parsed_json['authorization_data'][videoId]
+                 ['streams'][0]['url']['data'])
     except KeyError as e:
         utils.log('Parsed json data: {0}'.format(parsed_json))
         raise e
     return base64.b64decode(token)
+
 
 def get_m3u8_streams(secure_token_url):
     """ fetch our m3u8 file which contains streams of various qualities"""
     res = session.get(secure_token_url)
     data = res.text.splitlines()
     return data
-   
+
+
 def parse_m3u8_streams(data, live, secure_token_url):
     """ Parse the retrieved m3u8 stream list into a list of dictionaries
-        then return the url for the highest quality stream. Different 
+        then return the url for the highest quality stream. Different
         handling is required of live m3u8 files as they seem to only contain
         the destination filename and not the domain/path."""
     if live:
@@ -167,26 +161,27 @@ def parse_m3u8_streams(data, live, secure_token_url):
         line = line.strip('#EXT-X-STREAM-INF:')
         line = line.strip('PROGRAM-ID=1,')
         line = line[:line.find('CODECS')]
-        
+
         if line.endswith(','):
             line = line[:-1]
-        
+
         line = line.strip()
         line = line.split(',')
         linelist = [i.split('=') for i in line]
-        
+
         if not live:
-            linelist.append(['URL',data[count+1]])
+            linelist.append(['URL', data[count+1]])
         else:
-            linelist.append(['URL',prepend_live+data[count+1]])
-        
+            linelist.append(['URL', prepend_live+data[count+1]])
+
         m3u_list.append(dict((i[0], i[1]) for i in linelist))
         count += 2
-    
+
     sorted_m3u_list = sorted(m3u_list, key=lambda k: int(k['BANDWIDTH']))
     stream = sorted_m3u_list[qual]['URL']
     return stream
-   
+
+
 def get_m3u8_playlist(video_id, live):
     """ Main function to call other functions that will return us our m3u8 HLS
         playlist as a string, which we can then write to a file for Kodi

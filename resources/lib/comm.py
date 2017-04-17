@@ -16,12 +16,9 @@
 
 import xml.etree.ElementTree as ET
 import classes
-import xbmc
 import urllib2
 import utils
 import config
-import time
-import datetime
 
 
 def list_matches(params, live=False):
@@ -34,7 +31,7 @@ def list_matches(params, live=False):
             # remove items with no video eg. news articles
             if not gm.attrib['Type'] == 'V':
                 continue
-            g = classes.game()       
+            g = classes.game()
             g.title = gm.find('Title').text.encode('ascii', 'replace')
             if gm.find('Description') is not None:
                 g.desc = gm.find('Description').text.encode('ascii', 'replace')
@@ -52,7 +49,7 @@ def list_matches(params, live=False):
             game_date = utils.ensure_ascii(gm.find('Date').text)
             g.time = game_date[game_date.find('  ')+2:]
             # add game start time and current score to live match entries
-            if g.live: 
+            if g.live:
                 # only use live videos that are actual matches
                 if gm.find('NavigateUrl') is not None:
                     id_string = gm.find('NavigateUrl').text
@@ -61,9 +58,11 @@ def list_matches(params, live=False):
                     g.match_id = id_string[start:end]
                     g.score = get_score(g.match_id)
                     title = '[COLOR green][LIVE NOW:][/COLOR] {0} {1}'
-                    g.title = title.format(g.title.replace(' LIVE', ''), g.score)    
+                    g.title = title.format(
+                        g.title.replace(' LIVE', ''), g.score)
             listing.append(g)
     return listing
+
 
 def get_upcoming():
     """ similar to get_score but this time we are searching for upcoming live
@@ -72,7 +71,7 @@ def get_upcoming():
     response = urllib2.urlopen(config.SCORE_URL)
     tree = ET.fromstring(response.read())
     listing = []
-    
+
     for elem in tree.findall("Day"):
         for subelem in elem.findall("Game"):
             if subelem.find('PercentComplete').text == '0':
@@ -80,7 +79,7 @@ def get_upcoming():
                 home = subelem.find('HomeTeam').attrib['Name']
                 away = subelem.find('AwayTeam').attrib['Name']
                 timestamp = subelem.find('Timestamp').text
-                #convert zulu to local time
+                # convert zulu to local time
                 airtime = utils.get_airtime(timestamp)
                 title = ('[COLOR red]Upcoming:[/COLOR] '
                          '{0} v {1} - [COLOR yellow]{2}[/COLOR]')
@@ -89,6 +88,7 @@ def get_upcoming():
                 listing.append(g)
     return listing
 
+
 def get_score(match_id):
     """fetch score xml and return the scores for corresponding match IDs"""
     utils.log("Fetching URL: {0}".format(config.SCORE_URL))
@@ -96,23 +96,24 @@ def get_score(match_id):
     tree = ET.fromstring(response.read())
 
     for elem in tree.findall("Day"):
-        for subelem in elem.findall("Game"):     
+        for subelem in elem.findall("Game"):
             if subelem.attrib['Id'] == str(match_id):
-                home_score =  str(subelem.find('HomeTeam').attrib['Score'])
+                home_score = str(subelem.find('HomeTeam').attrib['Score'])
                 away_score = str(subelem.find('AwayTeam').attrib['Score'])
                 return '[COLOR yellow]{0} - {1}[/COLOR]'.format(
-            home_score,away_score)        
+                    home_score, away_score)
+
 
 def get_url(params, live=False):
     """ retrieve our xml file for processing"""
     category = params['category']
-    if not 'rnd' in params:
+    if 'rnd' not in params:
         params['rnd'] = 1
     if params['rnd'] == -1:
         rnd = ''
-    else: 
+    else:
         rnd = '&round={0}'.format(params['rnd'])
-    
+
     if live:
         category = 'Matches'
         params.update({'comp': 1, 'year': 2017})
@@ -120,9 +121,9 @@ def get_url(params, live=False):
     if params['category'] == 'shortlist':
         fullUrl = config.SHORTLIST_URL
     else:
-        fullUrl = config.XML_URL.format(params['comp'], 
-                                        rnd, 
-                                        category, 
+        fullUrl = config.XML_URL.format(params['comp'],
+                                        rnd,
+                                        category,
                                         params['year'])
 
     utils.log("Fetching URL: ".format(fullUrl))

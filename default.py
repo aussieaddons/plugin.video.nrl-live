@@ -16,33 +16,21 @@
 
 import os
 import sys
-import time
-import datetime
-
 import xbmc
 import xbmcgui
 import xbmcaddon
-import xbmcplugin
-
-import urllib
-import urllib2
 from urlparse import parse_qsl
-import xml.etree.ElementTree as ET
-import cookielib
 
 addon = xbmcaddon.Addon()
 cwd = xbmc.translatePath(addon.getAddonInfo('path')).decode("utf-8")
 BASE_RESOURCE_PATH = os.path.join(cwd, 'resources', 'lib')
 sys.path.append(BASE_RESOURCE_PATH)
 
-import config
-import ooyalahelper
-import classes
-import play
-import matches
-import utils
-import submenus
-import categories
+import ooyalahelper  # noqa: E402
+import play  # noqa: E402
+import matches  # noqa: E402
+import submenus  # noqa: E402
+import categories  # noqa: E402
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
@@ -73,7 +61,8 @@ def router(paramstring):
         elif params['action'] == 'listcomps':
             if params['comp'] == '1':
                 submenus.list_rounds(params)
-            else: matches.make_matches_list(params)
+            else:
+                matches.make_matches_list(params)
         elif params['action'] == 'listrounds':
             matches.make_matches_list(params)
         elif params['action'] == 'listmatches':
@@ -82,6 +71,7 @@ def router(paramstring):
             ooyalahelper.clear_token()
     else:
         categories.list_categories()
+
 
 if __name__ == '__main__':
     if addon.getSetting('firstrun') == 'true':
@@ -92,4 +82,3 @@ if __name__ == '__main__':
         addon.openSettings()
         addon.setSetting('firstrun', 'false')
     router(sys.argv[2][1:])
-

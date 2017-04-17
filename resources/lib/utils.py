@@ -20,8 +20,6 @@ import re
 import traceback
 import time
 import datetime
-import htmlentitydefs
-import cgi
 import unicodedata
 import urllib
 import textwrap
@@ -42,12 +40,14 @@ throwaway = time.strptime('20140101', '%Y%m%d')
 
 def get_airtime(timestamp):
     delta = (time.mktime(time.localtime()) - time.mktime(time.gmtime())) / 3600
-    if time.daylight: delta += 1
+    if time.daylight:
+        delta += 1
     ts = datetime.datetime.fromtimestamp(time.mktime(
-                                        time.strptime(timestamp[:-1],
-                                        "%Y-%m-%dT%H:%M:%S")))
+                                         time.strptime(timestamp[:-1],
+                                                       "%Y-%m-%dT%H:%M:%S")))
     ts += datetime.timedelta(hours=delta)
     return ts.strftime("%A @ %I:%M %p").replace(' 0', ' ')
+
 
 def make_url(d):
     pairs = []
@@ -61,43 +61,35 @@ def make_url(d):
 
 def ensure_ascii(s):
     if isinstance(s, unicode):
-        return unicodedata.normalize('NFKD', s).encode('ascii','ignore')
+        return unicodedata.normalize('NFKD', s).encode('ascii', 'ignore')
     else:
         return s
+
 
 def log(s):
     xbmc.log("[%s v%s] %s" % (config.NAME, config.VERSION, s),
              level=xbmc.LOGNOTICE)
 
+
 def get_round_no():
     """ calculate what the current NRL round is"""
     date = datetime.date.today()
-    r1 = datetime.date(2017,3,2)
+    r1 = datetime.date(2017, 3, 2)
     dateDelta = datetime.date.toordinal(date) - datetime.date.toordinal(r1)
-    if datetime.date.toordinal(date) >= 736453: # 2 weeks between rd 9 and 10
+    if datetime.date.toordinal(date) >= 736453:  # 2 weeks between rd 9 and 10
         return (dateDelta // 7)
-    else: 
+    else:
         return (dateDelta // 7) + 1
-    
-def log_error(message=None):
-    exc_type, exc_value, exc_tb = sys.exc_info()
-    if message:
-        exc_value = message
-    xbmc.log("[%s v%s] ERROR: %s (%d) - %s" %
-             (config.NAME, config.VERSION,
-             exc_traceback.tb_frame.f_code.co_name, exc_traceback.tb_lineno,
-             exc_value), level=xbmc.LOGERROR)
-    xbmc.log(traceback.print_exc(), level=xbmc.LOGERROR)
 
 
 def dialog_error(err=None):
     # Generate a list of lines for use in XBMC dialog
-    msg = ''
     content = []
     exc_type, exc_value, exc_tb = sys.exc_info()
     content.append("%s v%s Error" % (config.NAME, config.VERSION))
     content.append(str(exc_value))
     return content
+
 
 def dialog_message(msg, title=None):
     if not title:
@@ -106,6 +98,7 @@ def dialog_message(msg, title=None):
     content = textwrap.wrap(msg, 60)
     content.insert(0, title)
     return content
+
 
 def get_platform():
     """ Work through a list of possible platform types and return the first
@@ -131,8 +124,10 @@ def get_platform():
             return platform
     return "Unknown"
 
+
 def get_xbmc_build():
     return xbmc.getInfoLabel("System.BuildVersion")
+
 
 def get_xbmc_version():
     build = get_xbmc_build()
@@ -140,11 +135,13 @@ def get_xbmc_version():
     version = build.split(' ')[0]
     return version
 
+
 def get_xbmc_major_version():
     """ Return the major version number of the running XBMC
     """
     version = get_xbmc_version().split('.')[0]
     return int(version)
+
 
 def log_xbmc_platform_version():
     """ Log our XBMC version and platform for debugging
@@ -152,6 +149,7 @@ def log_xbmc_platform_version():
     version = get_xbmc_version()
     platform = get_platform()
     log("XBMC/Kodi %s running on %s" % (version, platform))
+
 
 def get_file_dir():
     """ Make our addon working directory if it doesn't exist and
@@ -163,6 +161,7 @@ def get_file_dir():
         os.mkdir(filedir)
     return filedir
 
+
 def save_last_error_report(trace):
     """ Save a copy of our last error report
     """
@@ -172,6 +171,7 @@ def save_last_error_report(trace):
             f.write(trace)
     except:
         log("Error writing error report file")
+
 
 def can_send_error(trace):
     """ Check to see if our new error message is different from the last
@@ -194,6 +194,7 @@ def can_send_error(trace):
     log("Not allowing error report. Last report matches this one")
     return False
 
+
 def handle_error(msg, exc=None):
     traceback_str = traceback.format_exc()
     log(traceback_str)
@@ -212,13 +213,13 @@ def handle_error(msg, exc=None):
 
         # Some transient network errors we don't want any reports about
         if ((traceback_str.find('The read operation timed out') > 0) or
-            (traceback_str.find('IncompleteRead') > 0) or
-            (traceback_str.find('HTTP Error 404: Not Found') > 0)):
-                send_error = False
+                (traceback_str.find('IncompleteRead') > 0) or
+                (traceback_str.find('HTTP Error 404: Not Found') > 0)):
+            send_error = False
 
         # Any non-fatal errors, don't allow issue reporting
-        if (isinstance(exc, NRLException) or 
-            isinstance(exc, TelstraAuthException)):
+        if (isinstance(exc, NRLException) or
+                isinstance(exc, TelstraAuthException)):
             send_error = False
 
         if send_error:

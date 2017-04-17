@@ -18,12 +18,12 @@ import xbmcaddon
 import xbmcgui
 import xbmcplugin
 import sys
-import config
 import ooyalahelper
 import utils
 
 addon = xbmcaddon.Addon()
 _handle = int(sys.argv[1])
+
 
 def play_video(params):
     """
@@ -39,6 +39,6 @@ def play_video(params):
         playlist = ooyalahelper.get_m3u8_playlist(video_id, live)
         play_item = xbmcgui.ListItem(path=playlist)
         xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)
-        
+
     except Exception as e:
         utils.handle_error('', e)

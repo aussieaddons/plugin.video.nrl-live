@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NRL Live.  If not, see <http://www.gnu.org/licenses/>.
 
-import xbmc
 import xbmcgui
 import xbmcplugin
 import sys
@@ -23,6 +22,7 @@ import utils
 
 _handle = int(sys.argv[1])
 _url = sys.argv[0]
+
 
 def list_rounds(params):
     """ create list of rounds for the season. If in current year then only
@@ -36,7 +36,7 @@ def list_rounds(params):
     for i in range(no_of_rounds, 0, -1):
         params['rnd'] = str(i)
         if i <= 26:
-            li = xbmcgui.ListItem('Round '+ str(i))
+            li = xbmcgui.ListItem('Round ' + str(i))
         elif i == 27:
             li = xbmcgui.ListItem('Finals Week 1')
         elif i == 28:
@@ -46,15 +46,13 @@ def list_rounds(params):
         elif i == 30:
             li = xbmcgui.ListItem('Grand Final')
         url = '{0}?{1}'.format(_url, utils.make_url(params))
-        #urlString = (   '{0}?action=listrounds&category={1}'
-        #                '&year={2}&comp={3}&rnd={4}')
-        #url = urlString.format(_url, category, year, comp, i)
         is_folder = True
         listing.append((url, li, is_folder))
-    
+
     xbmcplugin.addDirectoryItems(_handle, listing, len(listing))
     xbmcplugin.endOfDirectory(_handle)
-    
+
+
 def list_years(params):
     """ create a list of the years that match replays are currently
         available for"""
@@ -66,10 +64,11 @@ def list_years(params):
         url = '{0}?{1}'.format(_url, utils.make_url(params))
         is_folder = True
         listing.append((url, li, is_folder))
-        
-    xbmcplugin.addDirectoryItems(_handle, sorted(listing, reverse=True), 
-                                len(listing))
+
+    xbmcplugin.addDirectoryItems(_handle, sorted(listing, reverse=True),
+                                 len(listing))
     xbmcplugin.endOfDirectory(_handle)
+
 
 def list_comps(params):
     """ make our list of competition categories"""
@@ -82,6 +81,6 @@ def list_comps(params):
         url = '{0}?{1}'.format(_url, utils.make_url(params))
         is_folder = True
         listing.append((url, li, is_folder))
-        
+
     xbmcplugin.addDirectoryItems(_handle, listing, len(listing))
-    xbmcplugin.endOfDirectory(_handle)      
+    xbmcplugin.endOfDirectory(_handle)
