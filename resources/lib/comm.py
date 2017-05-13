@@ -16,9 +16,18 @@
 
 import xml.etree.ElementTree as ET
 import classes
-import urllib2
+import custom_session
 import utils
 import config
+
+
+def fetch_url(url):
+    """
+    HTTP GET on url, remove byte order mark
+    """
+    with custom_session.Session() as session:
+        resp = session.get(url)
+        return resp.text.encode("utf-8")
 
 
 def list_matches(params, live=False):
@@ -68,8 +77,7 @@ def get_upcoming():
     """ similar to get_score but this time we are searching for upcoming live
         match info"""
     utils.log("Fetching URL: {0}".format(config.SCORE_URL))
-    response = urllib2.urlopen(config.SCORE_URL)
-    tree = ET.fromstring(response.read())
+    tree = ET.fromstring(fetch_url(config.SCORE_URL))
     listing = []
 
     for elem in tree.findall("Day"):
@@ -92,8 +100,7 @@ def get_upcoming():
 def get_score(match_id):
     """fetch score xml and return the scores for corresponding match IDs"""
     utils.log("Fetching URL: {0}".format(config.SCORE_URL))
-    response = urllib2.urlopen(config.SCORE_URL)
-    tree = ET.fromstring(response.read())
+    tree = ET.fromstring(fetch_url(config.SCORE_URL))
 
     for elem in tree.findall("Day"):
         for subelem in elem.findall("Game"):
@@ -127,5 +134,4 @@ def get_url(params, live=False):
                                         params['year'])
 
     utils.log("Fetching URL: ".format(fullUrl))
-    response = urllib2.urlopen(fullUrl)
-    return response.read()
+    return fetch_url(fullUrl)

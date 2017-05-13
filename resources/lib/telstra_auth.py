@@ -14,45 +14,25 @@
 # You should have received a copy of the GNU General Public License
 # along with NRL Live.  If not, see <http://www.gnu.org/licenses/>.
 
+import custom_session
 import requests
 import json
 import urlparse
 import urllib
 import config
 import re
-import ssl
 import utils
 import xbmcgui
 from bs4 import BeautifulSoup
-
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-from requests.packages.urllib3.poolmanager import PoolManager
-
-
-# Ignore InsecureRequestWarning warnings
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-
-
-class TelstraAuthException(Exception):
-    """ A Not Fatal Exception is used for certain conditions where we do not
-        want to give users an option to send an error report
-    """
-    pass
-
-
-class TLSv1Adapter(HTTPAdapter):
-    def init_poolmanager(self, connections, maxsize, block=False):
-        self.poolmanager = PoolManager(num_pools=connections,
-                                       maxsize=maxsize,
-                                       block=block,
-                                       ssl_version=ssl.PROTOCOL_TLSv1)
+from exception import TelstraAuthException
 
 
 def get_paid_token(username, password):
-    session = requests.Session()
-    session.verify = False
-    session.mount("https://", TLSv1Adapter(max_retries=5))
+    """
+    Obtain a valid token from Telstra/Yinzcam, will be used to make
+    requests for Ooyala embed tokens
+    """
+    session = custom_session.Session()
     session.headers = config.YINZCAM_AUTH_HEADERS
     data = config.LOGIN_DATA.format(username, password)
     auth_resp = session.post(config.YINZCAM_AUTH_URL, data=data)
@@ -60,11 +40,11 @@ def get_paid_token(username, password):
 
 
 def get_free_token(username, password):
-    """ Obtain a valid token from Telstra/Yinzcam, will be used to make
-        requests for Ooyala embed tokens"""
-    session = requests.Session()
-    session.verify = False
-    session.mount("https://", TLSv1Adapter(max_retries=5))
+    """
+    Obtain a valid token from Telstra/Yinzcam, will be used to make
+    requests for Ooyala embed tokens
+    """
+    session = custom_session.Session(force_tlsv1=True)
 
     prog_dialog = xbmcgui.DialogProgress()
     prog_dialog.create('Logging in with Telstra ID')
@@ -159,7 +139,7 @@ def get_free_token(username, password):
                 continue
             data = offer.get('productOfferingAttributes')
             ph_no = [x['value'] for x in data if x['name'] == 'ServiceId'][0]
-    except:
+    except Exception:
         raise TelstraAuthException('Unable to determine eligible services')
     prog_dialog.update(80, 'Obtaining Live Pass')
 

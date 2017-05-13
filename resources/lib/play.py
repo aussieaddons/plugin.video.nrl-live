@@ -41,4 +41,4 @@ def play_video(params):
         xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)
 
     except Exception as e:
-        utils.handle_error('', e)
+        utils.handle_error('Unable to play video', exc=e)

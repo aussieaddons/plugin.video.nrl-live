@@ -16,7 +16,7 @@
 
 # This module contains functions for interacting with the Ooyala API
 
-import requests
+import custom_session
 import StringIO
 import xml.etree.ElementTree as ET
 import json
@@ -26,7 +26,6 @@ import utils
 import xbmcaddon
 import telstra_auth
 from exception import NRLException
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 try:
     import StorageServer
@@ -34,24 +33,23 @@ except:
     utils.log("script.common.plugin.cache not found!")
     import storageserverdummy as StorageServer
 cache = StorageServer.StorageServer(config.ADDON_ID, 1)
-
-# Ignore InsecureRequestWarning warnings
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-session = requests.Session()
-session.verify = False
-
+session = custom_session.Session()
 addon = xbmcaddon.Addon()
 username = addon.getSetting('LIVE_USERNAME')
 password = addon.getSetting('LIVE_PASSWORD')
 
 
 def clear_token():
-    """Remove stored token from cache storage"""
+    """
+    Remove stored token from cache storage
+    """
     cache.delete('NRLTOKEN')
 
 
 def get_user_token():
-    """send user login info and retrieve token for session"""
+    """
+    send user login info and retrieve token for session
+    """
     stored_token = cache.get('NRLTOKEN')
     if stored_token != '':
         utils.log('Using token: {0}******'.format(stored_token[:-6]))
@@ -79,8 +77,10 @@ def get_user_token():
 
 
 def create_nrl_userid_xml(user_id):
-    """ create a small xml file to send with http POST
-        when starting a new video request"""
+    """
+    create a small xml file to send with http POST
+    when starting a new video request
+    """
     root = ET.Element('Subscription')
     ut = ET.SubElement(root, 'UserToken')
     ut.text = user_id
@@ -92,7 +92,9 @@ def create_nrl_userid_xml(user_id):
 
 
 def get_embed_token(userToken, videoId):
-    """send our user token to get our embed token, including api key"""
+    """
+    send our user token to get our embed token, including api key
+    """
     data = create_nrl_userid_xml(userToken)
     url = config.EMBED_TOKEN_URL.format(videoId)
     utils.log("Fetching URL: {0}".format(url))
@@ -117,7 +119,9 @@ def get_embed_token(userToken, videoId):
 
 
 def get_secure_token(secure_url, videoId):
-    """send our embed token back with a few other url encoded parameters"""
+    """
+    send our embed token back with a few other url encoded parameters
+    """
     res = session.get(secure_url)
     data = res.text
     try:
@@ -140,17 +144,21 @@ def get_secure_token(secure_url, videoId):
 
 
 def get_m3u8_streams(secure_token_url):
-    """ fetch our m3u8 file which contains streams of various qualities"""
+    """
+    fetch our m3u8 file which contains streams of various qualities
+    """
     res = session.get(secure_token_url)
     data = res.text.splitlines()
     return data
 
 
 def parse_m3u8_streams(data, live, secure_token_url):
-    """ Parse the retrieved m3u8 stream list into a list of dictionaries
-        then return the url for the highest quality stream. Different
-        handling is required of live m3u8 files as they seem to only contain
-        the destination filename and not the domain/path."""
+    """
+    Parse the retrieved m3u8 stream list into a list of dictionaries
+    then return the url for the highest quality stream. Different
+    handling is required of live m3u8 files as they seem to only contain
+    the destination filename and not the domain/path.
+    """
     if live:
         qual = int(addon.getSetting('LIVEQUALITY'))
         if qual == config.MAX_LIVEQUAL:
@@ -197,9 +205,11 @@ def parse_m3u8_streams(data, live, secure_token_url):
 
 
 def get_m3u8_playlist(video_id, live):
-    """ Main function to call other functions that will return us our m3u8 HLS
-        playlist as a string, which we can then write to a file for Kodi
-        to use"""
+    """
+    Main function to call other functions that will return us our m3u8 HLS
+    playlist as a string, which we can then write to a file for Kodi
+    to use
+    """
     login_token = get_user_token()
     embed_token = get_embed_token(login_token, video_id)
     authorize_url = config.AUTH_URL.format(config.PCODE, video_id, embed_token)
