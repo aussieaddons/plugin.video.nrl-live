@@ -25,7 +25,7 @@ import config
 import utils
 import xbmcaddon
 import telstra_auth
-from exception import NRLException
+from exception import NRLException, TelstraAuthException
 
 try:
     import StorageServer
@@ -64,11 +64,11 @@ def get_user_token():
         json_data = json.loads(login_resp)
         if 'ErrorCode' in json_data:
             if json_data.get('ErrorCode') == 'MIS_EMPTY':
-                raise Exception('No paid subscription found '
-                                'on this Telstra ID')
-            if json_data.get('ErrorCode') == '5':
-                raise Exception('Please check your username '
-                                'and password in the settings')
+                raise TelstraAuthException('No paid subscription found '
+                                           'on this Telstra ID')
+            if json_data.get('ErrorCode') in ['1', '5']:
+                raise TelstraAuthException('Please check your username '
+                                           'and password in the settings')
             raise Exception(json_data.get('ErrorMessage'))
         token = json_data.get('UserToken')
     cache.set('NRLTOKEN', token)
@@ -132,7 +132,7 @@ def get_secure_token(secure_url, videoId):
         utils.log('Parsed json data: {0}'.format(parsed_json))
         try:
             auth_msg = parsed_json['authorization_data'][videoId]['message']
-            if auth_msg == 'unauthorizedlocation':
+            if auth_msg == 'unauthorized location':
                 country = parsed_json['user_info']['country']
                 raise Exception('Unauthorised location for streaming. '
                                 'Detected location is: {0}. '
@@ -163,9 +163,17 @@ def parse_m3u8_streams(data, live, secure_token_url):
         qual = int(addon.getSetting('LIVEQUALITY'))
         if qual == config.MAX_LIVEQUAL:
             qual = -1
+        # fix for values too high from previous API config
+        if qual > config.MAX_LIVEQUAL:
+            addon.setSetting('LIVEQUALITY', str(config.MAX_LIVEQUAL))
+            qual = -1
     else:
         qual = int(addon.getSetting('REPLAYQUALITY'))
         if qual == config.MAX_REPLAYQUAL:
+            qual = -1
+        # fix for values too high from previous API config
+        if qual > config.MAX_REPLAYQUAL:
+            addon.setSetting('REPLAYQUALITY', str(config.MAX_REPLAYQUAL))
             qual = -1
 
     if '#EXT-X-VERSION:3' in data:
