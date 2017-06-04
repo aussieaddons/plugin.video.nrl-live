@@ -139,8 +139,14 @@ def get_free_token(username, password):
                 continue
             data = offer.get('productOfferingAttributes')
             ph_no = [x['value'] for x in data if x['name'] == 'ServiceId'][0]
-    except Exception:
-        raise TelstraAuthException('Unable to determine eligible services')
+            if not ph_no:
+                raise TelstraAuthException(
+                    'Unable to determine if you have any eligible services. '
+                    'Please ensure there is an eligible service linked to '
+                    'your Telstra ID to redeem the free offer. Please visit '
+                    '{0} for further instructions'.format(config.HUB_URL))
+    except Exception as e:
+        raise e
     prog_dialog.update(80, 'Obtaining Live Pass')
 
     session.post(config.MEDIA_ORDER_URL, data=config.MEDIA_ORDER_JSON.format(
