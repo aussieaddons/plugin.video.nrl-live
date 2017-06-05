@@ -139,7 +139,7 @@ def get_free_token(username, password):
                 continue
             data = offer.get('productOfferingAttributes')
             ph_no = [x['value'] for x in data if x['name'] == 'ServiceId'][0]
-            if not ph_no:
+            if 'ph_no' not in locals():
                 raise TelstraAuthException(
                     'Unable to determine if you have any eligible services. '
                     'Please ensure there is an eligible service linked to '

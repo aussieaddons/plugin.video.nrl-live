@@ -1,3 +1,6 @@
+[B]Version master[/B]
+- Better handling for no eligible services
+
 [B]Version v1.1.8[/B]
 - Fix several errors
 
