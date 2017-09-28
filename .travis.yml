@@ -1,7 +1,7 @@
 language: python
 env:
   global:
-    - secure: ""
+    - secure: "q5bFAbM2Db8VxQpO6VrznipGteF+Pw7tj3+96cm27YdkNoaTkG02TRbGmZ+PlpsMV75ERo73jfQBrM5GD9kkNIQLt8F3GJMl9f+/y/XGpeokQcDr7kNyuS+o25OQHA6nu5j3SUkORFhhHWZ8MMWu/zX+iPZ+V60heZ4XdB5OKxZcyBMUqAWqTtBIKoQq82oN+WN8Jk/v2mpDJDBUEdpd2YYscP5KSCmaIyk0QsB2bHL119S0xHfNUMES78PAGD1lQB0vqsoTwTJVNLryYDc/bxf9iLSKB8PnwpGvUSWuTmm63sru4+eamUnYMO6+smTPt+fNIA8BREXO8YlBlzjOUU156X17Vb9b7XwChJ6KPD6q55PKCKMpRAzVLAOIWiPNt+VtKcsVI/fdTpj3gF/UBYc9qnIh41TpRuNQbK2Hu36tzzM7bBIymCWiXstLG5yxdKisG/5+94UkwsGGzHxj4l9BhvyyGDy/lZ2METP6tL9rXdICIh8zydsV5RIOOVU2hhhtyxgO2ejd1nwd7eqYdGTg9y7zZ3kW2HZIK4rfeI8y03MwErlYD0Jundp0HYHTda+JD9nNsGudv+/BiW3xw4Ngkh2keFTtgKpiN5k8tMPlS0+98Qk1lw5uecd1miDniLzrvFDkJv0fkoRAp0LpfEyMBFWArnLNk48edriWTnQ="
 install:
   - pip install GitPython
   - export TRAVIS_COMMIT_MSG="$TRAVIS_REPO_SLUG - $(git log --format=%B --no-merges -n 1)"
