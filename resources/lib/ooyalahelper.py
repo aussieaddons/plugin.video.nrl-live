@@ -1,31 +1,14 @@
-# Copyright 2016 Glenn Guy
-# This file is part of NRL Live Kodi Addon
-#
-# NRL Live is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# NRL Live is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with NRL Live.  If not, see <http://www.gnu.org/licenses/>.
-
-# This module contains functions for interacting with the Ooyala API
-
-import custom_session
-import StringIO
-import xml.etree.ElementTree as ET
-import json
 import base64
 import config
-import utils
-import xbmcaddon
+import json
+import StringIO
 import telstra_auth
-from exception import NRLException, TelstraAuthException
+import xbmcaddon
+import xml.etree.ElementTree as ET
+
+from aussieaddonscommon.exceptions import AussieAddonsException
+from aussieaddonscommon import session
+from aussieaddonscommon import utils
 
 try:
     import StorageServer
@@ -33,7 +16,7 @@ except:
     utils.log("script.common.plugin.cache not found!")
     import storageserverdummy as StorageServer
 cache = StorageServer.StorageServer(config.ADDON_ID, 1)
-session = custom_session.Session()
+sess = session.Session()
 addon = xbmcaddon.Addon()
 username = addon.getSetting('LIVE_USERNAME')
 password = addon.getSetting('LIVE_PASSWORD')
@@ -64,11 +47,11 @@ def get_user_token():
         json_data = json.loads(login_resp)
         if 'ErrorCode' in json_data:
             if json_data.get('ErrorCode') == 'MIS_EMPTY':
-                raise TelstraAuthException('No paid subscription found '
-                                           'on this Telstra ID')
+                raise AussieAddonsException('No paid subscription found '
+                                            'on this Telstra ID')
             if json_data.get('ErrorCode') in ['1', '5']:
-                raise TelstraAuthException('Please check your username '
-                                           'and password in the settings')
+                raise AussieAddonsException('Please check your username '
+                                            'and password in the settings')
             raise Exception(json_data.get('ErrorMessage'))
         token = json_data.get('UserToken')
     cache.set('NRLTOKEN', token)
@@ -97,9 +80,8 @@ def get_embed_token(userToken, videoId):
     """
     data = create_nrl_userid_xml(userToken)
     url = config.EMBED_TOKEN_URL.format(videoId)
-    utils.log("Fetching URL: {0}".format(url))
     try:
-        req = session.post(
+        req = sess.post(
             url, data=data, headers=config.YINZCAM_AUTH_HEADERS, verify=False)
         xml = req.text[1:]
         try:
@@ -110,9 +92,9 @@ def get_embed_token(userToken, videoId):
             raise e
         if tree.find('ErrorCode') is not None:
             utils.log('Errorcode found: {0}'.format(xml))
-            raise NRLException()
+            raise AussieAddonsException()
         token = tree.find('Token').text
-    except NRLException:
+    except AussieAddonsException:
         cache.delete('NRLTOKEN')
         raise Exception('Login token has expired, please try again')
     return token
@@ -122,7 +104,7 @@ def get_secure_token(secure_url, videoId):
     """
     send our embed token back with a few other url encoded parameters
     """
-    res = session.get(secure_url)
+    res = sess.get(secure_url)
     data = res.text
     try:
         parsed_json = json.loads(data)
@@ -147,7 +129,7 @@ def get_m3u8_streams(secure_token_url):
     """
     fetch our m3u8 file which contains streams of various qualities
     """
-    res = session.get(secure_token_url)
+    res = sess.get(secure_token_url)
     data = res.text.splitlines()
     return data
 

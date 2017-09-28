@@ -1,30 +1,25 @@
-# Copyright 2016 Glenn Guy
-# This file is part of NRL Live Kodi Addon
-#
-# NRL Live is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# NRL Live is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with NRL Live.  If not, see <http://www.gnu.org/licenses/>.
-
-import custom_session
-import requests
-import json
-import urlparse
-import urllib
 import config
+import json
 import re
-import utils
+import requests
+import urllib
+import urlparse
 import xbmcgui
+
+from aussieaddonscommon.exceptions import AussieAddonsException
+from aussieaddonscommon import session as custom_session
+from aussieaddonscommon import utils
+
 from bs4 import BeautifulSoup
-from exception import TelstraAuthException
+
+
+class TelstraAuthException(AussieAddonsException):
+    """Telstra Auth exception
+    This exception can be thrown with the reportable arg set which can
+    determine whether or not it is allowed to be sent as an automatic
+    error report
+    """
+    pass
 
 
 def get_paid_token(username, password):

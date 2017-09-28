@@ -1,32 +1,30 @@
-# Copyright 2016 Glenn Guy
-# This file is part of NRL Live Kodi Addon
-#
-# NRL Live is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# NRL Live is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with NRL Live.  If not, see <http://www.gnu.org/licenses/>.
-
-import xml.etree.ElementTree as ET
 import classes
-import custom_session
-import utils
 import config
+import datetime
+import time
+import xml.etree.ElementTree as ET
+
+from aussieaddonscommon import utils
+from aussieaddonscommon import session
+
+
+def get_airtime(timestamp):
+    delta = (time.mktime(time.localtime()) - time.mktime(time.gmtime())) / 3600
+    if time.localtime().tm_isdst:
+        delta += 1
+    ts = datetime.datetime.fromtimestamp(time.mktime(
+                                         time.strptime(timestamp[:-1],
+                                                       "%Y-%m-%dT%H:%M:%S")))
+    ts += datetime.timedelta(hours=delta)
+    return ts.strftime("%A @ %I:%M %p").replace(' 0', ' ')
 
 
 def fetch_url(url):
     """
     HTTP GET on url, remove byte order mark
     """
-    with custom_session.Session() as session:
-        resp = session.get(url)
+    with session.Session() as sess:
+        resp = sess.get(url)
         return resp.text.encode("utf-8")
 
 
@@ -76,10 +74,8 @@ def list_matches(params, live=False):
 def get_upcoming():
     """ similar to get_score but this time we are searching for upcoming live
         match info"""
-    utils.log("Fetching URL: {0}".format(config.SCORE_URL))
     tree = ET.fromstring(fetch_url(config.SCORE_URL))
     listing = []
-
     for elem in tree.findall("Day"):
         for subelem in elem.findall("Game"):
             if subelem.find('PercentComplete').text == '0':
@@ -88,7 +84,7 @@ def get_upcoming():
                 away = subelem.find('AwayTeam').attrib['Name']
                 timestamp = subelem.find('Timestamp').text
                 # convert zulu to local time
-                airtime = utils.get_airtime(timestamp)
+                airtime = get_airtime(timestamp)
                 title = ('[COLOR red]Upcoming:[/COLOR] '
                          '{0} v {1} - [COLOR yellow]{2}[/COLOR]')
                 g.title = title.format(home, away, airtime)
@@ -99,9 +95,7 @@ def get_upcoming():
 
 def get_score(match_id):
     """fetch score xml and return the scores for corresponding match IDs"""
-    utils.log("Fetching URL: {0}".format(config.SCORE_URL))
     tree = ET.fromstring(fetch_url(config.SCORE_URL))
-
     for elem in tree.findall("Day"):
         for subelem in elem.findall("Game"):
             if subelem.attrib['Id'] == str(match_id):
@@ -132,6 +126,4 @@ def get_url(params, live=False):
                                         rnd,
                                         category,
                                         params['year'])
-
-    utils.log("Fetching URL: ".format(fullUrl))
     return fetch_url(fullUrl)
