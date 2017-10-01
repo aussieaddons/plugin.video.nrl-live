@@ -9,14 +9,17 @@ from aussieaddonscommon import session
 
 
 def get_airtime(timestamp):
-    delta = (time.mktime(time.localtime()) - time.mktime(time.gmtime())) / 3600
-    if time.localtime().tm_isdst:
-        delta += 1
-    ts = datetime.datetime.fromtimestamp(time.mktime(
-                                         time.strptime(timestamp[:-1],
-                                                       "%Y-%m-%dT%H:%M:%S")))
-    ts += datetime.timedelta(hours=delta)
-    return ts.strftime("%A @ %I:%M %p").replace(' 0', ' ')
+    try:
+        delta = (time.mktime(time.localtime()) - time.mktime(time.gmtime())) / 3600
+        if time.localtime().tm_isdst:
+            delta += 1
+        ts = datetime.datetime.fromtimestamp(time.mktime(
+                                             time.strptime(timestamp[:-1],
+                                                           "%Y-%m-%dT%H:%M:%S")))
+        ts += datetime.timedelta(hours=delta)
+        return ts.strftime("%A @ %I:%M %p").replace(' 0', ' ')
+    except OverflowError:
+        return ''
 
 
 def fetch_url(url):
