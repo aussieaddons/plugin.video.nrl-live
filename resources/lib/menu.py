@@ -19,10 +19,13 @@ def get_round_no():
     r1 = datetime.date(2017, 3, 2)
     dateDelta = datetime.date.toordinal(date) - datetime.date.toordinal(r1)
     if datetime.date.toordinal(date) >= 736453:  # 2 weeks between rd 9 and 10
-        return (dateDelta // 7)
+        round_no = dateDelta // 7
     else:
-        return (dateDelta // 7) + 1
-
+        round_no = (dateDelta // 7) + 1
+    if round_no > 30:
+        return 30
+    else:
+        return round_no
 
 def list_rounds(params):
     """ create list of rounds for the season. If in current year then only
