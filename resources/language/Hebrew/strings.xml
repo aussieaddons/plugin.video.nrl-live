@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+   <string id="32000">פרטי ססמה לשידור חי</string>
+   <string id="32001">הגדרות הזרמה</string>
+   <string id="32002">איתור באגים</string>
+	 <string id="32005">ליגת NRL</string>
+   <string id="32010">הגדרות</string>
+    
+	<string id="32031">הפעלה ראשונית</string>
+  <string id="32032">הסר אסימון התחברות שמור</string>
+	<string id="32043">איכות הזרמה לשידור חי</string>
+	<string id="32044">איכות ניגון חוזר</string>
+	<string id="32050">התחברות ססמה דיגיטלית ב-NRL</string>
+	<string id="32020">שם משתמש ב-Telstra</string>
+  <string id="32030">סיסמה ל-Telstra</string>
+  <string id="32070">סוג המינוי</string>
+</strings>
