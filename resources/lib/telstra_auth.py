@@ -4,6 +4,7 @@ import re
 import requests
 import urllib
 import urlparse
+import uuid
 import xbmcgui
 
 from aussieaddonscommon.exceptions import AussieAddonsException
@@ -49,14 +50,18 @@ def get_free_token(username, password):
     # and 'msisdn' URL
 
     session.headers = config.YINZCAM_AUTH_HEADERS
-    auth_resp = session.post(config.YINZCAM_AUTH_URL,
-                             data=config.NEW_LOGIN_DATA1)
-    jsondata = json.loads(auth_resp.text)
-    token = jsondata.get('UserToken')
+    ticket_resp = session.post(config.YINZCAM_AUTH_URL,
+                             data=config.NEW_LOGIN_DATA1.format(uuid.uuid4()))
+    ticket = json.loads(ticket_resp.text).get('Ticket')
+    session.headers = {}
+    session.headers.update({'X-YinzCam-Ticket': ticket})
+    yinz_resp = session.get(config.YINZCAM_AUTH_URL2)
+    jsondata = json.loads(yinz_resp.text)
+    token = urllib.quote_plus(jsondata.get('TpUid'))
     if not token:
         raise TelstraAuthException('Unable to get token from NRL API')
-
-    msisdn_url = jsondata.get('MsisdnUrl')
+    msisdn_url = jsondata.get('Url')
+    msisdn_url = msisdn_url.replace('?tpUID', '.html?device=mobile&tpUID')
     prog_dialog.update(20, 'Signing on to telstra.com')
 
     # Sign in to telstra.com to recieve cookies, get the SAML auth, and
@@ -143,15 +148,19 @@ def get_free_token(username, password):
     except Exception as e:
         raise e
     prog_dialog.update(80, 'Obtaining Live Pass')
+    order_data = config.MEDIA_ORDER_JSON.format(ph_no, offer_id, token)
+    order = session.post(config.MEDIA_ORDER_URL, data=order_data)
+    # check to make sure order has been placed correctly
+    if order.status_code == 201:
+        try:
+            order_json = json.loads(order.text)
+            status = order_json['data'].get('status') == 'COMPLETE'
+            if status:
+                utils.log('Order status complete')
+        except:
+            utils.log('Unable to check status of order, continuing anyway')
 
-    session.post(config.MEDIA_ORDER_URL, data=config.MEDIA_ORDER_JSON.format(
-                 ph_no, offer_id, token))
-
-    # Sign in to Yinzcam with our activated token. Token is valid for 28 days
-    session.headers = config.YINZCAM_AUTH_HEADERS
-    session.post(config.YINZCAM_AUTH_URL,
-                 data=config.NEW_LOGIN_DATA2.format(token))
+    session.close()
     prog_dialog.update(100, 'Finished!')
     prog_dialog.close()
-    session.close()
-    return token
+    return ticket

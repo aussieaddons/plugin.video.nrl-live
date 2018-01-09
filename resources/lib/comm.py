@@ -17,7 +17,7 @@ def get_airtime(timestamp):
                                              time.strptime(timestamp[:-1],
                                                            "%Y-%m-%dT%H:%M:%S")))
         ts += datetime.timedelta(hours=delta)
-        return ts.strftime("%A @ %I:%M %p").replace(' 0', ' ')
+        return ts.strftime("%A %d %b @ %I:%M %p").replace(' 0', ' ')
     except OverflowError:
         return ''
 

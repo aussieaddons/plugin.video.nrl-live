@@ -22,41 +22,25 @@ username = addon.getSetting('LIVE_USERNAME')
 password = addon.getSetting('LIVE_PASSWORD')
 
 
-def clear_token():
+def clear_ticket():
     """
-    Remove stored token from cache storage
+    Remove stored ticket from cache storage
     """
-    cache.delete('NRLTOKEN')
+    cache.delete('NRLTICKET')
 
 
-def get_user_token():
+def get_user_ticket():
     """
-    send user login info and retrieve token for session
+    send user login info and retrieve ticket for session
     """
-    stored_token = cache.get('NRLTOKEN')
-    if stored_token != '':
-        utils.log('Using token: {0}******'.format(stored_token[:-6]))
-        return stored_token
-
-    free_sub = int(addon.getSetting('SUBSCRIPTION_TYPE'))
-
-    if free_sub:
-        token = telstra_auth.get_free_token(username, password)
+    stored_ticket = cache.get('NRLTICKET')
+    if stored_ticket != '':
+        utils.log('Using ticket: {0}******'.format(stored_ticket[:-6]))
+        return stored_ticket
     else:
-        login_resp = telstra_auth.get_paid_token(username, password)
-        json_data = json.loads(login_resp)
-        if 'ErrorCode' in json_data:
-            if json_data.get('ErrorCode') == 'MIS_EMPTY':
-                raise AussieAddonsException('No paid subscription found '
-                                            'on this Telstra ID')
-            if json_data.get('ErrorCode') in ['1', '5']:
-                raise AussieAddonsException('Please check your username '
-                                            'and password in the settings')
-            raise Exception(json_data.get('ErrorMessage'))
-        token = json_data.get('UserToken')
-    cache.set('NRLTOKEN', token)
-    utils.log('Using token: {0}******'.format(token[:-6]))
-    return token
+        ticket = telstra_auth.get_free_token(username, password)
+    cache.set('NRLTICKET', ticket)
+    return ticket
 
 
 def create_nrl_userid_xml(user_id):
@@ -74,7 +58,7 @@ def create_nrl_userid_xml(user_id):
     return output
 
 
-def get_embed_token(userToken, videoId):
+def get_embed_token(login_ticket, videoId):
     """
     send our user token to get our embed token, including api key
     """
@@ -200,8 +184,8 @@ def get_m3u8_playlist(video_id, live):
     playlist as a string, which we can then write to a file for Kodi
     to use
     """
-    login_token = get_user_token()
-    embed_token = get_embed_token(login_token, video_id)
+    login_ticket = get_user_ticket()
+    embed_token = ''  #get_embed_token(login_ticket, video_id)
     authorize_url = config.AUTH_URL.format(config.PCODE, video_id, embed_token)
     secure_token_url = get_secure_token(authorize_url, video_id)
 

@@ -52,8 +52,8 @@ def router(paramstring):
             menu.list_matches(params)
         elif params['action'] == 'listmatches':
             play.play_video(params)
-        elif params['action'] == 'cleartoken':
-            ooyalahelper.clear_token()
+        elif params['action'] == 'clearticket':
+            ooyalahelper.clear_ticket()
     else:
         menu.list_categories()
 

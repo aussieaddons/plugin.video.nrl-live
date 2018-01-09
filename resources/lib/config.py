@@ -28,7 +28,7 @@ EMBED_TOKEN_URL =('https://mis-live-nrl.yinzcam.com/V1/Auth/MediaToken?id={0}'
 
 # url used to request playlist
 AUTH_URL = ('http://player.ooyala.com/sas/player_api/v2/authorization/'
-            'embed_code/{0}/{1}?device=html5&domain=www.nrl.com&embedToken={2}'
+            'embed_code/{0}/{1}?device=html5&domain=http%3A%2F%2Fnrl.official.production.android&embedToken={2}'
             '&supportedFormats=m3u8')
 
 # main url for xml that contains all our video metadata
@@ -59,10 +59,10 @@ PCODE = 'BudDUxOt2GEh8L5PMMpcbz1wJFwm'
 YEARS = ['2013', '2014', '2015', '2016', '2017']
 
 CATEGORIES = {'1 Live Matches': 'livematches',
-                '2 Full Match Replays': 'Matches',
-                '3 Press Conferences': 'PC',
-                '4 Match Highlights': 'Highlights',
-                '5 Plays of the week': 'POW',
+                #'2 Full Match Replays': 'Matches',
+                #'3 Press Conferences': 'PC',
+                #'4 Match Highlights': 'Highlights',
+                #'5 Plays of the week': 'POW',
                 '6 Recent/News': 'shortlist',
                 '7 Settings': 'settings'}
 
@@ -79,13 +79,15 @@ COMPS = {'1 Telstra Premiership': '1',
 
 # New auth config for 2017
 
-NEW_LOGIN_DATA1 = '<Subscriber><Type>MSISDN</Type><AdobeCheckResult>0</AdobeCheckResult></Subscriber>'
+NEW_LOGIN_DATA1 = '<TicketRequest><Anonymous><VendorId>6a7db518-b912-4060-b08b-a733544fc9ef</VendorId><AppId>NRL_LIVE</AppId><InstallId>{0}</InstallId></Anonymous></TicketRequest>'
 
 NEW_LOGIN_DATA2 = '<Subscriber><Type>TOKEN</Type><User>{0}</User></Subscriber>'
 
 YINZCAM_AUTH_ORDER = ['Content-Type', 'Accept', 'Connection', 'Content-Length', 'User-Agent', 'Host', 'Accept-Encoding']
 
-YINZCAM_AUTH_URL = 'https://signon-live-nrl.yinzcam.com/v1/Auth/Subscription?ff=mobile&mnc=1&app_version=3.3.0&carrier=Telstra+Mobile&version=4.7&width=1080&height=1776&os_version=6.0&mcc=505&application=NRL_LIVE&os=Android'
+YINZCAM_AUTH_URL = 'https://signon-live-nrl.yinzcam.com/ticket?mnc=0&ff=mobile&app_version=4.0.1&carrier=&version=5.0&height=1776&width=1080&mcc=0&application=NRL_LIVE&os=Android'
+
+YINZCAM_AUTH_URL2 = 'https://signon-live-nrl.yinzcam.com/telstra/oneplace/url?application=NRL_LIVE'
 
 YINZCAM_AUTH_HEADERS = {'Content-Type': 'application/xml',
                         'Accept': 'application/json',
