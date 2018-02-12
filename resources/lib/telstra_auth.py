@@ -119,9 +119,8 @@ def get_free_token(username, password):
          'Referer': confirm_url})
     session.headers = media_order_headers
     # First check if there are any eligible services attached to the account
-    offers = session.get(config.OFFERS_URL)
     try:
-        offers.raise_for_status()
+        offers = session.get(config.OFFERS_URL)
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 404:
             message = json.loads(e.response.text).get('userMessage')
