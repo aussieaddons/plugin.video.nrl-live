@@ -1,6 +1,7 @@
 import base64
 import config
 import json
+import re
 import StringIO
 import telstra_auth
 import xbmcaddon
@@ -38,7 +39,12 @@ def get_user_ticket():
         utils.log('Using ticket: {0}******'.format(stored_ticket[:-6]))
         return stored_ticket
     else:
+        free_sub = int(addon.getSetting('SUBSCRIPTION_TYPE'))
+
+    if free_sub:
         ticket = telstra_auth.get_free_token(username, password)
+    else:
+        ticket = telstra_auth.get_paid_token(username, password)
     cache.set('NRLTICKET', ticket)
     return ticket
 
@@ -142,32 +148,29 @@ def parse_m3u8_streams(data, live, secure_token_url):
             addon.setSetting('REPLAYQUALITY', str(config.MAX_REPLAYQUAL))
             qual = -1
 
-    if '#EXT-X-VERSION:3' in data:
-        data.remove('#EXT-X-VERSION:3')
-    count = 1
     m3u_list = []
-    prepend_live = secure_token_url[:secure_token_url.find('index-root')]
-    while count < len(data):
-        line = data[count]
-        line = line.strip('#EXT-X-STREAM-INF:')
-        line = line.strip('PROGRAM-ID=1,')
-        line = line[:line.find('CODECS')]
+    base_url = secure_token_url[:secure_token_url.rfind('/') + 1]
+    base_domain = secure_token_url[:secure_token_url.find('/', 8) + 1]
+    m3u8_lines = iter(data)
+    for line in m3u8_lines:
+            stream_inf = '#EXT-X-STREAM-INF:'
+            if line.startswith(stream_inf):
+                line = line[len(stream_inf):]
+            else:
+                continue
 
-        if line.endswith(','):
-            line = line[:-1]
+            csv_list = re.split(',(?=(?:(?:[^"]*"){2})*[^"]*$)', line)
+            linelist = [i.split('=') for i in csv_list]
 
-        line = line.strip()
-        line = line.split(',')
-        linelist = [i.split('=') for i in line]
+            uri = next(m3u8_lines)
 
-        if not live:
-            linelist.append(['URL', data[count+1]])
-        else:
-            linelist.append(['URL', prepend_live+data[count+1]])
-
-        m3u_list.append(dict((i[0], i[1]) for i in linelist))
-        count += 2
-
+            if uri.startswith('/'):
+                linelist.append(['URL', base_domain + uri])
+            elif uri.find('://') == -1:
+                linelist.append(['URL', base_url + uri])
+            else:
+                linelist.append(['URL', uri])
+            m3u_list.append(dict((i[0], i[1]) for i in linelist))
     sorted_m3u_list = sorted(m3u_list, key=lambda k: int(k['BANDWIDTH']))
     try:
         stream = sorted_m3u_list[qual]['URL']

@@ -32,11 +32,7 @@ AUTH_URL = ('http://player.ooyala.com/sas/player_api/v2/authorization/'
             '&supportedFormats=m3u8')
 
 # main url for xml that contains all our video metadata
-XML_URL =  ('http://app-live-nrl.yinzcam.com/V1/Media/VideoList?&mediaTypes=V&'
-            '&compId={0}{1}&category={2}&year={3}&carrier=Telstra+Mobile'
-            '&height=1776&error=20&os=Android&a=-184.41070&ff=mobile'
-            '&mnc=1&b=113.84670&app_version=3.3.0&version=4.7&width=1080'
-            '&os_version=6.0&mcc=505&application=NRL_LIVE')
+VIDEO_URL =  'http://app-live-nrl.yinzcam.com/V1/Media/VideoList?&mediaTypes=V&carrier=&height=1776&error=100000000&os=Android&a=0&ff=mobile&mnc=0&b=0&app_version=4.0.4&version=5.0&width=1080&mcc=0&application=NRL_LIVE'
 
 # url for xml that contains match scores
 SCORE_URL = ('http://app-live-nrl.yinzcam.com/V1/Game/Scores?carrier='
@@ -44,11 +40,13 @@ SCORE_URL = ('http://app-live-nrl.yinzcam.com/V1/Game/Scores?carrier='
             '&ff=mobile&mnc=1&b=113.84670&app_version=3.0.1&version=4.3'
             '&width=1080&os_version=5.1&mcc=505&application=NRL_LIVE')
 
+HIGHLIGHTS_URL = 'http://app-live-nrl.yinzcam.com/V1/Media/ShortList?categoryId=Match%20Highlights&mnc=0&ff=mobile&app_version=4.0.4&carrier=&version=5.0&width=1080&height=1776&mcc=0&application=NRL_LIVE&os=Android'
+
 # url for xml that contains video metadata for recent/news/misc videos
-SHORTLIST_URL = ('http://app-live-nrl.yinzcam.com/V1/Media/ShortList?carrier='
-                'Telstra+Mobile&height=1776&error=11&os=Android&a=-184.41070'
-                '&ff=mobile&mnc=1&b=113.84670&app_version=3.0.1&version=4.3'
-                '&width=1080&os_version=5.1&mcc=505&application=NRL_LIVE')
+SHORTLIST_URL = 'http://app-live-nrl.yinzcam.com/V1/Media/ShortList?{0}mnc=0&ff=mobile&app_version=4.0.4&carrier=&version=5.0&width=1080&height=1776&mcc=0&application=NRL_LIVE&os=Android'
+
+
+MEDIA_URL = 'http://app-live-nrl.yinzcam.com/V1/Media/News/{0}?age=over18&mnc=0&ff=mobile&app_version=4.0.4&carrier=&version=5.0&width=1080&height=1776&mcc=0&application=NRL_LIVE&os=Android'
 
 # used for HDS metadata retrieval
 SMIL_URL = "http://player.ooyala.com/nuplayer?embedCode={0}"
@@ -58,13 +56,7 @@ PCODE = 'BudDUxOt2GEh8L5PMMpcbz1wJFwm'
 
 YEARS = ['2013', '2014', '2015', '2016', '2017']
 
-CATEGORIES = {'1 Live Matches': 'livematches',
-                #'2 Full Match Replays': 'Matches',
-                #'3 Press Conferences': 'PC',
-                #'4 Match Highlights': 'Highlights',
-                #'5 Plays of the week': 'POW',
-                '6 Recent/News': 'shortlist',
-                '7 Settings': 'settings'}
+CATEGORIES = ['Live Matches', 'Match Highlights', 'Videos', 'Settings']
 
 COMPS = {'1 Telstra Premiership': '1',
             '2 State of Origin': '30',
@@ -79,13 +71,24 @@ COMPS = {'1 Telstra Premiership': '1',
 
 # New auth config for 2017
 
+NRL_AUTH = 'https://www.nrl.com/account/authorize?response_type=code&scope=openid%20email%20profile%20offline_access&client_id=nrlapp-ios&redirect_uri=https://redirect.nrl-live.app.openid.yinzcam.com'
+
+NRL_LOGIN = 'https://www.nrl.com/account/login'
+
+NRL_TOKEN = 'https://www.nrl.com/account/token'
+
+TOKEN_DATA = {'client_id': 'nrlapp-ios',
+              'grant_type': 'authorization_code',
+              'redirect_uri': 'https://redirect.nrl-live.app.openid.yinzcam.com'}
+
+
 NEW_LOGIN_DATA1 = '<TicketRequest><Anonymous><VendorId>6a7db518-b912-4060-b08b-a733544fc9ef</VendorId><AppId>NRL_LIVE</AppId><InstallId>{0}</InstallId></Anonymous></TicketRequest>'
 
-NEW_LOGIN_DATA2 = '<Subscriber><Type>TOKEN</Type><User>{0}</User></Subscriber>'
+NEW_LOGIN_DATA2 = '<TicketRequest><NRLAccount><AppId>NRL_LIVE</AppId><RefreshToken>{0}</RefreshToken></NRLAccount></TicketRequest>'
 
 YINZCAM_AUTH_ORDER = ['Content-Type', 'Accept', 'Connection', 'Content-Length', 'User-Agent', 'Host', 'Accept-Encoding']
 
-YINZCAM_AUTH_URL = 'https://signon-live-nrl.yinzcam.com/ticket?mnc=0&ff=mobile&app_version=4.0.1&carrier=&version=5.0&height=1776&width=1080&mcc=0&application=NRL_LIVE&os=Android'
+YINZCAM_AUTH_URL = 'https://signon-live-nrl.yinzcam.com/ticket?mnc=0&ff=mobile&app_version=4.0.4&carrier=&version=5.0&height=1776&width=1080&mcc=0&application=NRL_LIVE&os=Android'
 
 YINZCAM_AUTH_URL2 = 'https://signon-live-nrl.yinzcam.com/telstra/oneplace/url?application=NRL_LIVE'
 

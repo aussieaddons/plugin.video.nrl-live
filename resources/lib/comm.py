@@ -1,12 +1,15 @@
 import classes
 import config
 import datetime
+import re
 import time
+import urllib
 import xml.etree.ElementTree as ET
 
 from aussieaddonscommon import utils
 from aussieaddonscommon import session
 
+from bs4 import BeautifulSoup
 
 def get_airtime(timestamp):
     try:
@@ -107,6 +110,50 @@ def get_score(match_id):
                 return '[COLOR yellow]{0} - {1}[/COLOR]'.format(
                     home_score, away_score)
 
+
+def get_videos(params):
+    #url_category = 'categoryId={0}&'.format(
+    #    urllib.quote_plus(params.get('category')))
+    if params.get('category') == 'Match Highlights':
+        data_url = config.HIGHLIGHTS_URL
+    else:
+        data_url = config.VIDEO_URL
+    tree = ET.fromstring(fetch_url(data_url))
+    listing = []
+    for item in tree.find('MediaSection'):
+        v = classes.Video()
+        v.desc = item.find('Description').text
+        v.title = item.find('Title').text
+        v.time = item.find('Timestamp').text
+        video_id = item.find('Video')
+        if video_id is not None:
+            v.video_id = video_id.attrib.get('Id')
+        v.thumb = item.find('FullImageUrl').text
+        v.link_id = item.find('Id').text
+        listing.append(v)
+    return listing
+
+
+def get_replay_playlist(params):
+    data_url = config.MEDIA_URL.format(params.get('link_id'))
+    tree = ET.fromstring(fetch_url(data_url))
+    html_data = tree.find('StoryHtml').text
+    soup = BeautifulSoup(html_data, 'html.parser')
+    src = soup.findAll(id=re.compile("^ls_embed"))[0].get('src')
+    print src
+    
+
+def get_highlights(params):
+    data_url = config.HIGHLIGHTS_URL
+    tree = ET.fromstring(fetch_url(data_url))
+    listing = []
+    
+def get_categories():
+    tree = ET.fromstring(fetch_url(config.SHORTLIST_URL.format('')))
+    listing = []
+    for item in tree.find('Filters').find('Filter').find('FilterItems'):
+        listing.append(item.attrib['Id'])
+    return listing
 
 def get_url(params, live=False):
     """ retrieve our xml file for processing"""

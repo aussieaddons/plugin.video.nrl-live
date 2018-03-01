@@ -3,7 +3,7 @@ import urllib
 import urlparse
 
 
-class game():
+class Video():
     """ object that contains all the info for a particular match
         eventually will try to make this script more OO"""
     def __init__(self):
@@ -16,6 +16,8 @@ class game():
         self.score = None
         self.desc = None
         self.dummy = None
+        self.livestream_video = None
+        self.link_id = None
 
     def make_kodi_url(self):
         d = self.__dict__

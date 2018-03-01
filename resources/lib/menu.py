@@ -80,17 +80,17 @@ def list_years(params):
         utils.handle_error('Unable to list years')
 
 
-def list_comps(params):
-    """ make our list of competition categories"""
+def list_videos(params):
+    """ make our list of videos"""
     try:
+        video_list = comm.get_videos(params)
         listing = []
-        params['action'] = 'listcomps'
-        comps = config.COMPS
-        for comp in sorted(comps.keys()):
-            params['comp'] = comps[comp]
-            li = xbmcgui.ListItem(comp[2:])
-            url = '{0}?{1}'.format(_url, utils.make_url(params))
-            is_folder = True
+        for v in video_list:
+            li = xbmcgui.ListItem(v.title)
+            li.setProperty('IsPlayable', 'true')
+            li.setInfo('video', {'plot': v.desc, 'plotoutline': v.desc})
+            url = '{0}?action=listvideos{1}'.format(_url, v.make_kodi_url())
+            is_folder = False
             listing.append((url, li, is_folder))
 
         xbmcplugin.addDirectoryItems(_handle, listing, len(listing))
@@ -101,12 +101,17 @@ def list_comps(params):
 
 def list_categories():
     try:
+        #categories = []
+        #categories.append('Live Matches')
+        #for entry in comm.get_categories():
+            #categories.append(entry)
+        #categories.append('Settings')
+        
         listing = []
-        categories = config.CATEGORIES
-        for category in sorted(categories.keys()):
-            li = xbmcgui.ListItem(category[2:])
+        for category in config.CATEGORIES:
+            li = xbmcgui.ListItem(category)
             urlString = '{0}?action=listcategories&category={1}'
-            url = urlString.format(_url, categories[category])
+            url = urlString.format(_url, category)
             is_folder = True
             listing.append((url, li, is_folder))
 

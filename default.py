@@ -8,6 +8,8 @@ from urlparse import parse_qsl
 # fix for python importerror bug
 import _strptime  # noqa: F401
 
+from aussieaddonscommon import utils
+
 addon = xbmcaddon.Addon()
 cwd = xbmc.translatePath(addon.getAddonInfo('path')).decode("utf-8")
 BASE_RESOURCE_PATH = os.path.join(cwd, 'resources', 'lib')
@@ -31,26 +33,16 @@ def router(paramstring):
     :param paramstring:
     """
     params = dict(parse_qsl(paramstring))
+    utils.log('Running with params: {0}'.format(params))
     if params:
         if params['action'] == 'listcategories':
-            if params['category'] == 'livematches':
+            if params['category'] == 'Live Matches':
                 menu.list_matches(params, live=True)
-            elif params['category'] == 'shortlist':
-                menu.list_matches(params)
-            elif params['category'] == 'settings':
+            elif params['category'] == 'Settings':
                 addon.openSettings()
             else:
-                menu.list_years(params)
-        elif params['action'] == 'listyears':
-            menu.list_comps(params)
-        elif params['action'] == 'listcomps':
-            if params['comp'] == '1':
-                menu.list_rounds(params)
-            else:
-                menu.list_matches(params)
-        elif params['action'] == 'listrounds':
-            menu.list_matches(params)
-        elif params['action'] == 'listmatches':
+                menu.list_videos(params)
+        elif params['action'] in ['listvideos', 'listmatches']:
             play.play_video(params)
         elif params['action'] == 'clearticket':
             ooyalahelper.clear_ticket()
