@@ -36,7 +36,7 @@ def fetch_url(url):
 
 def list_matches(params, live=False):
     """ go through our xml file and retrive all we need to pass to kodi"""
-    data = get_url(params, live)
+    data = fetch_url(config.VIDEO_URL)
     tree = ET.fromstring(data)
     listing = []
     for elem in tree.findall("MediaSection"):
@@ -44,10 +44,13 @@ def list_matches(params, live=False):
             # remove items with no video eg. news articles
             if not gm.attrib['Type'] == 'V':
                 continue
-            g = classes.game()
+            g = classes.Video()
             g.title = gm.find('Title').text.encode('ascii', 'replace')
-            if gm.find('Description') is not None:
-                g.desc = gm.find('Description').text.encode('ascii', 'replace')
+            desc = gm.find('Description')
+            if desc:
+                if desc.text is not None:
+                    g.desc = gm.find('Description').text.encode('ascii',
+                                                                'replace')
             # remove PSA videos
             if g.title.startswith('Better Choices'):
                 continue
@@ -85,7 +88,7 @@ def get_upcoming():
     for elem in tree.findall("Day"):
         for subelem in elem.findall("Game"):
             if subelem.find('PercentComplete').text == '0':
-                g = classes.game()
+                g = classes.Video()
                 home = subelem.find('HomeTeam').attrib['Name']
                 away = subelem.find('AwayTeam').attrib['Name']
                 timestamp = subelem.find('Timestamp').text
