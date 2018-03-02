@@ -37,8 +37,11 @@ def get_paid_token(username, password):
     data = {'emailAddress': '{0}'.format(username),
             'password': '{0}'.format(password)}
     login_resp = session.post(config.NRL_LOGIN, json=data)
-    if not json.loads(login_resp.text).get('success') == True:  # noqa: E712
-        raise AussieAddonsException('Login failed')
+    login_resp_json = json.loads(login_resp.text)
+    if not login_resp_json.get('success') == True:  # noqa: E712
+        raise AussieAddonsException(
+            'Login failed for nrl.com: {0}'.format(
+                login_resp_json.get('error')))
 
     auth2_resp = session.get(config.NRL_AUTH, allow_redirects=False)
     redirect_url = auth2_resp.headers.get('Location')
