@@ -4,7 +4,6 @@ import datetime
 import json
 import re
 import time
-import urllib
 import xml.etree.ElementTree as ET
 
 from aussieaddonscommon import utils
@@ -12,14 +11,15 @@ from aussieaddonscommon import session
 
 from bs4 import BeautifulSoup
 
+
 def get_airtime(timestamp):
     try:
-        delta = (time.mktime(time.localtime()) - time.mktime(time.gmtime())) / 3600
+        delta = (time.mktime(time.localtime()) -
+                 time.mktime(time.gmtime())) / 3600
         if time.localtime().tm_isdst:
             delta += 1
-        ts = datetime.datetime.fromtimestamp(time.mktime(
-                                             time.strptime(timestamp[:-1],
-                                                           "%Y-%m-%dT%H:%M:%S")))
+        ts = datetime.datetime.fromtimestamp(
+            time.mktime(time.strptime(timestamp[:-1], "%Y-%m-%dT%H:%M:%S")))
         ts += datetime.timedelta(hours=delta)
         return ts.strftime("%A %d %b @ %I:%M %p").replace(' 0', ' ')
     except OverflowError:
@@ -116,8 +116,6 @@ def get_score(match_id):
 
 
 def get_videos(params):
-    #url_category = 'categoryId={0}&'.format(
-    #    urllib.quote_plus(params.get('category')))
     if params.get('category') == 'Match Highlights':
         data_url = config.HIGHLIGHTS_URL
     else:
@@ -145,23 +143,21 @@ def get_replay_playlist(params):
     soup = BeautifulSoup(html_data, 'html.parser')
     src = soup.findAll(id=re.compile("^ls_embed"))[0].get('src')
     ls_soup = BeautifulSoup(fetch_url(src), 'html.parser')
-    ls_text = ls_soup.findAll('script', string=re.compile("^window.config"))[0].string
+    ls_text = ls_soup.findAll(
+        'script', string=re.compile("^window.config"))[0].string
     ls_json = json.loads(ls_text[ls_text.find('{'):ls_text.rfind('}') + 1])
     stream_json = ls_json.get('event').get('feed').get('data')
     stream = stream_json[0].get('data').get('secure_m3u8_url')
     return stream
 
-def get_highlights(params):
-    data_url = config.HIGHLIGHTS_URL
-    tree = ET.fromstring(fetch_url(data_url))
-    listing = []
-    
+
 def get_categories():
     tree = ET.fromstring(fetch_url(config.SHORTLIST_URL.format('')))
     listing = []
     for item in tree.find('Filters').find('Filter').find('FilterItems'):
         listing.append(item.attrib['Id'])
     return listing
+
 
 def get_url(params, live=False):
     """ retrieve our xml file for processing"""

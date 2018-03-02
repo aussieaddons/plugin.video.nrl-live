@@ -19,8 +19,10 @@ except:
 cache = StorageServer.StorageServer(config.ADDON_ID, 1)
 sess = session.Session()
 addon = xbmcaddon.Addon()
-username = addon.getSetting('LIVE_USERNAME')
-password = addon.getSetting('LIVE_PASSWORD')
+telstra_username = addon.getSetting('LIVE_USERNAME')
+telstra_password = addon.getSetting('LIVE_PASSWORD')
+nrl_username = addon.getSetting('NRL_USERNAME')
+nrl_password = addon.getSetting('NRL_PASSWORD')
 
 
 def clear_ticket():
@@ -42,9 +44,11 @@ def get_user_ticket():
         free_sub = int(addon.getSetting('SUBSCRIPTION_TYPE'))
 
     if free_sub:
-        ticket = telstra_auth.get_free_token(username, password)
+        ticket = telstra_auth.get_free_token(telstra_username,
+                                             telstra_password)
     else:
-        ticket = telstra_auth.get_paid_token(username, password)
+        ticket = telstra_auth.get_paid_token(nrl_username,
+                                             nrl_password)
     cache.set('NRLTICKET', ticket)
     return ticket
 
@@ -68,7 +72,7 @@ def get_embed_token(login_ticket, videoId):
     """
     send our user token to get our embed token, including api key
     """
-    data = create_nrl_userid_xml(userToken)
+    data = create_nrl_userid_xml(login_ticket)
     url = config.EMBED_TOKEN_URL.format(videoId)
     try:
         req = sess.post(
@@ -187,8 +191,8 @@ def get_m3u8_playlist(video_id, live):
     playlist as a string, which we can then write to a file for Kodi
     to use
     """
-    login_ticket = get_user_ticket()
-    embed_token = ''  #get_embed_token(login_ticket, video_id)
+    get_user_ticket()  # login_ticket = get_user_ticket()
+    embed_token = ''  # get_embed_token(login_ticket, video_id)
     authorize_url = config.AUTH_URL.format(config.PCODE, video_id, embed_token)
     secure_token_url = get_secure_token(authorize_url, video_id)
 

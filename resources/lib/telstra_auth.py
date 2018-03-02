@@ -30,16 +30,16 @@ def get_paid_token(username, password):
     """
     session = custom_session.Session()
     auth_resp = session.get(config.NRL_AUTH, allow_redirects=False)
-    
+
     xsrf = auth_resp.cookies['XSRF-TOKEN']
     session.headers.update({'x-xsrf-token': xsrf})
-    
+
     data = {'emailAddress': '{0}'.format(username),
             'password': '{0}'.format(password)}
     login_resp = session.post(config.NRL_LOGIN, json=data)
-    if not json.loads(login_resp.text).get('success') == True:
+    if not json.loads(login_resp.text).get('success') == True:  # noqa: E712
         raise AussieAddonsException('Login failed')
-    
+
     auth2_resp = session.get(config.NRL_AUTH, allow_redirects=False)
     redirect_url = auth2_resp.headers.get('Location')
     redirect_pieces = urlparse.urlsplit(redirect_url)
@@ -52,7 +52,9 @@ def get_paid_token(username, password):
     token_resp = session.post(config.NRL_TOKEN, data=token_form)
     refresh_token = json.loads(token_resp.text).get('refresh_token')
     session.headers.update({'Content-Type': 'application/xml'})
-    ticket_signon = session.post(config.YINZCAM_AUTH_URL, data=config.NEW_LOGIN_DATA2.format(refresh_token))
+    ticket_signon = session.post(
+        config.YINZCAM_AUTH_URL,
+        data=config.NEW_LOGIN_DATA2.format(refresh_token))
     ticket = json.loads(ticket_signon.text).get('Ticket')
     return ticket
 
@@ -73,7 +75,8 @@ def get_free_token(username, password):
 
     session.headers = config.YINZCAM_AUTH_HEADERS
     ticket_resp = session.post(config.YINZCAM_AUTH_URL,
-                             data=config.NEW_LOGIN_DATA1.format(uuid.uuid4()))
+                               data=config.NEW_LOGIN_DATA1.format(
+                                uuid.uuid4()))
     ticket = json.loads(ticket_resp.text).get('Ticket')
     session.headers = {}
     session.headers.update({'X-YinzCam-Ticket': ticket})

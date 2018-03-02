@@ -18,10 +18,11 @@ def play_video(params):
     if 'dummy' in params:
         if params['dummy'] == 'True':
             return
-    
+
     try:
         if params.get('video_id') == 'None':
-            playlist = comm.get_replay_playlist(params)
+            if ooyalahelper.get_user_ticket():
+                playlist = comm.get_replay_playlist(params)
         else:
             live = params['live'] == 'true'
             video_id = params['video_id']
