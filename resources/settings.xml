@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
   <category label="32000">
-    <setting label="32070" type="enum" id="SUBSCRIPTION_TYPE" values="Paid (nrl.com.au)|Free offer (Telstra Mobile)" default="1"/>
+    <setting label="32070" type="enum" id="SUBSCRIPTION_TYPE" values="Paid (in app purchase)|Free offer (Telstra Mobile)" default="1"/>
 	<setting label="32031" type="bool"	 id="firstrun" default="true" visible="false"/>
-	<setting label="32020" type="text" id="LIVE_USERNAME" default=""/>
-    <setting label="32030" type="text" id="LIVE_PASSWORD" option="hidden"  enable="!eq(-10,)" default=""/>
+	<setting label="32020" type="text" id="LIVE_USERNAME" enable="eq(-2, 1)" default=""/>
+    <setting label="32030" type="text" id="LIVE_PASSWORD" enable="eq(-3, 1)" option="hidden" default=""/>
+    <setting label="32021" type="text" id="NRL_USERNAME" enable="eq(-4, 0)" default=""/>
+    <setting label="32022" type="text" id="NRL_PASSWORD" enable="eq(-5, 0)" option="hidden" default=""/>
     <setting label="32002" type="lsep"/>
     <setting label="32032" type="action" action="RunPlugin(plugin://plugin.video.nrl-live/?action=clearticket)"/>
   </category>

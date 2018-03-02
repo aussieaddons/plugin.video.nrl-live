@@ -1,3 +1,4 @@
+import comm
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
@@ -17,10 +18,16 @@ def play_video(params):
     if 'dummy' in params:
         if params['dummy'] == 'True':
             return
+
     try:
-        live = params['live'] == 'true'
-        video_id = params['video_id']
-        playlist = ooyalahelper.get_m3u8_playlist(video_id, live)
+        if params.get('video_id') == 'None':
+            if ooyalahelper.get_user_ticket():
+                playlist = comm.get_replay_playlist(params)
+        else:
+            live = params['live'] == 'true'
+            video_id = params['video_id']
+            playlist = ooyalahelper.get_m3u8_playlist(video_id, live)
+
         play_item = xbmcgui.ListItem(path=playlist)
         xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)
 
