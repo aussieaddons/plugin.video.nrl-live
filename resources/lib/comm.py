@@ -1,6 +1,7 @@
 import classes
 import config
 import datetime
+import json
 import re
 import time
 import urllib
@@ -143,8 +144,12 @@ def get_replay_playlist(params):
     html_data = tree.find('StoryHtml').text
     soup = BeautifulSoup(html_data, 'html.parser')
     src = soup.findAll(id=re.compile("^ls_embed"))[0].get('src')
-    print src
-    
+    ls_soup = BeautifulSoup(fetch_url(src), 'html.parser')
+    ls_text = ls_soup.findAll('script', string=re.compile("^window.config"))[0].string
+    ls_json = json.loads(ls_text[ls_text.find('{'):ls_text.rfind('}') + 1])
+    stream_json = ls_json.get('event').get('feed').get('data')
+    stream = stream_json[0].get('data').get('secure_m3u8_url')
+    return stream
 
 def get_highlights(params):
     data_url = config.HIGHLIGHTS_URL
