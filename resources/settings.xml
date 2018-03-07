@@ -2,15 +2,16 @@
 <settings>
   <category label="32000">
     <setting label="32070" type="enum" id="SUBSCRIPTION_TYPE" values="Paid (in app purchase)|Free offer (Telstra Mobile)" default="1"/>
-    <setting label="32020" type="text" id="LIVE_USERNAME" enable="eq(-1, 1)" default=""/>
-    <setting label="32030" type="text" id="LIVE_PASSWORD" enable="eq(-2, 1)" option="hidden" default=""/>
-    <setting label="32021" type="text" id="NRL_USERNAME" enable="eq(-3, 0)" default=""/>
-    <setting label="32022" type="text" id="NRL_PASSWORD" enable="eq(-4, 0)" option="hidden" default=""/>
+    <setting label="32020" type="text" id="LIVE_USERNAME" enable="gt(-1, 0)" default=""/>
+    <setting label="32030" type="text" id="LIVE_PASSWORD" enable="gt(-2, 0)" option="hidden" default=""/>
+    <setting label="32021" type="text" id="NRL_USERNAME" enable="lt(-3, 1)" default=""/>
+    <setting label="32022" type="text" id="NRL_PASSWORD" enable="lt(-4, 1)" option="hidden" default=""/>
+    <setting label="32031" type="bool" id="firstrun" default="true" visible="false"/>
     <setting label="32002" type="lsep"/>
     <setting label="32032" type="action" action="RunPlugin(plugin://plugin.video.nrl-live/?action=clearticket)"/>
   </category>
   <category label="32001">
     <setting id="LIVEQUALITY" type="enum" label="32043" values="300k/s - 320x240 (Lowest)|450k/s - 480x320 |660k/s - 640x480 |1Mb/s - 640x480 |1.6Mb/s - 720x576 (Highest)" default="4" />
     <setting id="REPLAYQUALITY" type="enum" label="32044" values="Audio Only (32k/s)|330k/s - 320x180 (Lowest)|400k/s - 320x180|600k/s - 480x270|950k/s - 640x360|1.4MB/s - 720x406|2.2MB/s - 720x406|3MB/s - 1280x720 (Highest)" default="7" />
-  </category>
+  </category>  
 </settings>

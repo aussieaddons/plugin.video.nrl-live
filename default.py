@@ -52,10 +52,10 @@ def router(paramstring):
 
 if __name__ == '__main__':
     if addon.getSetting('firstrun') == 'true':
-        xbmcgui.Dialog().ok(addonname, ('Please enter your NRL Digital '
-                                        'Pass (Telstra ID) username and '
-                                        'password to access the content in '
-                                        'this service.'))
+        xbmcgui.Dialog().ok(addonname, ('Please choose your subscription type '
+                                        'and enter your NRL Live Pass '
+                                        'username and password to access the '
+                                        'content in this service.'))
         addon.openSettings()
         addon.setSetting('firstrun', 'false')
     router(sys.argv[2][1:])
