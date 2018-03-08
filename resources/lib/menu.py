@@ -73,7 +73,10 @@ def list_matches(params, live=False):
     """
     try:
         listing = []
-        matches = comm.list_matches(params, live)
+        if not live:
+            matches = comm.list_matches(params, live)
+        else:
+            matches = comm.get_live_matches()
 
         for m in matches:
             li = xbmcgui.ListItem(label=str(m.title), iconImage=m.thumb,
