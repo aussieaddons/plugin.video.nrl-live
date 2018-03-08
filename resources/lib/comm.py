@@ -154,7 +154,7 @@ def get_replay_playlist(params):
 def get_live_matches():
     listing = []
     for box in get_box_numbers():
-        tree = ET.fromstring(fetch_url(config.BOX_ULR.format(box)))
+        tree = ET.fromstring(fetch_url(config.BOX_URL.format(box)))
         if tree.find('LiveVideo') is not None:
             for item in tree.find('LiveVideo').findall('Item'):
                 v = classes.Video()
@@ -170,7 +170,8 @@ def get_box_numbers():
     tree = ET.fromstring(fetch_url(config.HOME_URL))
     listing = []
     for item in tree.find('HeadlineItems'):
-        listing.append(item.attrib['Id'])
+        if item.attrib['Type'] == 'BoxScore':
+            listing.append(item.attrib['Id'])
     return listing
 
 def get_categories():
