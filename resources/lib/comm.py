@@ -129,6 +129,7 @@ def get_videos(params):
         v.time = item.find('Timestamp').text
         video_id = item.find('Video')
         if video_id is not None:
+            v.p_code = video_id.attrib.get('PCode')
             v.video_id = video_id.attrib.get('Id')
         v.thumb = item.find('FullImageUrl').text
         v.link_id = item.find('Id').text
@@ -166,7 +167,8 @@ def get_live_matches():
                 v.link_id = item.find('Id').text
                 listing.append(v)
     return listing
-    
+
+
 def get_box_numbers():
     tree = ET.fromstring(fetch_url(config.HOME_URL))
     listing = []
@@ -174,6 +176,7 @@ def get_box_numbers():
         if item.attrib['Type'] == 'BoxScore':
             listing.append(item.attrib['Id'])
     return listing
+
 
 def get_categories():
     tree = ET.fromstring(fetch_url(config.SHORTLIST_URL.format('')))

@@ -38,7 +38,7 @@ def get_user_ticket():
     """
     send user login info and retrieve ticket for session
     """
-    stored_ticket = cache.get('NRLTISADSADCKET')
+    stored_ticket = cache.get('NRLTICKET')
     if stored_ticket != '':
         utils.log('Using ticket: {0}******'.format(stored_ticket[:-6]))
         return stored_ticket
@@ -82,16 +82,17 @@ def get_embed_token(login_ticket, videoId):
                         'Content-Type': 'application/xml',
                         'Accept': 'application/xml',
                         'Accept-Encoding': 'gzip',
-                        'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 6.0; HTC One_M8 Build/MRA58K.H15)',
+                        'User-Agent': config.USER_AGENT,
                         'Connection': 'close'})
         sess.headers = headers
         try:
             req = sess.get(url, verify=False)
-            xml = req.text#[1:]
+            xml = req.text
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 401:
                 cache.delete('NRLTICKET')
-                raise AussieAddonsException('Login token has expired, please try again.')
+                raise AussieAddonsException('Login token has expired, '
+                                            'please try again.')
         try:
             tree = ET.fromstring(xml)
         except ET.ParseError as e:
@@ -100,7 +101,8 @@ def get_embed_token(login_ticket, videoId):
             raise e
         if tree.find('ErrorCode') is not None:
             utils.log('Errorcode found: {0}'.format(xml))
-            raise AussieAddonsException('Login token has expired, please try again.')
+            raise AussieAddonsException('Login token has expired, '
+                                        'please try again.')
         token = tree.find('VideoToken').text
     except AussieAddonsException as e:
         cache.delete('NRLTICKET')
@@ -112,10 +114,7 @@ def get_secure_token(secure_url, videoId):
     """
     send our embed token back with a few other url encoded parameters
     """
-    sess.headers = {
-                    'Accept-Encoding': 'gzip',
-                    'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 6.0; HTC One_M8 Build/MRA58K.H15)',
-                    }
+    sess.headers = {'Accept-Encoding': 'gzip', 'User-Agent': config.USER_AGENT}
     res = sess.get(secure_url)
     data = res.text
     try:
@@ -213,7 +212,9 @@ def get_m3u8_playlist(video_id, pcode, live):
         pcode = config.PCODE
     login_ticket = get_user_ticket()
     embed_token = get_embed_token(login_ticket, video_id)
-    authorize_url = config.AUTH_URL.format(pcode, video_id, urllib.quote_plus(embed_token))
+    authorize_url = config.AUTH_URL.format(pcode,
+                                           video_id,
+                                           urllib.quote_plus(embed_token))
     secure_token_url = get_secure_token(authorize_url, video_id)
 
     if 'chunklist.m3u8' in secure_token_url:
