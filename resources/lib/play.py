@@ -26,7 +26,10 @@ def play_video(params):
         else:
             live = params['live'] == 'true'
             video_id = params['video_id']
-            playlist = ooyalahelper.get_m3u8_playlist(video_id, live)
+            pcode = ''
+            if 'p_code' in params:
+                pcode = params['p_code']
+            playlist = ooyalahelper.get_m3u8_playlist(video_id, pcode, live)
 
         play_item = xbmcgui.ListItem(path=playlist)
         xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)

@@ -161,6 +161,7 @@ def get_live_matches():
                 v.title = item.find('Title').text
                 v.time = item.find('Timestamp').text
                 v.video_id = item.find('Video').attrib.get('Id')
+                v.p_code = item.find('Video').attrib.get('PCode')
                 v.thumb = item.find('FullImageUrl').text
                 v.link_id = item.find('Id').text
                 listing.append(v)

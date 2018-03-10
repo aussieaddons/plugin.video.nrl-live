@@ -2,8 +2,10 @@ import base64
 import config
 import json
 import re
+import requests
 import StringIO
 import telstra_auth
+import urllib
 import xbmcaddon
 import xml.etree.ElementTree as ET
 
@@ -36,7 +38,7 @@ def get_user_ticket():
     """
     send user login info and retrieve ticket for session
     """
-    stored_ticket = cache.get('NRLTICKET')
+    stored_ticket = cache.get('NRLTISADSADCKET')
     if stored_ticket != '':
         utils.log('Using ticket: {0}******'.format(stored_ticket[:-6]))
         return stored_ticket
@@ -72,25 +74,37 @@ def get_embed_token(login_ticket, videoId):
     """
     send our user token to get our embed token, including api key
     """
-    data = create_nrl_userid_xml(login_ticket)
     url = config.EMBED_TOKEN_URL.format(videoId)
     try:
-        req = sess.post(
-            url, data=data, headers=config.YINZCAM_AUTH_HEADERS, verify=False)
-        xml = req.text[1:]
+        headers = {}
+        headers.update({'X-YinzCam-AppID': 'NRL_LIVE',
+                        'X-YinzCam-Ticket': login_ticket,
+                        'Content-Type': 'application/xml',
+                        'Accept': 'application/xml',
+                        'Accept-Encoding': 'gzip',
+                        'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 6.0; HTC One_M8 Build/MRA58K.H15)',
+                        'Connection': 'close'})
+        sess.headers = headers
+        try:
+            req = sess.get(url, verify=False)
+            xml = req.text#[1:]
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 401:
+                cache.delete('NRLTICKET')
+                raise AussieAddonsException('Login token has expired, please try again.')
         try:
             tree = ET.fromstring(xml)
         except ET.ParseError as e:
             utils.log('Embed token response is: {0}'.format(xml))
-            cache.delete('NRLTOKEN')
+            cache.delete('NRLTICKET')
             raise e
         if tree.find('ErrorCode') is not None:
             utils.log('Errorcode found: {0}'.format(xml))
-            raise AussieAddonsException()
-        token = tree.find('Token').text
-    except AussieAddonsException:
-        cache.delete('NRLTOKEN')
-        raise Exception('Login token has expired, please try again')
+            raise AussieAddonsException('Login token has expired, please try again.')
+        token = tree.find('VideoToken').text
+    except AussieAddonsException as e:
+        cache.delete('NRLTICKET')
+        raise e
     return token
 
 
@@ -98,6 +112,10 @@ def get_secure_token(secure_url, videoId):
     """
     send our embed token back with a few other url encoded parameters
     """
+    sess.headers = {
+                    'Accept-Encoding': 'gzip',
+                    'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 6.0; HTC One_M8 Build/MRA58K.H15)',
+                    }
     res = sess.get(secure_url)
     data = res.text
     try:
@@ -185,15 +203,17 @@ def parse_m3u8_streams(data, live, secure_token_url):
     return stream
 
 
-def get_m3u8_playlist(video_id, live):
+def get_m3u8_playlist(video_id, pcode, live):
     """
     Main function to call other functions that will return us our m3u8 HLS
     playlist as a string, which we can then write to a file for Kodi
     to use
     """
-    get_user_ticket()  # login_ticket = get_user_ticket()
-    embed_token = ''  # get_embed_token(login_ticket, video_id)
-    authorize_url = config.AUTH_URL.format(config.PCODE, video_id, embed_token)
+    if pcode == '':
+        pcode = config.PCODE
+    login_ticket = get_user_ticket()
+    embed_token = get_embed_token(login_ticket, video_id)
+    authorize_url = config.AUTH_URL.format(pcode, video_id, urllib.quote_plus(embed_token))
     secure_token_url = get_secure_token(authorize_url, video_id)
 
     if 'chunklist.m3u8' in secure_token_url:
