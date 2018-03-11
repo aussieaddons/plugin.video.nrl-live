@@ -4,6 +4,7 @@ import datetime
 import json
 import re
 import time
+import urllib
 import xml.etree.ElementTree as ET
 
 from aussieaddonscommon import utils
@@ -116,8 +117,10 @@ def get_score(match_id):
 
 
 def get_videos(params):
-    if params.get('category') == 'Match Highlights':
-        data_url = config.HIGHLIGHTS_URL
+    category = params.get('category')
+    if category in ['Match Highlights', 'Match Replays']:
+        data_url = config.TOPICS_URL.format(
+            urllib.quote(config.CATEGORY_LOOKUP[category]))
     else:
         data_url = config.VIDEO_URL
     tree = ET.fromstring(fetch_url(data_url))
@@ -184,27 +187,3 @@ def get_categories():
     for item in tree.find('Filters').find('Filter').find('FilterItems'):
         listing.append(item.attrib['Id'])
     return listing
-
-
-def get_url(params, live=False):
-    """ retrieve our xml file for processing"""
-    category = params['category']
-    if 'rnd' not in params:
-        params['rnd'] = 1
-    if params['rnd'] == -1:
-        rnd = ''
-    else:
-        rnd = '&round={0}'.format(params['rnd'])
-
-    if live:
-        category = 'Matches'
-        params.update({'comp': 1, 'year': 2017})
-
-    if params['category'] == 'shortlist':
-        fullUrl = config.SHORTLIST_URL
-    else:
-        fullUrl = config.XML_URL.format(params['comp'],
-                                        rnd,
-                                        category,
-                                        params['year'])
-    return fetch_url(fullUrl)

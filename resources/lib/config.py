@@ -38,7 +38,7 @@ SCORE_URL = ('http://app-live-nrl.yinzcam.com/V1/Game/Scores?carrier='
             '&ff=mobile&mnc=1&b=113.84670&app_version=3.0.1&version=4.3'
             '&width=1080&os_version=5.1&mcc=505&application=NRL_LIVE')
 
-HIGHLIGHTS_URL = 'http://app-live-nrl.yinzcam.com/V1/Media/ShortList?categoryId=Match%20Highlights&mnc=0&ff=mobile&app_version=4.0.4&carrier=&version=5.0&width=1080&height=1776&mcc=0&application=NRL_LIVE&os=Android'
+TOPICS_URL = 'http://app-live-nrl.yinzcam.com/V1/Media/ShortList?categoryId={0}&mnc=0&ff=mobile&app_version=4.0.4&carrier=&version=5.0&width=1080&height=1776&mcc=0&application=NRL_LIVE&os=Android'
 
 # url for xml that contains video metadata for recent/news/misc videos
 SHORTLIST_URL = 'http://app-live-nrl.yinzcam.com/V1/Media/ShortList?{0}mnc=0&ff=mobile&app_version=4.0.4&carrier=&version=5.0&width=1080&height=1776&mcc=0&application=NRL_LIVE&os=Android'
@@ -52,24 +52,14 @@ HOME_URL = 'https://app-live-nrl.yinzcam.com/V1/Home/Index?carrier=&height=1776&
 
 
 # ooyala provider indentifier code used in contructing request uris
-PCODE = 'BudDUxOt2GEh8L5PMMpcbz1wJFwm'
+PCODE = 'BjZ2oyOsA0g9SvHHgrgYMEu0p1j1'
 
-YEARS = ['2013', '2014', '2015', '2016', '2017']
+CATEGORIES = ['Live Matches', 'Match Highlights', 'Match Replays', 'Videos', 'Settings']
 
-CATEGORIES = ['Live Matches', 'Match Highlights', 'Videos', 'Settings']
+CATEGORY_LOOKUP = {'Match Highlights': 'Match Highlight',
+                   'Match Replays': 'Full Match Replay'}
 
-COMPS = {'1 Telstra Premiership': '1',
-            '2 State of Origin': '30',
-            '3 Auckland Nines': '20',
-            '4 All Stars': '51',
-            '5 World Club Series': '42',
-            '6 International Tests': '40',
-            '7 Country v City': '50',
-            '8 State or Origin U20': '31',
-            '9 Four Nations': '41'}
-
-
-# New auth config for 2017
+# New auth config for 2018
 
 NRL_AUTH = 'https://www.nrl.com/account/authorize?response_type=code&scope=openid%20email%20profile%20offline_access&client_id=nrlapp-ios&redirect_uri=https://redirect.nrl-live.app.openid.yinzcam.com'
 
