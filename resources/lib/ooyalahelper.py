@@ -32,6 +32,7 @@ def clear_ticket():
     Remove stored ticket from cache storage
     """
     cache.delete('NRLTICKET')
+    utils.dialog_message('Login token removed')
 
 
 def get_user_ticket():
@@ -93,6 +94,13 @@ def get_embed_token(login_ticket, videoId):
                 cache.delete('NRLTICKET')
                 raise AussieAddonsException('Login token has expired, '
                                             'please try again.')
+            elif e.response.status_code == 403:
+                cache.delete('NRLTICKET')
+                tree = ET.fromstring(e.response.text)
+                msg = str(tree.find('UserMessage').find('Content').text)
+                raise AussieAddonsException(msg)
+            else:
+                raise e
         try:
             tree = ET.fromstring(xml)
         except ET.ParseError as e:

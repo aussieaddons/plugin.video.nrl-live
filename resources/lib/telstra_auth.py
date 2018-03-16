@@ -60,6 +60,14 @@ def get_paid_token(username, password):
         config.YINZCAM_AUTH_URL,
         data=config.NEW_LOGIN_DATA2.format(refresh_token))
     ticket = json.loads(ticket_signon.text).get('Ticket')
+
+    # check validity of subscription
+    session.headers.update({'X-YinzCam-Ticket': ticket})
+    sub_status = session.get(config.STATUS_URL)
+    status_json = json.loads(sub_status.text)
+    if status_json.get('Valid') != 'true':
+        raise AussieAddonsException('NRL.com login failed: {0}'.format(
+            status_json.get('Reason')))
     return ticket
 
 
@@ -120,8 +128,32 @@ def get_free_token(username, password):
     session.headers.update(config.SIGNON_HEADERS)
     signon_data = config.SIGNON_DATA
     signon_data = {'username': username, 'password': password, 'goto': sso_url}
-    session.post(config.SIGNON_URL, data=signon_data, allow_redirects=False)
+    signon = session.post(config.SIGNON_URL,
+                          data=signon_data,
+                          allow_redirects=False)
     bp_session = session.cookies.get_dict().get('BPSESSION')
+
+    # check signon is valid (correct username/password)
+
+    signon_pieces = urlparse.urlsplit(signon.headers.get('Location'))
+    signon_query = dict(urlparse.parse_qsl(signon_pieces.query))
+
+    utils.log('Sign-on result: %s' % signon_query)
+
+    if 'errorcode' in signon_query:
+        if signon_query['errorcode'] == '0':
+            raise TelstraAuthException('Please enter your username '
+                                       'in the settings')
+        if signon_query['errorcode'] == '1':
+            raise TelstraAuthException('Please enter your password '
+                                       'in the settings')
+        if signon_query['errorcode'] == '2':
+            raise TelstraAuthException('Please enter your username and '
+                                       'password in the settings')
+        if signon_query['errorcode'] == '3':
+            raise TelstraAuthException('Invalid Telstra ID username/password. '
+                                       'Please check your username and '
+                                       'password in the settings')
 
     # Use BPSESSION cookie to ask for bearer token
     sso_headers = config.SSO_HEADERS
@@ -196,8 +228,10 @@ def get_free_token(username, password):
     # Confirm everything has gone well
     prog_dialog.update(100, 'Checking status of Live Pass')
     sub_status = session.get(config.STATUS_URL)
-    if json.loads(sub_status.text).get('Valid') != 'true':
-        raise Exception('Live Pass activation failed')
+    status_json = json.loads(sub_status.text)
+    if status_json.get('Valid') != 'true':
+        raise AussieAddonsException('Telstra ID activation failed: {0}'.format(
+            status_json.get('Reason')))
     session.close()
     prog_dialog.update(100, 'Finished!')
     prog_dialog.close()
