@@ -139,6 +139,8 @@ def get_secure_token(secure_url, videoId):
                                 'Detected location is: {0}. '
                                 'Please check VPN/smart DNS settings '
                                 ' and try again'.format(country))
+            else:
+                raise Exception('Error: {0}'.format(auth_msg))
         except Exception as e:
             raise e
     return base64.b64decode(token)
