@@ -168,6 +168,7 @@ def get_live_matches():
                 v.p_code = item.find('Video').attrib.get('PCode')
                 v.thumb = item.find('FullImageUrl').text
                 v.link_id = item.find('Id').text
+                v.live = 'true'
                 listing.append(v)
     return listing
 
