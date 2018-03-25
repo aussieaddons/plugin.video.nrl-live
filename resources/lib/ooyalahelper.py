@@ -135,10 +135,11 @@ def get_secure_token(secure_url, videoId):
             auth_msg = parsed_json['authorization_data'][videoId]['message']
             if auth_msg == 'unauthorized location':
                 country = parsed_json['user_info']['country']
-                raise Exception('Unauthorised location for streaming. '
-                                'Detected location is: {0}. '
-                                'Please check VPN/smart DNS settings '
-                                ' and try again'.format(country))
+                raise AussieAddonsException(
+                    'Unauthorised location for streaming. '
+                    'Detected location is: {0}. '
+                    'Please check VPN/smart DNS settings '
+                    ' and try again'.format(country))
             else:
                 raise Exception('Error: {0}'.format(auth_msg))
         except Exception as e:
