@@ -1,6 +1,6 @@
 #NRL Digital Pass addon for Kodi
 
-# Updated for 2018 season. Live match status is currently unknown. Videos from the NRL app are now watchable.
+# Updated for 2018 season, live videos and match replays/highlights working well
 
 ## Requirements
 
@@ -18,8 +18,6 @@ Bleeding edge builds of the add-on are available from the Aussie Add-ons develop
 You will need to enter your Telstra ID or nrl.com credentials. For the free Telstra customer offer, you will need to have an eligible mobile service linked to your Telstra ID. If you haven't registered a Telstra ID and/or haven't linked your eligible service to it, please visit this [Telstra page](http://hub.telstra.com.au/sp2017-nrl-app) to create a new Telstra ID or link an existing one with your mobile service.
 
 The live streaming bitrates reflect an average bitrate only, you should ideally have twice the bandwidth available to ensure buffer free viewing.
-
-Live streams are broadcast with a black border encoded into the video. This is how Telstra/NRL have it set up on their end. Fortunately Kodi can deal with this by zooming the video. This setting is found in the video settings accessed from the on screen display. A zoom of 1.23 seems to be the sweet spot.
 
 ## Issues
 
