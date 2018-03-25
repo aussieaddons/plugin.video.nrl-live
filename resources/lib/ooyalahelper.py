@@ -162,22 +162,13 @@ def parse_m3u8_streams(data, live, secure_token_url):
     handling is required of live m3u8 files as they seem to only contain
     the destination filename and not the domain/path.
     """
-    if live:
-        qual = int(addon.getSetting('LIVEQUALITY'))
-        if qual == config.MAX_LIVEQUAL:
-            qual = -1
-        # fix for values too high from previous API config
-        if qual > config.MAX_LIVEQUAL:
-            addon.setSetting('LIVEQUALITY', str(config.MAX_LIVEQUAL))
-            qual = -1
-    else:
-        qual = int(addon.getSetting('REPLAYQUALITY'))
-        if qual == config.MAX_REPLAYQUAL:
-            qual = -1
-        # fix for values too high from previous API config
-        if qual > config.MAX_REPLAYQUAL:
-            addon.setSetting('REPLAYQUALITY', str(config.MAX_REPLAYQUAL))
-            qual = -1
+    qual = int(addon.getSetting('LIVEQUALITY'))
+    if qual == config.MAX_LIVEQUAL:
+        qual = -1
+    # fix for values too high from previous API config
+    if qual > config.MAX_LIVEQUAL:
+        addon.setSetting('LIVEQUALITY', str(config.MAX_LIVEQUAL))
+        qual = -1
 
     m3u_list = []
     base_url = secure_token_url[:secure_token_url.rfind('/') + 1]
@@ -227,7 +218,7 @@ def get_m3u8_playlist(video_id, pcode, live):
                                            urllib.quote_plus(embed_token))
     secure_token_url = get_secure_token(authorize_url, video_id)
 
-    if 'chunklist.m3u8' in secure_token_url:
+    if 'chunklist.m3u8' in secure_token_url or not live:
         return secure_token_url
 
     m3u8_data = get_m3u8_streams(secure_token_url)
