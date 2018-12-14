@@ -29,7 +29,7 @@ def get_paid_token(username, password):
     Obtain a valid token from Telstra/Yinzcam, will be used to make
     requests for Ooyala embed tokens
     """
-    session = custom_session.Session()
+    session = custom_session.Session(force_tlsv1=False)
     auth_resp = session.get(config.NRL_AUTH, allow_redirects=False)
 
     xsrf = auth_resp.cookies['XSRF-TOKEN']
@@ -76,7 +76,7 @@ def get_free_token(username, password):
     Obtain a valid token from Telstra/Yinzcam, will be used to make
     requests for Ooyala embed tokens
     """
-    session = custom_session.Session(force_tlsv1=True)
+    session = custom_session.Session(force_tlsv1=False)
     prog_dialog = xbmcgui.DialogProgress()
     prog_dialog.create('Logging in with Telstra ID')
 

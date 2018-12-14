@@ -90,8 +90,7 @@ YINZCAM_AUTH_HEADERS = {'Content-Type': 'application/xml',
                         'Host': 'signon-live-nrl.yinzcam.com',
                         'Accept-Encoding': 'gzip'}
 
-SIGNON_HEADERS = {'Host': 'signon.telstra.com',
-                  'Connection': 'keep-alive',
+SIGNON_HEADERS = {'Connection': 'keep-alive',
                   'Cache-Control': 'max-age=0',
                   'Origin': 'https://signon.telstra.com.au',
                   'User-Agent': USER_AGENT_LONG,
@@ -109,11 +108,11 @@ SIGNON_DATA = {'goto': 'https://signon.telstra.com/federation/saml2?SPID=telstra
                'username': None,
                'password': None}
 
-OFFERS_URL = 'https://api.telstra.com/v1/media-products/catalogues/media/offers?category=nrl'
+OFFERS_URL = 'https://tapi.telstra.com/v1/media-products/catalogues/media/offers'
 
 HUB_URL = 'http://hub.telstra.com.au/sp2017-nrl-app'
 
-SSO_URL = 'https://api.telstra.com/v1/sso/auth'
+SSO_URL = 'https://tapi.telstra.com/v1/sso/auth'
 
 SSO_PARAMS = {'redirect_uri': 'https://hub.telstra.com.au/offers/content/cached/callback.html',
               'response_type': 'id_token token',
@@ -140,7 +139,6 @@ SPC_HEADERS = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,
 
 MEDIA_ORDER_HEADERS = {'Content-Type': 'application/json',
                        'Accept': 'application/json, text/plain, */*',
-                       'Host': 'api.telstra.com',
                        'Connection': 'keep-alive',
                        'Origin': 'https://hub.telstra.com.au',
                        'User-Agent': USER_AGENT_LONG,
@@ -148,7 +146,7 @@ MEDIA_ORDER_HEADERS = {'Content-Type': 'application/json',
                        'Accept-Language': 'en-AU,en-US;q=0.8',
                        'X-Requested-With': 'com.telstra.nrl'}
 
-MEDIA_ORDER_URL = 'https://api.telstra.com/v1/media-commerce/orders'
+MEDIA_ORDER_URL = 'https://tapi.telstra.com/v1/media-commerce/orders'
 
 MEDIA_ORDER_JSON = '{{"serviceId":"{0}","serviceType":"MSISDN","offer":{{"id":"{1}"}},"pai":"{2}"}}'
 
