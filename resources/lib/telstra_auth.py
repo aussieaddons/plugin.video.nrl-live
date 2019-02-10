@@ -90,7 +90,7 @@ def get_free_token(username, password):
                                 adid=adid, deviceid=deviceid))
     ticket_xml = ET.fromstring(ticket_resp.text)
     ticket = ticket_xml.find('Ticket').text
-    session.headers = {}
+    session.headers = {'Accept': 'application/json, text/plain, */*'}
     session.headers.update({'X-YinzCam-Ticket': ticket})
 
     # Send ticket back and get 'sports pass confirmation' URL and 'TpUid'
