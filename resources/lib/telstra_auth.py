@@ -55,7 +55,8 @@ def get_paid_token(username, password):
     session.cookies.clear()
     token_resp = session.post(config.NRL_TOKEN, data=token_form)
     refresh_token = json.loads(token_resp.text).get('refresh_token')
-    session.headers.update({'Content-Type': 'application/xml'})
+    session.headers.update({'Content-Type': 'application/xml',
+                            'Accept': 'application/json, text/plain, */*'})
     ticket_signon = session.post(
         config.YINZCAM_AUTH_URL,
         data=config.NEW_LOGIN_DATA2.format(refresh_token))
