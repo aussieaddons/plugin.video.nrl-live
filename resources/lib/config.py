@@ -108,6 +108,8 @@ SIGNON_DATA = {'goto': 'https://signon.telstra.com/federation/saml2?SPID=telstra
                'username': None,
                'password': None}
 
+OLD_OFFERS_URL = 'https://api.telstra.com/v1/media-products/catalogues/media/offers?category=nrl'
+
 OFFERS_URL = 'https://tapi.telstra.com/v1/media-products/catalogues/media/offers'
 
 HUB_URL = 'http://hub.telstra.com.au/sp2017-nrl-app'
@@ -146,8 +148,32 @@ MEDIA_ORDER_HEADERS = {'Content-Type': 'application/json',
                        'Accept-Language': 'en-AU,en-US;q=0.8',
                        'X-Requested-With': 'com.telstra.nrl'}
 
+OLD_MEDIA_ORDER_URL = 'https://api.telstra.com/v1/media-commerce/orders?category=nrl'
+
 MEDIA_ORDER_URL = 'https://tapi.telstra.com/v1/media-commerce/orders'
 
 MEDIA_ORDER_JSON = '{{"serviceId":"{0}","serviceType":"MSISDN","offer":{{"id":"{1}"}},"pai":"{2}"}}'
 
 YINZ_CALLBACK_URL = 'https://signon-live-nrl.yinzcam.com/telstra/oneplace/callback/NRL_LIVE?type=SportPassConfirmation&statusCode=200&tpUID={0}'
+
+#Mobile Auth
+OFFER_ID = '69b1f3e1-5196-4a57-9a46-472d20b78bc8'
+
+OAUTH_HEADERS = {'User-Agent': 'AFL(Android) / 40656',
+                 'Accept-Encoding': 'gzip'}
+
+OAUTH_URL = 'https://api.telstra.com/v1/media-commerce/oauth/token'
+
+MOBILE_ID_URL = 'http://medrx.telstra.com.au/online.php'
+
+MOBILE_CLIENT_ID = 'cZ2XmZETvgidptCNUYDctQAWv1kixMac'
+
+MOBILE_CLIENT_SECRET = 'zGABA9ugrOySIJ4N'
+
+MOBILE_TOKEN_PARAMS = {'client_id': MOBILE_CLIENT_ID,
+                      'client_secret': MOBILE_CLIENT_SECRET,
+                      'grant_type': 'client_credentials',
+                      'scope': 'MEDIA-ENTITLEMENTS-API MEDIA-PRODUCTS-API MEDIA-COMMERCE-API MY-OFFERS-BFF',
+                      'x-user-idp': 'NGP'}
+
+MOBILE_ORDER_JSON = {"offer": {"id":OFFER_ID}, "serviceType":"MSISDN"}

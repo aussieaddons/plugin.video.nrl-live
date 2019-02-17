@@ -237,3 +237,120 @@ def get_free_token(username, password):
     prog_dialog.update(100, 'Finished!')
     prog_dialog.close()
     return ticket
+
+
+def get_mobile_token():
+    session = custom_session.Session(force_tlsv1=False)
+    prog_dialog = xbmcgui.DialogProgress()
+    prog_dialog.create('Logging in with Telstra ID')
+
+    # Send our first login request to Yinzcam, recieve (unactivated) ticket
+    prog_dialog.update(1, 'Obtaining user ticket')
+    adid = uuid.uuid4()
+    deviceid = uuid.uuid4()
+    session.headers = config.YINZCAM_AUTH_HEADERS
+    ticket_resp = session.post(config.YINZCAM_AUTH_URL,
+                               data=config.NEW_LOGIN_DATA1.format(
+                                adid=adid, deviceid=deviceid))
+    ticket_xml = ET.fromstring(ticket_resp.text)
+    ticket = ticket_xml.find('Ticket').text
+    session.headers = {'Accept': 'application/json, text/plain, */*',
+                       'X-YinzCam-Ticket': ticket}
+
+    # Send ticket back and get 'sports pass confirmation' URL and 'TpUid'
+    yinz_resp = session.get(config.YINZCAM_AUTH_URL2)
+    jsondata = json.loads(yinz_resp.text)
+    token = jsondata.get('TpUid')
+    spc_url = jsondata.get('Url')
+    if not token or not spc_url:
+        raise TelstraAuthException('Unable to get token/spc url from NRL API')
+
+    prog_dialog.update(20, 'Obtaining mobile token')
+    mobile_userid_cookies = session.get(
+        config.MOBILE_ID_URL).cookies.get_dict()
+    mobile_userid = mobile_userid_cookies.get('GUID_S')
+
+    if not mobile_userid or mobile_userid_cookies.get('nouid'):
+        raise TelstraAuthException('Not connected to Telstra Mobile network. '
+                                   'Please disable WiFi and enable mobile '
+                                   'data if on a Telstra mobile device, or '
+                                   "connect this device's WiFi to a device "
+                                   'that is on the Telstra Mobile network '
+                                   'and try again.')
+
+    data = config.MOBILE_TOKEN_PARAMS
+    data.update({'x-user-id': mobile_userid})
+    mobile_token_resp = session.post(config.OAUTH_URL, data=data)
+    bearer_token = json.loads(mobile_token_resp.text).get('access_token')
+
+    # First check if there are any eligible services attached to the account
+    prog_dialog.update(40, 'Determining eligible services')
+    session.headers = config.OAUTH_HEADERS
+    session.headers.update(
+        {'Authorization': 'Bearer {0}'.format(bearer_token)})
+    try:
+        offers = session.get(config.OLD_OFFERS_URL)
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 404:
+            message = json.loads(e.response.text).get('userMessage')
+            message += (' Please visit {0} '.format(config.HUB_URL) +
+                        'for further instructions to link your mobile '
+                        'service to the supplied Telstra ID')
+            raise TelstraAuthException(message)
+        else:
+            raise TelstraAuthException(e)
+    try:
+        offer_data = json.loads(offers.text)
+        offers_list = offer_data['data']['offers']
+        ph_no = None
+        for offer in offers_list:
+            if offer.get('name') != 'NRL Live Pass':
+                continue
+            data = offer.get('productOfferingAttributes')
+            ph_no = [x['value'] for x in data if x['name'] == 'ServiceId'][0]
+        if not ph_no:
+            raise TelstraAuthException(
+                'Unable to determine if you have any eligible services. '
+                'Please ensure there is an eligible service linked to '
+                'your Telstra ID to redeem the free offer. Please visit '
+                '{0} for further instructions'.format(config.HUB_URL))
+    except Exception as e:
+        raise e
+
+    # 'Order' the subscription package to activate the service
+    prog_dialog.update(60, 'Activating live pass on service')
+    order_data = config.MOBILE_ORDER_JSON
+    order_data.update({'serviceId': ph_no, 'pai': token})
+    order = session.post(config.OLD_MEDIA_ORDER_URL, json=order_data)
+
+    # check to make sure order has been placed correctly
+    prog_dialog.update(80, 'Confirming activation')
+    if order.status_code == 201:
+        try:
+            order_json = json.loads(order.text)
+            status = order_json['data'].get('status') == 'COMPLETE'
+            if status:
+                utils.log('Order status complete')
+        except:
+            utils.log('Unable to check status of order, continuing anyway')
+    # Register the ticket
+    prog_dialog.update(83, 'Registering live pass with ticket')
+    session.headers = {'Accept': 'application/json',
+                       'Accept-Encoding': 'gzip',
+                       'Connection': 'Keep-Alive',
+                       'User-Agent': 'okhttp/3.4.1',
+                       'X-YinzCam-AppID': 'NRL_LIVE',
+                       'X-YinzCam-Ticket': ticket}
+    session.get(config.YINZ_CALLBACK_URL.format(token), allow_redirects=False)
+
+    # Confirm everything has gone well
+    prog_dialog.update(100, 'Checking status of Live Pass')
+    sub_status = session.get(config.STATUS_URL)
+    status_json = json.loads(sub_status.text)
+    if status_json.get('Valid') != 'true':
+        raise AussieAddonsException('Telstra ID activation failed: {0}'.format(
+            status_json.get('Reason')))
+    session.close()
+    prog_dialog.update(100, 'Finished!')
+    prog_dialog.close()
+    return ticket

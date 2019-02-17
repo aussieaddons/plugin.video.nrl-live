@@ -43,12 +43,13 @@ def get_user_ticket():
     if stored_ticket != '':
         utils.log('Using ticket: {0}******'.format(stored_ticket[:-6]))
         return stored_ticket
-    else:
-        free_sub = int(addon.getSetting('SUBSCRIPTION_TYPE'))
+    sub_type = int(addon.getSetting('SUBSCRIPTION_TYPE'))
 
-    if free_sub:
+    if sub_type == 1:
         ticket = telstra_auth.get_free_token(telstra_username,
                                              telstra_password)
+    elif sub_type == 2:  # mobile activated subscription
+            ticket = telstra_auth.get_mobile_token()
     else:
         ticket = telstra_auth.get_paid_token(nrl_username,
                                              nrl_password)
