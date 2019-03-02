@@ -46,9 +46,11 @@ SHORTLIST_URL = 'http://app-live-nrl.yinzcam.com/V1/Media/ShortList?{0}mnc=0&ff=
 
 MEDIA_URL = 'http://app-live-nrl.yinzcam.com/V1/Media/News/{0}?age=over18&mnc=0&ff=mobile&app_version=4.0.4&carrier=&version=5.0&width=1080&height=1776&mcc=0&application=NRL_LIVE&os=Android'
 
+MEDIA_ITEM_URL = 'https://app-live-nrl.yinzcam.com/V1/Media/Item/{0}?ff=mobile&mnc=0&app_version=4.3.0&carrier=&version=5.2&width=1080&height=1776&mcc=0&application=NRL_LIVE&os=Android'
+
 BOX_URL = 'https://app-live-nrl.yinzcam.com/V1/Game/Box/{0}?mnc=0&ff=mobile&app_version=4.1.0&carrier=&version=5.1&width=1080&height=1776&mcc=0&application=NRL_LIVE&os=Android'
 
-HOME_URL = 'https://app-live-nrl.yinzcam.com/V1/Home/Index?carrier=&height=1776&error=100000000&os=Android&a=0&ff=mobile&mnc=0&b=0&app_version=4.1.0&version=5.1&width=1080&mcc=0&application=NRL_LIVE'
+HOME_URL = 'https://app-live-nrl.yinzcam.com/V1/Home/Index?a=0&ff=mobile&mnc=0&b=0&app_version=4.3.0&carrier=&version=5.2&width=1080&height=1776&mcc=0&application=NRL_LIVE&error=100000000&os=Android'
 
 
 # ooyala provider indentifier code used in contructing request uris

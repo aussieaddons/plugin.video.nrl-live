@@ -219,10 +219,4 @@ def get_m3u8_playlist(video_id, pcode, live):
                                            video_id,
                                            urllib.quote_plus(embed_token))
     secure_token_url = get_secure_token(authorize_url, video_id)
-
-    if 'chunklist.m3u8' in secure_token_url or not live:
-        return secure_token_url
-
-    m3u8_data = get_m3u8_streams(secure_token_url)
-    m3u8_playlist_url = parse_m3u8_streams(m3u8_data, live, secure_token_url)
-    return m3u8_playlist_url
+    return secure_token_url
