@@ -10,7 +10,4 @@
     <setting label="32002" type="lsep"/>
     <setting label="32032" type="action" action="RunPlugin(plugin://plugin.video.nrl-live/?action=clearticket)"/>
   </category>
-  <category label="32001">
-    <setting id="LIVEQUALITY" type="enum" label="32043" values="400k/s - 480x240 (Lowest)|600k/s - 512x288 |900k/s - 640x360 |1.2Mb/s - 640x360 |1.6Mb/s - 1024x576 (Highest)" default="4" />
-  </category>  
 </settings>
