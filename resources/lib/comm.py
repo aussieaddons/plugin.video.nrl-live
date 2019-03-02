@@ -27,7 +27,7 @@ def get_airtime(timestamp):
         return ''
 
 
-def fetch_url(url, remove_bom=False):
+def fetch_url(url, remove_bom=True):
     """
     HTTP GET on url, remove byte order mark
     """
@@ -87,7 +87,7 @@ def list_matches(params, live=False):
 def get_upcoming():
     """ similar to get_score but this time we are searching for upcoming live
         match info"""
-    tree = ET.fromstring(fetch_url(config.SCORE_URL, remove_bom=True))
+    tree = ET.fromstring(fetch_url(config.SCORE_URL))
     listing = []
     for elem in tree.findall("Day"):
         for subelem in elem.findall("Game"):
