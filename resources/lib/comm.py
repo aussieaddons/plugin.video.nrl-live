@@ -160,11 +160,9 @@ def get_replay_playlist(params):
 def get_live_matches():
     listing = []
     for box in get_box_numbers():
-        tree = ET.fromstring(fetch_url(config.MEDIA_ITEM_URL.format(box)))
-        if tree.find('MediaSection') is not None:
-            for item in tree.find('MediaSection').findall('Item'):
-                if item.find('LiveNow').text != 'true':
-                    continue
+        tree = ET.fromstring(fetch_url(config.BOX_URL.format(box)))
+        if tree.find('LiveVideo') is not None:
+            for item in tree.find('LiveVideo').findall('Item'):
                 v = classes.Video()
                 v.title = item.find('Title').text
                 v.time = item.find('Timestamp').text
