@@ -179,7 +179,8 @@ def get_box_numbers():
     tree = ET.fromstring(fetch_url(config.HOME_URL))
     listing = []
     for item in tree.find('HeadlineItems'):
-        listing.append(item.attrib['Id'])
+        if item.attrib['Type'] == 'BoxScore':
+            listing.append(item.attrib['Id'])
     return listing
 
 
