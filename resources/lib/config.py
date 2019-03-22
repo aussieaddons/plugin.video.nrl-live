@@ -33,10 +33,7 @@ AUTH_URL = 'http://player.ooyala.com/sas/player_api/v1/authorization/embed_code/
 VIDEO_URL =  'http://app-live-nrl.yinzcam.com/V1/Media/VideoList?&mediaTypes=V&carrier=&height=1776&error=100000000&os=Android&a=0&ff=mobile&mnc=0&b=0&app_version=4.0.4&version=5.0&width=1080&mcc=0&application=NRL_LIVE'
 
 # url for xml that contains match scores
-SCORE_URL = ('http://app-live-nrl.yinzcam.com/V1/Game/Scores?carrier='
-            'Telstra+Mobile&height=1776&error=11&os=Android&a=-184.41070'
-            '&ff=mobile&mnc=1&b=113.84670&app_version=3.0.1&version=4.3'
-            '&width=1080&os_version=5.1&mcc=505&application=NRL_LIVE')
+SCORE_URL = 'https://app-live-nrl.yinzcam.com/V1/Game/Scores?compId=1&a=0&ff=mobile&mnc=0&b=0&app_version=4.4.0&carrier=&version=5.2&width=1080&height=1776&mcc=0&application=NRL_LIVE&error=100000000&os=Android'
 
 TOPICS_URL = 'http://app-live-nrl.yinzcam.com/V1/Media/ShortList?categoryId={0}&mnc=0&ff=mobile&app_version=4.0.4&carrier=&version=5.0&width=1080&height=1776&mcc=0&application=NRL_LIVE&os=Android'
 
