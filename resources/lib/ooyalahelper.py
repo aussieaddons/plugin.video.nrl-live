@@ -57,21 +57,6 @@ def get_user_ticket():
     return ticket
 
 
-def create_nrl_userid_xml(user_id):
-    """
-    create a small xml file to send with http POST
-    when starting a new video request
-    """
-    root = ET.Element('Subscription')
-    ut = ET.SubElement(root, 'UserToken')
-    ut.text = user_id
-    fakefile = StringIO.StringIO()
-    tree = ET.ElementTree(root)
-    tree.write(fakefile, encoding='UTF-8')
-    output = fakefile.getvalue()
-    return output
-
-
 def get_embed_token(login_ticket, videoId):
     """
     send our user token to get our embed token, including api key
@@ -148,64 +133,7 @@ def get_secure_token(secure_url, videoId):
     return base64.b64decode(token)
 
 
-def get_m3u8_streams(secure_token_url):
-    """
-    fetch our m3u8 file which contains streams of various qualities
-    """
-    res = sess.get(secure_token_url)
-    data = res.text.splitlines()
-    return data
-
-
-def parse_m3u8_streams(data, live, secure_token_url):
-    """
-    Parse the retrieved m3u8 stream list into a list of dictionaries
-    then return the url for the highest quality stream. Different
-    handling is required of live m3u8 files as they seem to only contain
-    the destination filename and not the domain/path.
-    """
-    qual = int(addon.getSetting('LIVEQUALITY'))
-    if qual == config.MAX_LIVEQUAL:
-        qual = -1
-    # fix for values too high from previous API config
-    if qual > config.MAX_LIVEQUAL:
-        addon.setSetting('LIVEQUALITY', str(config.MAX_LIVEQUAL))
-        qual = -1
-
-    m3u_list = []
-    base_url = secure_token_url[:secure_token_url.rfind('/') + 1]
-    base_domain = secure_token_url[:secure_token_url.find('/', 8) + 1]
-    m3u8_lines = iter(data)
-    for line in m3u8_lines:
-            stream_inf = '#EXT-X-STREAM-INF:'
-            if line.startswith(stream_inf):
-                line = line[len(stream_inf):]
-            else:
-                continue
-
-            csv_list = re.split(',(?=(?:(?:[^"]*"){2})*[^"]*$)', line)
-            linelist = [i.split('=') for i in csv_list]
-
-            uri = next(m3u8_lines)
-
-            if uri.startswith('/'):
-                linelist.append(['URL', base_domain + uri])
-            elif uri.find('://') == -1:
-                linelist.append(['URL', base_url + uri])
-            else:
-                linelist.append(['URL', uri])
-            m3u_list.append(dict((i[0], i[1]) for i in linelist))
-    sorted_m3u_list = sorted(m3u_list, key=lambda k: int(k['BANDWIDTH']))
-    try:
-        stream = sorted_m3u_list[qual]['URL']
-    except IndexError as e:
-        utils.log('Quality setting: {0}'.format(qual))
-        utils.log('Sorted m3u8 list: {0}'.format(sorted_m3u_list))
-        raise e
-    return stream
-
-
-def get_m3u8_playlist(video_id, pcode, live):
+def get_m3u8_playlist(video_id, pcode):
     """
     Main function to call other functions that will return us our m3u8 HLS
     playlist as a string, which we can then write to a file for Kodi

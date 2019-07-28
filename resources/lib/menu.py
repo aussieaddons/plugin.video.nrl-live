@@ -74,7 +74,7 @@ def list_matches(params, live=False):
     try:
         listing = []
         if not live:
-            matches = comm.list_matches(params, live)
+            matches = comm.list_matches(params)
         else:
             matches = comm.get_live_matches()
 

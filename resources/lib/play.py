@@ -24,12 +24,11 @@ def play_video(params):
             if ooyalahelper.get_user_ticket():
                 playlist = comm.get_replay_playlist(params)
         else:
-            live = params['live'] == 'true'
             video_id = params['video_id']
             pcode = ''
             if 'p_code' in params:
                 pcode = params['p_code']
-            playlist = ooyalahelper.get_m3u8_playlist(video_id, pcode, live)
+            playlist = ooyalahelper.get_m3u8_playlist(video_id, pcode)
 
         play_item = xbmcgui.ListItem(path=playlist)
         xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)

@@ -38,7 +38,7 @@ def fetch_url(url, remove_bom=True):
         return resp.text.encode("utf-8")
 
 
-def list_matches(params, live=False):
+def list_matches(params):
     """ go through our xml file and retrive all we need to pass to kodi"""
     data = fetch_url(config.VIDEO_URL)
     tree = ET.fromstring(data)
@@ -51,7 +51,7 @@ def list_matches(params, live=False):
             g = classes.Video()
             g.title = gm.find('Title').text.encode('ascii', 'replace')
             desc = gm.find('Description')
-            if desc:
+            if desc is not None:
                 if desc.text is not None:
                     g.desc = gm.find('Description').text.encode('ascii',
                                                                 'replace')
@@ -59,27 +59,14 @@ def list_matches(params, live=False):
             if g.title.startswith('Better Choices'):
                 continue
             g.video_id = gm.find('Video').attrib['Id']
-            g.live = gm.find('LiveNow').text
+
             # keep live videos out of other submenus and vice versa
-            if not live and g.live == 'true':
+            if not gm.find('LiveNow').text:
                 continue
-            if live and g.live == 'false':
-                continue
+
             g.thumb = gm.find('FullImageUrl').text
             game_date = utils.ensure_ascii(gm.find('Date').text)
             g.time = game_date[game_date.find('  ')+2:]
-            # add game start time and current score to live match entries
-            if g.live:
-                # only use live videos that are actual matches
-                if gm.find('NavigateUrl') is not None:
-                    id_string = gm.find('NavigateUrl').text
-                    start = id_string.find('=')+1
-                    end = id_string.find('&')
-                    g.match_id = id_string[start:end]
-                    g.score = get_score(g.match_id)
-                    title = '[COLOR green][LIVE NOW:][/COLOR] {0} {1}'
-                    g.title = title.format(
-                        g.title.replace(' LIVE', ''), g.score)
             listing.append(g)
     return listing
 

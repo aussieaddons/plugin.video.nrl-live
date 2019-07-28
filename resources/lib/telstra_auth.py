@@ -293,9 +293,6 @@ def get_mobile_token():
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 404:
             message = json.loads(e.response.text).get('userMessage')
-            message += (' Please visit {0} '.format(config.HUB_URL) +
-                        'for further instructions to link your mobile '
-                        'service to the supplied Telstra ID')
             raise TelstraAuthException(message)
         else:
             raise TelstraAuthException(e)
