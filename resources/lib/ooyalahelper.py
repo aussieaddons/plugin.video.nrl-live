@@ -77,11 +77,9 @@ def get_embed_token(login_ticket, videoId):
             xml = req.text
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 401:
-                cache.delete('NRLTICKET')
                 raise AussieAddonsException('Login token has expired, '
                                             'please try again.')
             elif e.response.status_code == 403:
-                cache.delete('NRLTICKET')
                 tree = ET.fromstring(e.response.text)
                 msg = str(tree.find('UserMessage').find('Content').text)
                 raise AussieAddonsException(msg)
@@ -91,14 +89,13 @@ def get_embed_token(login_ticket, videoId):
             tree = ET.fromstring(xml)
         except ET.ParseError as e:
             utils.log('Embed token response is: {0}'.format(xml))
-            cache.delete('NRLTICKET')
             raise e
         if tree.find('ErrorCode') is not None:
             utils.log('Errorcode found: {0}'.format(xml))
             raise AussieAddonsException('Login token has expired, '
                                         'please try again.')
         token = tree.find('VideoToken').text
-    except AussieAddonsException as e:
+    except Exception as e:
         cache.delete('NRLTICKET')
         raise e
     return token
