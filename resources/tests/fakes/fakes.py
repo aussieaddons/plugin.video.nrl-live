@@ -156,9 +156,27 @@ M3U8_URL = 'http://player.ooyala.com/player/iphone/44azdwNDpSWUvfd8F30d55tXY0YH9
 
 VIDEO_ID = '44azdwNDpSWUvfd8F30d55tXY0YH9njH'
 
+EXPECTED_VIDEO_TITLES = [
+    '2019: Touch Premiership: Knights v Broncos',
+    'Long lost dogs back in the same pack',
+    'Knights v Warriors - Round 16',
+    'Tetevano charged for tackle on Brooks',
+    'Papalii: I let the State down in Origin II',
+    'Seibold denies dumping Boyd rumours as baby Broncos emerge',
+    'Extended Highlights: Wests Tigers v Roosters',
+    'Full Match Replay: Wests Tigers v Roosters - Round 16, 2019',
+    'Roosters: Round 16',
+    'Wests Tigers: Round 16'
+]
+
+EXPECTED_LIVE_TITLES = [
+    'Wests Magpies v Bears LIVE'
+]
+
 # telstra_auth
 
 FAKE_XSRF_COOKIE = b'XSRF-TOKEN=foobar; path=/; secure'
+
 FAKE_BPSESSION_COOKIE = b'BPSESSION=AQICapYHjH4f; Domain=telstra.com.au; Path=/; HttpOnly; Secure'
 
 FAKE_UUID = [
@@ -190,20 +208,3 @@ SSO_REDIRECT_URL = 'https://hub.telstra.com.au/offers/content/cached/callback.ht
 FAKE_MOBILE_COOKIE = b'GUID_S=12345678901; path=/; secure'
 
 FAKE_MOBILE_COOKIE_NO_DATA = b'nouid=124.171.69.58; path=/; secure'
-
-EXPECTED_VIDEO_TITLES = [
-    '2019: Touch Premiership: Knights v Broncos',
-    'Long lost dogs back in the same pack',
-    'Knights v Warriors - Round 16',
-    'Tetevano charged for tackle on Brooks',
-    'Papalii: I let the State down in Origin II',
-    'Seibold denies dumping Boyd rumours as baby Broncos emerge',
-    'Extended Highlights: Wests Tigers v Roosters',
-    'Full Match Replay: Wests Tigers v Roosters - Round 16, 2019',
-    'Roosters: Round 16',
-    'Wests Tigers: Round 16'
-]
-
-EXPECTED_LIVE_TITLES = [
-    'Wests Magpies v Bears LIVE'
-]
