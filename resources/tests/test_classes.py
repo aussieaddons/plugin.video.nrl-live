@@ -3,7 +3,7 @@ from future.utils import string_types
 from collections import OrderedDict
 import json
 
-from resources.tests import fakes
+from resources.tests.fakes import fakes
 
 try:
     import mock

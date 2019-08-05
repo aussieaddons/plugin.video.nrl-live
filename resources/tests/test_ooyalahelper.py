@@ -3,13 +3,15 @@ from future.utils import string_types
 from collections import OrderedDict
 import json
 
-from resources.tests import fakes
+from resources.tests.fakes import fakes
 
 try:
     import mock
 except ImportError:
     import unittest.mock as mock
 
+import io
+import os
 import re
 import responses
 import testtools
@@ -22,6 +24,17 @@ import config
 import ooyalahelper
 
 class OoyalahelperTests(testtools.TestCase):
+    @classmethod
+    def setUpClass(self):
+        with open(os.path.join(os.getcwd(), 'fakes/xml/EMBED_TOKEN.xml'),
+                  'r') as f:
+            self.EMBED_TOKEN_XML = io.BytesIO(f.read()).read()
+        with open(os.path.join(os.getcwd(), 'fakes/json/AUTH.json'),
+                  'r') as f:
+            self.AUTH_JSON = io.BytesIO(f.read()).read()
+        with open(os.path.join(os.getcwd(), 'fakes/json/AUTH_FAILED.json'),
+                  'r') as f:
+            self.AUTH_FAILED_JSON = io.BytesIO(f.read()).read()
 
     @mock.patch('ooyalahelper.cache.delete')
     def test_clear_ticket(self, mock_delete):
@@ -64,12 +77,16 @@ class OoyalahelperTests(testtools.TestCase):
     def test_get_embed_token(self, mock_delete):
         with responses.RequestsMock() as rsps:
             rsps.add(responses.GET, config.EMBED_TOKEN_URL.format('foo'),
-                     body=fakes.EMBED_TOKEN_XML, status=200)
+                     body=self.EMBED_TOKEN_XML, status=200)
             observed = ooyalahelper.get_embed_token('bar123', 'foo')
             self.assertEqual('http://foobar.com/video', observed)
+
+    @responses.activate
+    @mock.patch('ooyalahelper.cache.delete')
+    def test_get_embed_token_fail(self, mock_delete):
         with responses.RequestsMock() as rsps:
             rsps.add(responses.GET, config.EMBED_TOKEN_URL.format('foo'),
-                     body=fakes.EMBED_TOKEN_XML, status=401)
+                     body=self.EMBED_TOKEN_XML, status=401)
             self.assertRaises(ooyalahelper.AussieAddonsException,
                               ooyalahelper.get_embed_token, 'bar123', 'foo')
             mock_delete.assert_called_with('NRLTICKET')
@@ -77,14 +94,14 @@ class OoyalahelperTests(testtools.TestCase):
     @responses.activate
     def test_get_secure_token(self):
         with responses.RequestsMock() as rsps:
-            rsps.add(responses.GET, 'https://foo.bar/', body=fakes.AUTH_JSON,
+            rsps.add(responses.GET, 'https://foo.bar/', body=self.AUTH_JSON,
                      status=200)
             observed = ooyalahelper.get_secure_token('https://foo.bar/',
                                                      fakes.VIDEO_ID)
             self.assertEqual(fakes.M3U8_URL, observed)
         with responses.RequestsMock() as rsps:
             rsps.add(responses.GET, 'https://foo.bar/',
-                     body=fakes.AUTH_JSON_FAILED,
+                     body=self.AUTH_FAILED_JSON,
                      status=200)
             self.assertRaises(ooyalahelper.AussieAddonsException,
                               ooyalahelper.get_secure_token,
@@ -93,16 +110,16 @@ class OoyalahelperTests(testtools.TestCase):
 
     @responses.activate
     @mock.patch('ooyalahelper.cache.get')
-    def test_get_m3u8_playlist(self, ticket):
-        ticket.return_value = 'foobar123456'
+    def test_get_m3u8_playlist(self, mock_ticket):
+        mock_ticket.return_value = 'foobar123456'
         import urllib
-        url = config.AUTH_URL.format(config.PCODE, fakes.VIDEO_ID,
+        auth_url = config.AUTH_URL.format(config.PCODE, fakes.VIDEO_ID,
                                      urllib.quote_plus(
                                          'http://foobar.com/video'))
-        responses.add(responses.GET, url,
-                      body=fakes.AUTH_JSON, status=200)
+        responses.add(responses.GET, auth_url,
+                      body=self.AUTH_JSON, status=200)
         responses.add(responses.GET,
                       config.EMBED_TOKEN_URL.format(fakes.VIDEO_ID),
-                      body=fakes.EMBED_TOKEN_XML, status=200)
+                      body=self.EMBED_TOKEN_XML, status=200)
         observed = ooyalahelper.get_m3u8_playlist(fakes.VIDEO_ID, '')
         self.assertEqual(fakes.M3U8_URL, observed)

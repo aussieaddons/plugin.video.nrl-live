@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Media>
+  <MediaSection Heading="LATEST MEDIA">
+    <Item Type="V" Featured="true">
+      <Id>68703</Id>
+      <Title>2019: Touch Premiership: Knights v Broncos</Title>
+      <Description>Coverage of the NRL Touch Football match between the Knights and Broncos from McDonald Jones Stadium.</Description>
+      <Timestamp>2019-07-06T05:05:00Z</Timestamp>
+      <Video Type="O" Id="UyeWc0aTE60tc7S_L6RV4ZuwP1CQ6tds" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://nrlliveimageprod.blob.core.windows.net/keyimage/436?center=0.5%2C0.5&amp;preset=nrlapp-tile-medium</FullImageUrl>
+    </Item>
+    <Item Type="V" Featured="false">
+      <Id>68704</Id>
+      <Title>Long lost dogs back in the same pack</Title>
+      <Description>Dale Finucane and David Klemmer talk about reuniting in the Blues line up ahead of their clash against the Maroons on Wednesday night.</Description>
+      <Timestamp>2019-07-06T04:00:41Z</Timestamp>
+      <Video Type="O" Id="U2M2I0aTE6ffHSiGnF4AjYtcEDzkbIcb" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=285784?center=0.5%2C0.5&amp;preset=nrlapp-tile-medium</FullImageUrl>
+    </Item>
+    <Item Type="V" Featured="false">
+      <Id>68618</Id>
+      <Title>Knights v Warriors - Round 16</Title>
+      <Description>Sam Squiers and Jamie Soward preview Newcastle Knights v New Zealand Warriors</Description>
+      <Timestamp>2019-07-06T03:00:41Z</Timestamp>
+      <Video Type="O" Id="5wdTM0aTE6s8nR9HYi3a6Mv9eEpvQnv6" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=285624?center=0.5%2C0.5&amp;preset=nrlapp-tile-medium</FullImageUrl>
+    </Item>
+    <Item Type="V" Featured="false">
+      <Id>68701</Id>
+      <Title>Tetevano charged for tackle on Brooks</Title>
+      <Description>Zane Tetevano has been charged by the match review committee for this tackle on Luke Brooks during the first half at Bankwest Stadium</Description>
+      <Timestamp>2019-07-06T02:40:34Z</Timestamp>
+      <Video Type="O" Id="5iaGM0aTE6m2dQFcTU8dG8otlz2IAGWY" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=285915?center=0.367%2C0.52&amp;preset=nrlapp-tile-medium</FullImageUrl>
+    </Item>
+    <Item Type="V" Featured="false">
+      <Id>68700</Id>
+      <Title>Papalii: I let the State down in Origin II</Title>
+      <Description>Maroons prop Josh Papalii will be out to write the wrongs from Queensland’s 32-point loss in Origin II, in the series decider next Wednesday night</Description>
+      <Timestamp>2019-07-06T02:26:21Z</Timestamp>
+      <Video Type="O" Id="1sbmc0aTE6v-w-7izv-_5ch2tP4ojgeY" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=285802?center=0.5%2C0.5&amp;preset=nrlapp-tile-medium</FullImageUrl>
+    </Item>
+    <Item Type="V" Featured="true">
+      <Id>68699</Id>
+      <Title>Seibold denies dumping Boyd rumours as baby Broncos emerge</Title>
+      <Description>Broncos coach Anthony Seibold says Brisbane will field the most inexperienced team in the club’s history against the Sharks, while hitting back at suggestions he has considered dropping skipper Darius Boyd</Description>
+      <Timestamp>2019-07-06T02:06:41Z</Timestamp>
+      <Video Type="O" Id="9ubGc0aTE6zXvBVDDUnEJI4Wn5bRFPUq" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=285801?center=0.5%2C0.5&amp;preset=nrlapp-tile-medium</FullImageUrl>
+    </Item>
+    <Item Type="V" Featured="false">
+      <Id>68696</Id>
+      <Title>Extended Highlights: Wests Tigers v Roosters</Title>
+      <Description>The Wests Tigers and Roosters do battle at Bankwest Stadium during round 16 of the 2019 NRL Telstra Premiership</Description>
+      <Timestamp>2019-07-06T00:01:02Z</Timestamp>
+      <Video Type="O" Id="t5YmQ0aTE6mXjNp_5a95oxHuGbq6GUKw" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=285797?center=0.316%2C0.498&amp;preset=nrlapp-tile-medium</FullImageUrl>
+    </Item>
+    <Item Type="V" Featured="false">
+      <Id>68695</Id>
+      <Title>Full Match Replay: Wests Tigers v Roosters - Round 16, 2019</Title>
+      <Description>NRL Telstra Premiership 2019 Round 16 Wests Tigers v Roosters Full Match Replay</Description>
+      <Timestamp>2019-07-06T00:01:02Z</Timestamp>
+      <Video Type="O" Id="13OWQ0aTE6Mg9lDUNKVQAK9YaUAhNvXp" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=285796?center=0.5%2C0.5&amp;preset=nrlapp-tile-medium</FullImageUrl>
+    </Item>
+    <Item Type="V" Featured="false">
+      <Id>68688</Id>
+      <Title>Roosters: Round 16</Title>
+      <Description>Trent Robinson chats to the media after his team's round 16 game against the Wests Tigers</Description>
+      <Timestamp>2019-07-05T12:51:54Z</Timestamp>
+      <Video Type="O" Id="RjNWQ0aTE6kCOxa4M_HBFftdgDklar1z" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=286044?center=0.5%2C0.5&amp;preset=nrlapp-tile-medium</FullImageUrl>
+    </Item>
+    <Item Type="V" Featured="false">
+      <Id>68687</Id>
+      <Title>Wests Tigers: Round 16</Title>
+      <Description>Michael Maguire chats to the media after his team's round 16 game against the Roosters</Description>
+      <Timestamp>2019-07-05T12:50:44Z</Timestamp>
+      <Video Type="O" Id="R5NWQ0aTE6SlATfuKhlYu1AuvBCLygs1" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=285906?center=0.5%2C0.5&amp;preset=nrlapp-tile-medium</FullImageUrl>
+    </Item>
+  </MediaSection>
+</Media>

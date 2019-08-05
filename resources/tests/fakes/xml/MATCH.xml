@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Media>
+  <MediaSection Heading="">
+    <Item Type="V" Featured="true">
+      <Id>68647</Id>
+      <Title>Full Match Replay: Dragons v Storm - Round 16, 2019</Title>
+      <Description>NRL Telstra Premiership 2019 Round 16 Dragons v Storm Full Match Replay</Description>
+      <Category>MATCH REPLAYS</Category>
+      <Length>5463</Length>
+      <Date>7/5/2019 • 9:49 AM</Date>
+      <Timestamp>2019-07-04T23:49:59Z</Timestamp>
+      <Video Type="O" Id="hnNTc0aTE6G5VpOAtrF3KOFl4FoWSbc3" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=285947?center=0.5%2C0.5&amp;preset=nrlapp-tile-large</FullImageUrl>
+      <LiveEvent>false</LiveEvent>
+      <LiveNow>false</LiveNow>
+    </Item>
+    <Item Type="V" Featured="false">
+      <Id>68519</Id>
+      <Title>Full Match Replay: Bulldogs v Sharks - Round 15, 2019</Title>
+      <Description>NRL Telstra Premiership 2019 Round 15 Bulldogs v Sharks Full Match Replay</Description>
+      <Category>MATCH REPLAYS</Category>
+      <Length>5883</Length>
+      <Date>7/1/2019 • 6:00 AM</Date>
+      <Timestamp>2019-06-30T20:00:40Z</Timestamp>
+      <Video Type="O" Id="RwZWEzaTE6_ZxjKaAi-hKASa7V3k-U5E" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=285354?center=0.5%2C0.5&amp;preset=nrlapp-tile-medium</FullImageUrl>
+      <LiveEvent>false</LiveEvent>
+      <LiveNow>false</LiveNow>
+    </Item>
+    <Item Type="V" Featured="false">
+      <Id>68517</Id>
+      <Title>Full Match Replay: Warriors v Panthers - Round 15, 2019</Title>
+      <Description>NRL Telstra Premiership 2019 Round 15 Warriors v Panthers Full Match Replay</Description>
+      <Category>MATCH REPLAYS</Category>
+      <Length>6641</Length>
+      <Date>7/1/2019 • 4:00 AM</Date>
+      <Timestamp>2019-06-30T18:00:41Z</Timestamp>
+      <Video Type="O" Id="tjOWEzaTE6l1jrdVKy0ZRD1RYy1tBrry" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=285345?center=0.5%2C0.5&amp;preset=nrlapp-tile-medium</FullImageUrl>
+      <LiveEvent>false</LiveEvent>
+      <LiveNow>false</LiveNow>
+    </Item>
+    <Item Type="V" Featured="false">
+      <Id>68476</Id>
+      <Title>Full Match Replay: Eels v Raiders - Round 15, 2019</Title>
+      <Description>NRL Telstra Premiership 2019 Round 15 Eels v Raiders Full Match Replay</Description>
+      <Category>MATCH REPLAYS</Category>
+      <Length>6040</Length>
+      <Date>6/30/2019 • 9:30 AM</Date>
+      <Timestamp>2019-06-29T23:30:31Z</Timestamp>
+      <Video Type="O" Id="dqMzczaTE6NEQEFwkIxYwXK5_S_T7498" PCode="BjZ2oyOsA0g9SvHHgrgYMEu0p1j1" />
+      <FullImageUrl>https://www.nrl.com/remote.axd?https://flex.nrl.ooflex.net/keyframedownloadcontroller?id=285180?center=0.5%2C0.5&amp;preset=nrlapp-tile-medium</FullImageUrl>
+      <LiveEvent>false</LiveEvent>
+      <LiveNow>false</LiveNow>
+    </Item>
+  </MediaSection>
+</Media>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Home>
+  <HeadlineItems>
+    <Item Type="BoxScore" Id="12345" />
+    <Item Type="BoxScore" Id="45678" Default="true" />
+    <Item Type="Media" Id="98765" />
+  </HeadlineItems>
+</Home>
