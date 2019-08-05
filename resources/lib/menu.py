@@ -7,71 +7,56 @@ import xbmcgui
 import xbmcplugin
 from aussieaddonscommon import utils
 
-_handle = int(sys.argv[1])
-_url = sys.argv[0]
 addonPath = xbmcaddon.Addon().getAddonInfo("path")
 
 
-def list_years(params):
-    """ create a list of the years that match replays are currently
-        available for"""
+def list_categories():
     try:
+        handle = int(sys.argv[1])
+        plugin_url = sys.argv[0]
         listing = []
-        params['action'] = 'listyears'
-        for year in config.YEARS:
-            params['year'] = year
-            li = xbmcgui.ListItem(str(year))
-            url = '{0}?{1}'.format(_url, utils.make_url(params))
+        for category in config.CATEGORIES:
+            li = xbmcgui.ListItem(category)
+            urlString = '{0}?action=listcategories&category={1}'
+            url = urlString.format(plugin_url, category)
             is_folder = True
             listing.append((url, li, is_folder))
-
-        xbmcplugin.addDirectoryItems(_handle,
-                                     sorted(listing, reverse=True),
-                                     len(listing))
-        xbmcplugin.endOfDirectory(_handle)
+        xbmcplugin.addDirectoryItems(handle, listing, len(listing))
+        xbmcplugin.endOfDirectory(handle)
     except Exception:
-        utils.handle_error('Unable to list years')
+        utils.handle_error('Unable to make categories list')
+        raise
 
 
 def list_videos(params):
     """ make our list of videos"""
     try:
+        handle = int(sys.argv[1])
+        plugin_url = sys.argv[0]
         video_list = comm.get_videos(params)
         listing = []
         for v in video_list:
             li = xbmcgui.ListItem(v.title, thumbnailImage=v.thumb)
             li.setProperty('IsPlayable', 'true')
             li.setInfo('video', {'plot': v.desc, 'plotoutline': v.desc})
-            url = '{0}?action=listvideos{1}'.format(_url, v.make_kodi_url())
+            url = '{0}?action=listvideos{1}'.format(plugin_url,
+                                                    v.make_kodi_url())
             is_folder = False
             listing.append((url, li, is_folder))
 
-        xbmcplugin.addDirectoryItems(_handle, listing, len(listing))
-        xbmcplugin.endOfDirectory(_handle)
+        xbmcplugin.addDirectoryItems(handle, listing, len(listing))
+        xbmcplugin.endOfDirectory(handle)
     except Exception:
         utils.handle_error('Unable to list comps')
-
-
-def list_categories():
-    try:
-        listing = []
-        for category in config.CATEGORIES:
-            li = xbmcgui.ListItem(category)
-            urlString = '{0}?action=listcategories&category={1}'
-            url = urlString.format(_url, category)
-            is_folder = True
-            listing.append((url, li, is_folder))
-
-        xbmcplugin.addDirectoryItems(_handle, listing, len(listing))
-        xbmcplugin.endOfDirectory(_handle)
-    except Exception:
-        utils.handle_error('Unable to make categories list')
+        raise
 
 
 def list_matches(params, live=False):
     """
     """
     try:
+        handle = int(sys.argv[1])
+        plugin_url = sys.argv[0]
         listing = []
         if not live:
             matches = comm.list_matches(params)
@@ -81,7 +66,8 @@ def list_matches(params, live=False):
         for m in matches:
             li = xbmcgui.ListItem(label=str(m.title), iconImage=m.thumb,
                                   thumbnailImage=m.thumb)
-            url = '{0}?action=listmatches{1}'.format(_url, m.make_kodi_url())
+            url = '{0}?action=listmatches{1}'.format(plugin_url,
+                                                     m.make_kodi_url())
             is_folder = False
             li.setProperty('IsPlayable', 'true')
             li.setInfo('video', {'plot': m.desc, 'plotoutline': m.desc})
@@ -93,13 +79,14 @@ def list_matches(params, live=False):
                 thumb = os.path.join(addonPath, 'resources', 'soon.jpg')
                 li = xbmcgui.ListItem(event.title, iconImage=thumb)
                 url = '{0}?action=listmatches{1}'.format(
-                    _url, event.make_kodi_url())
+                    plugin_url, event.make_kodi_url())
                 is_folder = False
                 listing.append((url, li, is_folder))
             xbmcplugin.addSortMethod(
-                _handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
+                handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
 
-        xbmcplugin.addDirectoryItems(_handle, listing, len(listing))
-        xbmcplugin.endOfDirectory(_handle)
+        xbmcplugin.addDirectoryItems(handle, listing, len(listing))
+        xbmcplugin.endOfDirectory(handle)
     except Exception:
         utils.handle_error('Unable to fetch match list')
+        raise
