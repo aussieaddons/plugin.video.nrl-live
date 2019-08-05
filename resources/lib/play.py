@@ -35,3 +35,4 @@ def play_video(params):
 
     except Exception:
         utils.handle_error('Unable to play video')
+        raise

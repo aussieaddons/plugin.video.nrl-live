@@ -40,7 +40,7 @@ def get_paid_token(username, password):
     login_resp = session.post(config.NRL_LOGIN, json=data)
     login_resp_json = json.loads(login_resp.text)
     if not login_resp_json.get('success') == True:  # noqa: E712
-        raise AussieAddonsException(
+        raise TelstraAuthException(
             'Login failed for nrl.com: {0}'.format(
                 login_resp_json.get('error')))
 
@@ -67,7 +67,7 @@ def get_paid_token(username, password):
     sub_status = session.get(config.STATUS_URL)
     status_json = json.loads(sub_status.text)
     if status_json.get('Valid') != 'true':
-        raise AussieAddonsException('NRL.com login failed: {0}'.format(
+        raise TelstraAuthException('NRL.com login failed: {0}'.format(
             status_json.get('Reason')))
     return ticket
 
@@ -231,7 +231,7 @@ def get_free_token(username, password):
     sub_status = session.get(config.STATUS_URL)
     status_json = json.loads(sub_status.text)
     if status_json.get('Valid') != 'true':
-        raise AussieAddonsException('Telstra ID activation failed: {0}'.format(
+        raise TelstraAuthException('Telstra ID activation failed: {0}'.format(
             status_json.get('Reason')))
     session.close()
     prog_dialog.update(100, 'Finished!')
@@ -345,7 +345,7 @@ def get_mobile_token():
     sub_status = session.get(config.STATUS_URL)
     status_json = json.loads(sub_status.text)
     if status_json.get('Valid') != 'true':
-        raise AussieAddonsException('Telstra ID activation failed: {0}'.format(
+        raise TelstraAuthException('Telstra ID activation failed: {0}'.format(
             status_json.get('Reason')))
     session.close()
     prog_dialog.update(100, 'Finished!')
