@@ -29,6 +29,9 @@ class OoyalahelperTests(testtools.TestCase):
         with open(os.path.join(os.getcwd(), 'fakes/xml/EMBED_TOKEN.xml'),
                   'r') as f:
             self.EMBED_TOKEN_XML = io.BytesIO(f.read()).read()
+        with open(os.path.join(os.getcwd(), 'fakes/xml/EMBED_TOKEN_FAIL.xml'),
+                  'r') as f:
+            self.EMBED_TOKEN_FAIL_XML = io.BytesIO(f.read()).read()
         with open(os.path.join(os.getcwd(), 'fakes/json/AUTH.json'),
                   'r') as f:
             self.AUTH_JSON = io.BytesIO(f.read()).read()
@@ -83,11 +86,53 @@ class OoyalahelperTests(testtools.TestCase):
 
     @responses.activate
     @mock.patch('ooyalahelper.cache.delete')
-    def test_get_embed_token_fail(self, mock_delete):
+    def test_get_embed_token_fail_401(self, mock_delete):
         with responses.RequestsMock() as rsps:
             rsps.add(responses.GET, config.EMBED_TOKEN_URL.format('foo'),
                      body=self.EMBED_TOKEN_XML, status=401)
             self.assertRaises(ooyalahelper.AussieAddonsException,
+                              ooyalahelper.get_embed_token, 'bar123', 'foo')
+            mock_delete.assert_called_with('NRLTICKET')
+
+    @responses.activate
+    @mock.patch('ooyalahelper.cache.delete')
+    def test_get_embed_token_fail_403(self, mock_delete):
+        with responses.RequestsMock() as rsps:
+            rsps.add(responses.GET, config.EMBED_TOKEN_URL.format('foo'),
+                     body=self.EMBED_TOKEN_FAIL_XML, status=403)
+            self.assertRaises(ooyalahelper.AussieAddonsException,
+                              ooyalahelper.get_embed_token, 'bar123', 'foo')
+            mock_delete.assert_called_with('NRLTICKET')
+
+    @responses.activate
+    @mock.patch('ooyalahelper.cache.delete')
+    def test_get_embed_token_fail_403(self, mock_delete):
+        with responses.RequestsMock() as rsps:
+            rsps.add(responses.GET, config.EMBED_TOKEN_URL.format('foo'),
+                     body=self.EMBED_TOKEN_FAIL_XML, status=404)
+            #ooyalahelper.get_embed_token('bar123', 'foo')
+            self.assertRaises(
+                ooyalahelper.session.requests.exceptions.HTTPError,
+                ooyalahelper.get_embed_token, 'bar123', 'foo')
+            mock_delete.assert_called_with('NRLTICKET')
+
+    @responses.activate
+    @mock.patch('ooyalahelper.cache.delete')
+    def test_get_embed_token_fail_errorcode(self, mock_delete):
+        with responses.RequestsMock() as rsps:
+            rsps.add(responses.GET, config.EMBED_TOKEN_URL.format('foo'),
+                     body=self.EMBED_TOKEN_FAIL_XML, status=200)
+            self.assertRaises(ooyalahelper.AussieAddonsException,
+                              ooyalahelper.get_embed_token, 'bar123', 'foo')
+            mock_delete.assert_called_with('NRLTICKET')
+
+    @responses.activate
+    @mock.patch('ooyalahelper.cache.delete')
+    def test_get_embed_token_fail_parseerror(self, mock_delete):
+        with responses.RequestsMock() as rsps:
+            rsps.add(responses.GET, config.EMBED_TOKEN_URL.format('foo'),
+                     body='not valid xml', status=200)
+            self.assertRaises(ooyalahelper.ET.ParseError,
                               ooyalahelper.get_embed_token, 'bar123', 'foo')
             mock_delete.assert_called_with('NRLTICKET')
 
@@ -99,6 +144,9 @@ class OoyalahelperTests(testtools.TestCase):
             observed = ooyalahelper.get_secure_token('https://foo.bar/',
                                                      fakes.VIDEO_ID)
             self.assertEqual(fakes.M3U8_URL, observed)
+
+    @responses.activate
+    def test_get_secure_token_fail_keyerror(self):
         with responses.RequestsMock() as rsps:
             rsps.add(responses.GET, 'https://foo.bar/',
                      body=self.AUTH_FAILED_JSON,
