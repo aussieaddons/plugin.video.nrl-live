@@ -85,7 +85,8 @@ class CommTests(testtools.TestCase):
 
     @responses.activate
     def test_get_box_numbers(self):
-        responses.add(responses.GET, config.HOME_URL, body=self.HOME_XML, status=200)
+        responses.add(responses.GET, config.HOME_URL, body=self.HOME_XML,
+                      status=200)
         observed = comm.get_box_numbers()
         self.assertEqual(['12345', '45678'], observed)
 

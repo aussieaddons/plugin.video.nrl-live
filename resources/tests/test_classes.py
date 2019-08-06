@@ -25,7 +25,8 @@ class UtilsTests(testtools.TestCase):
 
     def test_make_kodi_url(self):
         video = classes.Video()
-        attrs = OrderedDict(sorted(fakes.FAKE_VIDEO_ATTRS.items(), key=lambda x: x[0]))
+        attrs = OrderedDict(
+            sorted(fakes.FAKE_VIDEO_ATTRS.items(), key=lambda x: x[0]))
         for k, v in attrs.iteritems():
             setattr(video, k, v)
         self.assertEqual(fakes.FAKE_VIDEO_URL, video.make_kodi_url())
