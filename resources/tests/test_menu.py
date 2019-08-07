@@ -54,12 +54,19 @@ class MenuTests(testtools.TestCase):
             import menu
             menu.list_categories()
             for index, category in enumerate(config.CATEGORIES):
-                expected = 'plugin://{addonid}/?{params}'.format(
+                expected_url = 'plugin://{addonid}/?{params}'.format(
                     addonid=config.ADDON_ID,
                     params=unquote_plus(urlencode({'action': 'listcategories',
                                                    'category': category})))
-                observed = mock_plugin.directory[index].get('url')
-                self.assertEqual(expected, observed)
+                observed_url = mock_plugin.directory[index].get('url')
+                expected = urlparse(expected_url)
+                observed = urlparse(observed_url)
+                for x in range(6):
+                    if x == 4:
+                        self.assertEqual(dict(parse_qsl(expected[x])),
+                                         dict(parse_qsl(observed[x])))
+                    else:
+                        self.assertEqual(expected[x], observed[x])
 
     @responses.activate
     @mock.patch('xbmcgui.ListItem')
