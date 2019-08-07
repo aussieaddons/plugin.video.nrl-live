@@ -18,8 +18,7 @@ import xbmc
 
 from future.moves.urllib.parse import parse_qsl
 
-
-import classes
+import resources.lib.classes as classes
 
 class UtilsTests(testtools.TestCase):
 

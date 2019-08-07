@@ -20,23 +20,23 @@ from future.moves.urllib.parse import parse_qsl
 import io
 import os
 
-import comm
-import config
-
+import resources.lib.comm as comm
+import resources.lib.config as config
 
 class CommTests(testtools.TestCase):
 
     @classmethod
     def setUpClass(self):
-        with open(os.path.join(os.getcwd(), 'fakes/xml/BOX.xml'), 'r') as f:
+        cwd = os.path.join(os.getcwd(), 'resources/tests')
+        with open(os.path.join(cwd, 'fakes/xml/BOX.xml'), 'r') as f:
             self.BOX_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/xml/HOME.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/HOME.xml'), 'r') as f:
             self.HOME_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/xml/MATCH.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/MATCH.xml'), 'r') as f:
             self.MATCH_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/xml/SCORE.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/SCORE.xml'), 'r') as f:
             self.SCORE_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/xml/VIDEO.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/VIDEO.xml'), 'r') as f:
             self.VIDEO_XML = io.BytesIO(f.read()).read()
 
     def test_get_airtime(self):
@@ -92,7 +92,7 @@ class CommTests(testtools.TestCase):
 
 
     @responses.activate
-    @mock.patch('comm.get_box_numbers')
+    @mock.patch('resources.lib.comm.get_box_numbers')
     def test_get_live_matches(self, mock_box_list):
         escaped_box_url = re.escape(
             config.BOX_URL).replace('\{', '{').replace('\}', '}')

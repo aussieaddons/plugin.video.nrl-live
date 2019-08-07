@@ -20,27 +20,28 @@ import sys
 from future.moves.urllib.parse import urlparse, parse_qsl, urlencode
 from urllib import unquote_plus
 
-import config
+import resources.lib.config as config
 
 
 class MenuTests(testtools.TestCase):
 
     @classmethod
     def setUpClass(self):
-        with open(os.path.join(os.getcwd(), 'fakes/xml/BOX.xml'), 'r') as f:
+        cwd = os.path.join(os.getcwd(), 'resources/tests')
+        with open(os.path.join(cwd, 'fakes/xml/BOX.xml'), 'r') as f:
             self.BOX_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/xml/HOME.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/HOME.xml'), 'r') as f:
             self.HOME_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/xml/MATCH.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/MATCH.xml'), 'r') as f:
             self.MATCH_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/xml/SCORE.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/SCORE.xml'), 'r') as f:
             self.SCORE_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/xml/VIDEO.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/VIDEO.xml'), 'r') as f:
             self.VIDEO_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/xml/EMBED_TOKEN.xml'),
+        with open(os.path.join(cwd, 'fakes/xml/EMBED_TOKEN.xml'),
                   'r') as f:
             self.EMBED_TOKEN_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/xml/YINZCAM_AUTH_RESP.xml'),
+        with open(os.path.join(cwd, 'fakes/xml/YINZCAM_AUTH_RESP.xml'),
                   'r') as f:
             self.YINZCAM_AUTH_RESP_XML = io.BytesIO(f.read()).read()
 
@@ -51,7 +52,7 @@ class MenuTests(testtools.TestCase):
         mock_listitem.side_effect = fakes.FakeListItem
         mock_plugin = fakes.FakePlugin()
         with mock.patch.dict('sys.modules', xbmcplugin=mock_plugin):
-            import menu
+            import resources.lib.menu as menu
             menu.list_categories()
             for index, category in enumerate(config.CATEGORIES):
                 expected_url = 'plugin://{addonid}/?{params}'.format(
@@ -83,7 +84,7 @@ class MenuTests(testtools.TestCase):
 
         mock_plugin = fakes.FakePlugin()
         with mock.patch.dict('sys.modules', xbmcplugin=mock_plugin):
-            import menu
+            import resources.lib.menu as menu
             menu.list_videos(params)
             for index, expected in enumerate(fakes.EXPECTED_VIDEO_TITLES):
                 url = mock_plugin.directory[index].get('url')
@@ -106,7 +107,7 @@ class MenuTests(testtools.TestCase):
 
         mock_plugin = fakes.FakePlugin()
         with mock.patch.dict('sys.modules', xbmcplugin=mock_plugin):
-            import menu
+            import resources.lib.menu as menu
             menu.list_videos(params)
             for index, expected in enumerate(fakes.EXPECTED_VIDEO_TITLES):
                 li = mock_plugin.directory[index].get('listitem')
@@ -133,7 +134,7 @@ class MenuTests(testtools.TestCase):
         params = dict(parse_qsl(sys.argv[2][1:]))
         mock_plugin = fakes.FakePlugin()
         with mock.patch.dict('sys.modules', xbmcplugin=mock_plugin):
-            import menu
+            import resources.lib.menu as menu
             menu.list_matches(params, live=True)
             for index, expected in enumerate(fakes.EXPECTED_LIVE_TITLES):
                 url = mock_plugin.directory[index].get('url')

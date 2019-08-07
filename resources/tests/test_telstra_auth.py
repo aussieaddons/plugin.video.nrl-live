@@ -19,47 +19,47 @@ import xbmc
 
 from future.moves.urllib.parse import parse_qsl
 
-import config
-import telstra_auth
+import resources.lib.config as config
+import resources.lib.telstra_auth as telstra_auth
 
 
 class TelstraAuthTests(testtools.TestCase):
     @classmethod
     def setUpClass(self):
-        with open(os.path.join(os.getcwd(), 'fakes/json/NRL_TOKEN.json'),
+        cwd = os.path.join(os.getcwd(), 'resources/tests')
+        with open(os.path.join(cwd, 'fakes/json/NRL_TOKEN.json'),
                   'r') as f:
             self.NRL_TOKEN_JSON = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/json/OFFERS_RESP.json'),
+        with open(os.path.join(cwd, 'fakes/json/OFFERS_RESP.json'),
                   'r') as f:
             self.OFFERS_RESP_JSON = io.BytesIO(f.read()).read()
         with open(
-                os.path.join(os.getcwd(), 'fakes/json/OFFERS_FAIL_RESP.json'),
+                os.path.join(cwd, 'fakes/json/OFFERS_FAIL_RESP.json'),
                 'r') as f:
             self.OFFERS_FAIL_RESP_JSON = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/json/ORDER_RESP.json'),
+        with open(os.path.join(cwd, 'fakes/json/ORDER_RESP.json'),
                   'r') as f:
             self.ORDER_RESP_JSON = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/json/STATUS_RESP.json'),
+        with open(os.path.join(cwd, 'fakes/json/STATUS_RESP.json'),
                   'r') as f:
             self.STATUS_RESP_JSON = io.BytesIO(f.read()).read()
         with open(
-                os.path.join(os.getcwd(), 'fakes/json/STATUS_FAIL_RESP.json'),
+                os.path.join(cwd, 'fakes/json/STATUS_FAIL_RESP.json'),
                 'r') as f:
             self.STATUS_FAIL_RESP_JSON = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/xml/YINZCAM_AUTH_RESP.xml'),
+        with open(os.path.join(cwd, 'fakes/xml/YINZCAM_AUTH_RESP.xml'),
                   'r') as f:
             self.YINZCAM_AUTH_RESP_XML = io.BytesIO(f.read()).read()
         with open(
-                os.path.join(os.getcwd(), 'fakes/json/YINZCAM_AUTH_RESP.json'),
+                os.path.join(cwd, 'fakes/json/YINZCAM_AUTH_RESP.json'),
                 'r') as f:
             self.YINZCAM_AUTH_RESP_JSON = io.BytesIO(f.read()).read()
         with open(
-                os.path.join(os.getcwd(),
-                             'fakes/json/YINZCAM_AUTH2_RESP.json'),
+                os.path.join(cwd, 'fakes/json/YINZCAM_AUTH2_RESP.json'),
                 'r') as f:
             self.YINZCAM_AUTH2_RESP_JSON = io.BytesIO(f.read()).read()
         with open(
-                os.path.join(os.getcwd(), 'fakes/html/SPC_RESP.html'),
+                os.path.join(cwd, 'fakes/html/SPC_RESP.html'),
                 'r') as f:
             self.SPC_RESP_HTML = io.BytesIO(f.read()).read()
 

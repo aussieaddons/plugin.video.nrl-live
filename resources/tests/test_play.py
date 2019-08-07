@@ -20,7 +20,7 @@ import sys
 from future.moves.urllib.parse import urlparse, parse_qsl, urlencode
 from urllib import unquote_plus
 
-import config
+import resources.lib.config as config
 
 def escape_regex(s):
     escaped = re.escape(s)
@@ -30,14 +30,15 @@ def escape_regex(s):
 class PlayTests(testtools.TestCase):
     @classmethod
     def setUpClass(self):
-        with open(os.path.join(os.getcwd(), 'fakes/json/AUTH.json'), 'r') as f:
+        cwd = os.path.join(os.getcwd(), 'resources/tests')
+        with open(os.path.join(cwd, 'fakes/json/AUTH.json'), 'r') as f:
             self.AUTH_JSON = io.BytesIO(f.read()).read()
-        with open(os.path.join(os.getcwd(), 'fakes/xml/EMBED_TOKEN.xml'),
+        with open(os.path.join(cwd, 'fakes/xml/EMBED_TOKEN.xml'),
                   'r') as f:
             self.EMBED_TOKEN_XML = io.BytesIO(f.read()).read()
 
     @responses.activate
-    @mock.patch('ooyalahelper.cache.get')
+    @mock.patch('resources.lib.ooyalahelper.cache.get')
     @mock.patch('xbmcgui.ListItem')
     @mock.patch('sys.argv',
                 ['plugin://plugin.video.nrl-live/',
@@ -65,6 +66,6 @@ class PlayTests(testtools.TestCase):
         params = dict(parse_qsl(sys.argv[2][1:]))
         mock_plugin = fakes.FakePlugin()
         with mock.patch.dict('sys.modules', xbmcplugin=mock_plugin):
-            import play
+            import resources.lib.play as play
             play.play_video(params)
             self.assertEqual(fakes.M3U8_URL, mock_plugin.resolved[2].getPath())
