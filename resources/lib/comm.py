@@ -1,11 +1,12 @@
-import classes
-import config
 import datetime
 import json
 import re
 import time
 import urllib
 import xml.etree.ElementTree as ET
+
+from resources.lib import classes
+from resources.lib import config
 
 from aussieaddonscommon import utils
 from aussieaddonscommon import session
@@ -49,7 +50,7 @@ def list_matches(params):
             if not gm.attrib['Type'] == 'V':
                 continue
             g = classes.Video()
-            g.title = gm.find('Title').text.encode('ascii', 'replace')
+            g.title = utils.ensure_ascii(gm.find('Title').text)
             desc = gm.find('Description')
             if desc is not None:
                 if desc.text is not None:

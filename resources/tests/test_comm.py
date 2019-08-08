@@ -1,6 +1,4 @@
 from __future__ import absolute_import, unicode_literals
-from future.utils import string_types
-import json
 
 from resources.tests.fakes import fakes
 
@@ -12,11 +10,6 @@ except ImportError:
 import re
 import responses
 import testtools
-import traceback
-import xbmc
-
-from future.moves.urllib.parse import parse_qsl
-
 import io
 import os
 
@@ -28,15 +21,15 @@ class CommTests(testtools.TestCase):
     @classmethod
     def setUpClass(self):
         cwd = os.path.join(os.getcwd(), 'resources/tests')
-        with open(os.path.join(cwd, 'fakes/xml/BOX.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/BOX.xml'), 'rb') as f:
             self.BOX_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(cwd, 'fakes/xml/HOME.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/HOME.xml'), 'rb') as f:
             self.HOME_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(cwd, 'fakes/xml/MATCH.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/MATCH.xml'), 'rb') as f:
             self.MATCH_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(cwd, 'fakes/xml/SCORE.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/SCORE.xml'), 'rb') as f:
             self.SCORE_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(cwd, 'fakes/xml/VIDEO.xml'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/xml/VIDEO.xml'), 'rb') as f:
             self.VIDEO_XML = io.BytesIO(f.read()).read()
 
     def test_get_airtime(self):
@@ -48,7 +41,7 @@ class CommTests(testtools.TestCase):
     def test_fetch_url(self):
         responses.add(responses.GET, 'http://foo.bar/',
                       body=u'\ufeffHello World', status=200)
-        observed = comm.fetch_url('http://foo.bar/')
+        observed = comm.fetch_url('http://foo.bar/').decode('utf-8')
         self.assertEqual(observed, 'Hello World')
 
     @responses.activate

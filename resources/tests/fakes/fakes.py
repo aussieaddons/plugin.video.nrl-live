@@ -16,7 +16,7 @@ class FakeListItem(xbmcgui.ListItem):
         self.property = {}
         self.path = None
         self.subtitles = None
-        for k, v in locals().iteritems():
+        for k, v in locals().items():
             if k != 'self' and v:
                 setattr(self, k, v)
 
@@ -43,7 +43,7 @@ class FakeListItem(xbmcgui.ListItem):
             'landscape',
             'icon'
         ]
-        for k, v in dictionary.iteritems():
+        for k, v in dictionary.items():
             if k not in allowed_keys:
                 raise Exception('Unallowed key for setArt')
             self.art.update({k: v})
@@ -62,7 +62,7 @@ class FakeListItem(xbmcgui.ListItem):
         if defaultrating:
             assert defaultrating in allowed_keys
             self.defaultRating = defaultrating
-        for k, v in values.iteritems():
+        for k, v in values.items():
             assert k in allowed_keys
             self.uniqueid.update({k: v})
 
@@ -175,9 +175,9 @@ EXPECTED_LIVE_TITLES = [
 
 # telstra_auth
 
-FAKE_XSRF_COOKIE = b'XSRF-TOKEN=foobar; path=/; secure'
+FAKE_XSRF_COOKIE = 'XSRF-TOKEN=foobar; path=/; secure'
 
-FAKE_BPSESSION_COOKIE = b'BPSESSION=AQICapYHjH4f; Domain=telstra.com.au; Path=/; HttpOnly; Secure'
+FAKE_BPSESSION_COOKIE = 'BPSESSION=AQICapYHjH4f; Domain=telstra.com.au; Path=/; HttpOnly; Secure'
 
 FAKE_UUID = [
     'e8485af7-fe81-4064-bfb0-fdafbf68db33',
@@ -185,8 +185,8 @@ FAKE_UUID = [
 ]
 
 FAKE_RANDOM = [
-    '\xb7\x91e|\x7fd\x1e\xdal\x8b\x99\xe2Z\xf2\xe9Y',
-    '\x11\x7ff(\x01\n\xf7\x13lHq\xcb\xfa\x81\x03\xf3'
+    b'\xb7\x91e|\x7fd\x1e\xdal\x8b\x99\xe2Z\xf2\xe9Y',
+    b'\x11\x7ff(\x01\n\xf7\x13lHq\xcb\xfa\x81\x03\xf3'
         ]
 
 AUTH_REDIRECT_URL = 'https://www.nrl.com/account/login?ReturnUrl=%2Faccount%2Fauthorize%3Fresponse_type%3Dcode%26scope%3Dopenid%2520email%2520profile%2520offline_access%26client_id%3Dnrlapp-ios%26redirect_uri%3Dhttps%3A%2F%2Fredirect.nrl-live.app.openid.yinzcam.com'
@@ -205,6 +205,6 @@ SSO_URL = 'https://tapi.telstra.com/v1/sso/idpcallback?cbs=foobar123abc&app_name
 
 SSO_REDIRECT_URL = 'https://hub.telstra.com.au/offers/content/cached/callback.html#id_token=idtoken123&access_token=accesstoken123&token_type=Bearer&expires_in=869&state=b791657c7f641eda6c8b99e25af2e959'
 
-FAKE_MOBILE_COOKIE = b'GUID_S=12345678901; path=/; secure'
+FAKE_MOBILE_COOKIE = 'GUID_S=12345678901; path=/; secure'
 
-FAKE_MOBILE_COOKIE_NO_DATA = b'nouid=124.171.69.58; path=/; secure'
+FAKE_MOBILE_COOKIE_NO_DATA = 'nouid=124.171.69.58; path=/; secure'

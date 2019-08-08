@@ -1,13 +1,15 @@
 import base64
-import config
 import json
-import re
 import requests
-import StringIO
-import telstra_auth
-import urllib
 import xbmcaddon
 import xml.etree.ElementTree as ET
+
+from future.moves.urllib.parse import quote_plus
+
+from builtins import str
+
+from resources.lib import config
+from resources.lib import telstra_auth
 
 from aussieaddonscommon.exceptions import AussieAddonsException
 from aussieaddonscommon import session
@@ -17,7 +19,7 @@ try:
     import StorageServer
 except:
     utils.log("script.common.plugin.cache not found!")
-    import storageserverdummy as StorageServer
+    import resources.lib.storageserverdummy as StorageServer
 cache = StorageServer.StorageServer(config.ADDON_ID, 1)
 sess = session.Session()
 addon = xbmcaddon.Addon()
@@ -127,7 +129,7 @@ def get_secure_token(secure_url, videoId):
                 raise Exception('Error: {0}'.format(auth_msg))
         except Exception as e:
             raise e
-    return base64.b64decode(token)
+    return base64.b64decode(token).decode('utf-8')
 
 
 def get_m3u8_playlist(video_id, pcode):
@@ -142,6 +144,6 @@ def get_m3u8_playlist(video_id, pcode):
     embed_token = get_embed_token(login_ticket, video_id)
     authorize_url = config.AUTH_URL.format(pcode,
                                            video_id,
-                                           urllib.quote_plus(embed_token))
+                                           quote_plus(embed_token))
     secure_token_url = get_secure_token(authorize_url, video_id)
     return secure_token_url

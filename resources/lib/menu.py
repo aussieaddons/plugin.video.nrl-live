@@ -1,10 +1,12 @@
-import comm
-import config
 import os
 import sys
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
+
+from resources.lib import comm
+from resources.lib import config
+
 from aussieaddonscommon import utils
 
 addonPath = xbmcaddon.Addon().getAddonInfo("path")

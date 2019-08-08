@@ -1,7 +1,4 @@
 from __future__ import absolute_import, unicode_literals
-from future.utils import string_types
-from collections import OrderedDict
-import json
 
 from resources.tests.fakes import fakes
 
@@ -12,13 +9,11 @@ except ImportError:
 
 import io
 import os
-import re
+
 import responses
 import testtools
-import traceback
-import xbmc
 
-from future.moves.urllib.parse import parse_qsl
+from future.moves.urllib.parse import parse_qsl, quote_plus
 
 import resources.lib.config as config
 import resources.lib.ooyalahelper as ooyalahelper
@@ -28,16 +23,16 @@ class OoyalahelperTests(testtools.TestCase):
     def setUpClass(self):
         cwd = os.path.join(os.getcwd(), 'resources/tests')
         with open(os.path.join(cwd, 'fakes/xml/EMBED_TOKEN.xml'),
-                  'r') as f:
+                  'rb') as f:
             self.EMBED_TOKEN_XML = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/EMBED_TOKEN_FAIL.xml'),
-                  'r') as f:
+                  'rb') as f:
             self.EMBED_TOKEN_FAIL_XML = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/json/AUTH.json'),
-                  'r') as f:
+                  'rb') as f:
             self.AUTH_JSON = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/json/AUTH_FAILED.json'),
-                  'r') as f:
+                  'rb') as f:
             self.AUTH_FAILED_JSON = io.BytesIO(f.read()).read()
 
     @mock.patch('resources.lib.ooyalahelper.cache.delete')
@@ -161,10 +156,9 @@ class OoyalahelperTests(testtools.TestCase):
     @mock.patch('resources.lib.ooyalahelper.cache.get')
     def test_get_m3u8_playlist(self, mock_ticket):
         mock_ticket.return_value = 'foobar123456'
-        import urllib
-        auth_url = config.AUTH_URL.format(config.PCODE, fakes.VIDEO_ID,
-                                     urllib.quote_plus(
-                                         'http://foobar.com/video'))
+        auth_url = config.AUTH_URL.format(
+            config.PCODE, fakes.VIDEO_ID,
+            quote_plus('http://foobar.com/video'))
         responses.add(responses.GET, auth_url,
                       body=self.AUTH_JSON, status=200)
         responses.add(responses.GET,

@@ -1,12 +1,14 @@
 import binascii
-import config
 import json
 import os
 import re
 import requests
-import urlparse
 import uuid
 import xbmcgui
+
+from future.moves.urllib.parse import urlparse, urlsplit, parse_qsl
+
+from resources.lib import config
 
 from aussieaddonscommon.exceptions import AussieAddonsException
 from aussieaddonscommon import session as custom_session
@@ -46,8 +48,8 @@ def get_paid_token(username, password):
 
     auth2_resp = session.get(config.NRL_AUTH, allow_redirects=False)
     redirect_url = auth2_resp.headers.get('Location')
-    redirect_pieces = urlparse.urlsplit(redirect_url)
-    redirect_query = dict(urlparse.parse_qsl(redirect_pieces.query))
+    redirect_pieces = urlsplit(redirect_url)
+    redirect_query = dict(parse_qsl(redirect_pieces.query))
     code = redirect_query.get('code')
     token_form = {'code': code}
     token_form.update(config.TOKEN_DATA)
@@ -118,12 +120,11 @@ def get_free_token(username, password):
     prog_dialog.update(33, 'Signing on to telstra.com')
     sso_params = config.SSO_PARAMS
     sso_params.update({'client_id': sso_token,
-                       'state': binascii.b2a_hex(os.urandom(16)),
-                       'nonce': binascii.b2a_hex(os.urandom(16))})
+                       'state': binascii.hexlify(os.urandom(16)),
+                       'nonce': binascii.hexlify(os.urandom(16))})
 
     sso_auth_resp = session.get(config.SSO_URL, params=sso_params)
-    sso_url = dict(urlparse.parse_qsl(
-                   urlparse.urlsplit(sso_auth_resp.url)[3])).get('goto')
+    sso_url = dict(parse_qsl(urlsplit(sso_auth_resp.url)[3])).get('goto')
 
     # login to telstra.com.au and get our BPSESSION cookie
     session.headers.update(config.SIGNON_HEADERS)
@@ -136,8 +137,8 @@ def get_free_token(username, password):
 
     # check signon is valid (correct username/password)
 
-    signon_pieces = urlparse.urlsplit(signon.headers.get('Location'))
-    signon_query = dict(urlparse.parse_qsl(signon_pieces.query))
+    signon_pieces = urlsplit(signon.headers.get('Location'))
+    signon_query = dict(parse_qsl(signon_pieces.query))
 
     utils.log('Sign-on result: %s' % signon_query)
 
@@ -161,13 +162,12 @@ def get_free_token(username, password):
     sso_headers.update({'Cookie': 'BPSESSION={0}'.format(bp_session)})
     session.headers = sso_headers
     sso_token_resp = session.get(sso_url)
-    bearer_token = dict(urlparse.parse_qsl(
-                    urlparse.urlsplit(sso_token_resp.url)[4]))['access_token']
+    bearer_token = dict(parse_qsl(
+                    urlsplit(sso_token_resp.url)[4]))['access_token']
 
     # First check if there are any eligible services attached to the account
     prog_dialog.update(50, 'Determining eligible services')
-    offer_id = dict(urlparse.parse_qsl(
-                    urlparse.urlsplit(spc_url)[3]))['offerId']
+    offer_id = dict(parse_qsl(urlsplit(spc_url)[3]))['offerId']
     media_order_headers = config.MEDIA_ORDER_HEADERS
     media_order_headers.update(
         {'Authorization': 'Bearer {0}'.format(bearer_token)})

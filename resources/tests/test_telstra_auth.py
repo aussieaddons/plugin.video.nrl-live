@@ -28,39 +28,39 @@ class TelstraAuthTests(testtools.TestCase):
     def setUpClass(self):
         cwd = os.path.join(os.getcwd(), 'resources/tests')
         with open(os.path.join(cwd, 'fakes/json/NRL_TOKEN.json'),
-                  'r') as f:
+                  'rb') as f:
             self.NRL_TOKEN_JSON = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/json/OFFERS_RESP.json'),
-                  'r') as f:
+                  'rb') as f:
             self.OFFERS_RESP_JSON = io.BytesIO(f.read()).read()
         with open(
                 os.path.join(cwd, 'fakes/json/OFFERS_FAIL_RESP.json'),
-                'r') as f:
+                'rb') as f:
             self.OFFERS_FAIL_RESP_JSON = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/json/ORDER_RESP.json'),
-                  'r') as f:
+                  'rb') as f:
             self.ORDER_RESP_JSON = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/json/STATUS_RESP.json'),
-                  'r') as f:
+                  'rb') as f:
             self.STATUS_RESP_JSON = io.BytesIO(f.read()).read()
         with open(
                 os.path.join(cwd, 'fakes/json/STATUS_FAIL_RESP.json'),
-                'r') as f:
+                'rb') as f:
             self.STATUS_FAIL_RESP_JSON = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/YINZCAM_AUTH_RESP.xml'),
-                  'r') as f:
+                  'rb') as f:
             self.YINZCAM_AUTH_RESP_XML = io.BytesIO(f.read()).read()
         with open(
                 os.path.join(cwd, 'fakes/json/YINZCAM_AUTH_RESP.json'),
-                'r') as f:
+                'rb') as f:
             self.YINZCAM_AUTH_RESP_JSON = io.BytesIO(f.read()).read()
         with open(
                 os.path.join(cwd, 'fakes/json/YINZCAM_AUTH2_RESP.json'),
-                'r') as f:
+                'rb') as f:
             self.YINZCAM_AUTH2_RESP_JSON = io.BytesIO(f.read()).read()
         with open(
                 os.path.join(cwd, 'fakes/html/SPC_RESP.html'),
-                'r') as f:
+                'rb') as f:
             self.SPC_RESP_HTML = io.BytesIO(f.read()).read()
 
     @responses.activate

@@ -14,11 +14,10 @@ import os
 import re
 import responses
 import testtools
-import traceback
 import sys
 
-from future.moves.urllib.parse import urlparse, parse_qsl, urlencode
-from urllib import unquote_plus
+from future.moves.urllib.parse import parse_qsl
+
 
 import resources.lib.config as config
 
@@ -31,10 +30,10 @@ class PlayTests(testtools.TestCase):
     @classmethod
     def setUpClass(self):
         cwd = os.path.join(os.getcwd(), 'resources/tests')
-        with open(os.path.join(cwd, 'fakes/json/AUTH.json'), 'r') as f:
+        with open(os.path.join(cwd, 'fakes/json/AUTH.json'), 'rb') as f:
             self.AUTH_JSON = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/EMBED_TOKEN.xml'),
-                  'r') as f:
+                  'rb') as f:
             self.EMBED_TOKEN_XML = io.BytesIO(f.read()).read()
 
     @responses.activate
