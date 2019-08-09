@@ -1,25 +1,27 @@
 import base64
 import json
-import requests
-import xbmcaddon
 import xml.etree.ElementTree as ET
+from builtins import str
 
 from future.moves.urllib.parse import quote_plus
 
-from builtins import str
+import requests
+
+from aussieaddonscommon import session
+from aussieaddonscommon import utils
+from aussieaddonscommon.exceptions import AussieAddonsException
 
 from resources.lib import config
 from resources.lib import telstra_auth
 
-from aussieaddonscommon.exceptions import AussieAddonsException
-from aussieaddonscommon import session
-from aussieaddonscommon import utils
-
 try:
     import StorageServer
-except:
+except Exception:
     utils.log("script.common.plugin.cache not found!")
     import resources.lib.storageserverdummy as StorageServer
+
+import xbmcaddon
+
 cache = StorageServer.StorageServer(config.ADDON_ID, 1)
 sess = session.Session()
 addon = xbmcaddon.Addon()
@@ -51,7 +53,7 @@ def get_user_ticket():
         ticket = telstra_auth.get_free_token(telstra_username,
                                              telstra_password)
     elif sub_type == 2:  # mobile activated subscription
-            ticket = telstra_auth.get_mobile_token()
+        ticket = telstra_auth.get_mobile_token()
     else:
         ticket = telstra_auth.get_paid_token(nrl_username,
                                              nrl_password)
@@ -129,7 +131,7 @@ def get_secure_token(secure_url, videoId):
                 raise Exception('Error: {0}'.format(auth_msg))
         except Exception as e:
             raise e
-    return base64.b64decode(token).decode('utf-8')
+    return base64.b64decode(token)
 
 
 def get_m3u8_playlist(video_id, pcode):

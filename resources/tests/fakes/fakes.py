@@ -6,21 +6,23 @@ class FakeListItem(xbmcgui.ListItem):
     def __init__(self, label="", label2="", iconImage="", thumbnailImage="",
                  path="", offscreen=False):
         super(FakeListItem, self).__init__()
-        # type: (str_type, str_type, str_type, str_type, str_type, bool) -> None
+        self.setLabel(label)
+        self.setLabel2(label2)
+        self.setIconImage(iconImage)
+        self.setThumbnailImage(thumbnailImage)
+        self.setPath(path)
+        self.offscreen = offscreen
         self.art = {}
-        self.uniqueid = {}
         self.defaultRating = ''
-        self.rating = {}
         self.info = {}
+        self.rating = {}
         self.streamInfo = {}
         self.property = {}
-        self.path = None
         self.subtitles = None
-        for k, v in locals().items():
-            if k != 'self' and v:
-                setattr(self, k, v)
+        self.uniqueid = {}
 
     def setLabel(self, label):
+        assert isinstance(label, basestring)
         self.label = label
 
     def setLabel2(self, label):
@@ -91,9 +93,11 @@ class FakeListItem(xbmcgui.ListItem):
         self.property.update(dictionary)
 
     def setPath(self, path):
+        assert isinstance(path, (str, bytes))
         self.path = path
 
     def setSubtitles(self, subtitleFiles):
+        assert isinstance(subtitleFiles, (str, bytes))
         self.subtitles = subtitleFiles
 
     def getLabel(self):
@@ -115,7 +119,9 @@ class FakePlugin(object):
         self.SORT_METHOD_VIDEO_TITLE = 25
         self.directory = []
 
-    def addDirectoryItem(self, handle, url, listitem, isFolder=False, totalItems=0):
+    def addDirectoryItem(self, handle, url, listitem, isFolder=False,
+                         totalItems=0):
+        assert isinstance(url, (str, bytes))
         self.directory.append(
             {'handle': handle, 'url': url, 'listitem': listitem,
              'isFolder': isFolder})
