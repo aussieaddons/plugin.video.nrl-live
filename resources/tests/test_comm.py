@@ -1,20 +1,22 @@
 from __future__ import absolute_import, unicode_literals
 
-from resources.tests.fakes import fakes
+import io
+import os
+import re
 
 try:
     import mock
 except ImportError:
     import unittest.mock as mock
 
-import re
 import responses
+
 import testtools
-import io
-import os
 
 import resources.lib.comm as comm
 import resources.lib.config as config
+from resources.tests.fakes import fakes
+
 
 class CommTests(testtools.TestCase):
 
@@ -83,12 +85,11 @@ class CommTests(testtools.TestCase):
         observed = comm.get_box_numbers()
         self.assertEqual(['12345', '45678'], observed)
 
-
     @responses.activate
     @mock.patch('resources.lib.comm.get_box_numbers')
     def test_get_live_matches(self, mock_box_list):
         escaped_box_url = re.escape(
-            config.BOX_URL).replace('\{', '{').replace('\}', '}')
+            config.BOX_URL).replace('\\{', '{').replace('\\}', '}')
         box_url = re.compile(escaped_box_url.format('.*'))
         responses.add(responses.GET, box_url, body=self.BOX_XML, status=200)
         mock_box_list.return_value = ['12345']

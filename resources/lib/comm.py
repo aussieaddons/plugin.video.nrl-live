@@ -5,13 +5,13 @@ import time
 import urllib
 import xml.etree.ElementTree as ET
 
+from bs4 import BeautifulSoup
+
+from aussieaddonscommon import session
+from aussieaddonscommon import utils
+
 from resources.lib import classes
 from resources.lib import config
-
-from aussieaddonscommon import utils
-from aussieaddonscommon import session
-
-from bs4 import BeautifulSoup
 
 
 def get_airtime(timestamp):

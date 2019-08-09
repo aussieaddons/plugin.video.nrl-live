@@ -1,25 +1,24 @@
 from __future__ import absolute_import, unicode_literals
-from future.utils import string_types
-import json
 
-from resources.tests.fakes import fakes
-
+import io
+import os
+import re
+import sys
 try:
     import mock
 except ImportError:
     import unittest.mock as mock
 
-import io
-import os
-import re
-import responses
-import testtools
-import traceback
-import sys
+from future.moves.urllib.parse import parse_qsl, unquote_plus, \
+    urlencode, urlparse
 
-from future.moves.urllib.parse import urlparse, parse_qsl, urlencode, unquote_plus
+import responses
+
+import testtools
 
 import resources.lib.config as config
+from resources.tests.fakes import fakes
+
 
 class MenuTests(testtools.TestCase):
 
@@ -45,7 +44,7 @@ class MenuTests(testtools.TestCase):
 
     @mock.patch('xbmcgui.ListItem')
     @mock.patch('sys.argv',
-                ['plugin://plugin.video.nrl-live/','2','','resume:false'])
+                ['plugin://plugin.video.nrl-live/', '2', '', 'resume:false'])
     def test_list_categories(self, mock_listitem):
         mock_listitem.side_effect = fakes.FakeListItem
         mock_plugin = fakes.FakePlugin()
@@ -122,7 +121,7 @@ class MenuTests(testtools.TestCase):
         responses.add(responses.GET, config.HOME_URL,
                       body=self.HOME_XML, status=200)
         escaped_box_url = re.escape(
-            config.BOX_URL).replace('\{', '{').replace('\}', '}')
+            config.BOX_URL).replace('\\{', '{').replace('\\}', '}')
         box_url = re.compile(escaped_box_url.format('.*'))
         responses.add(responses.GET, box_url,
                       body=self.BOX_XML, status=200)

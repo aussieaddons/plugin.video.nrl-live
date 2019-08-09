@@ -1,29 +1,27 @@
 from __future__ import absolute_import, unicode_literals
-from future.utils import string_types
-import json
 
-from resources.tests.fakes import fakes
-
+import io
+import os
+import re
+import sys
 try:
     import mock
 except ImportError:
     import unittest.mock as mock
 
-import io
-import os
-import re
-import responses
-import testtools
-import sys
-
 from future.moves.urllib.parse import parse_qsl
 
+import responses
+
+import testtools
 
 import resources.lib.config as config
+from resources.tests.fakes import fakes
+
 
 def escape_regex(s):
     escaped = re.escape(s)
-    return escaped.replace('\{', '{').replace('\}', '}')
+    return escaped.replace('\\{', '{').replace('\\}', '}')
 
 
 class PlayTests(testtools.TestCase):
@@ -49,13 +47,13 @@ class PlayTests(testtools.TestCase):
                  'resume:false'])
     def test_play_video(self, mock_listitem, mock_ticket):
         escaped_auth_url = re.escape(
-            config.AUTH_URL).replace('\{', '{').replace('\}', '}')
+            config.AUTH_URL).replace('\\{', '{').replace('\\}', '}')
         auth_url = re.compile(escaped_auth_url.format('.*', '.*', '.*'))
         responses.add(responses.GET, auth_url,
                       body=self.AUTH_JSON, status=200)
 
         escaped_embed_url = re.escape(
-            config.EMBED_TOKEN_URL).replace('\{', '{').replace('\}', '}')
+            config.EMBED_TOKEN_URL).replace('\\{', '{').replace('\\}', '}')
         embed_url = re.compile(escaped_embed_url.format('.*'))
         responses.add(responses.GET, embed_url,
                       body=self.EMBED_TOKEN_XML, status=200)

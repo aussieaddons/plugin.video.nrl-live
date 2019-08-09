@@ -1,26 +1,20 @@
 from __future__ import absolute_import, unicode_literals
-from future.utils import string_types
-from collections import OrderedDict
+
+import io
 import json
-
-from resources.tests.fakes import fakes
-
+import os
 try:
     import mock
 except ImportError:
     import unittest.mock as mock
-import io
-import os
-import re
-import responses
-import testtools
-import traceback
-import xbmc
 
-from future.moves.urllib.parse import parse_qsl
+import responses
+
+import testtools
 
 import resources.lib.config as config
 import resources.lib.telstra_auth as telstra_auth
+from resources.tests.fakes import fakes
 
 
 class TelstraAuthTests(testtools.TestCase):
@@ -423,7 +417,7 @@ class TelstraAuthTests(testtools.TestCase):
 
     @responses.activate
     @mock.patch('uuid.uuid4')
-    def test_get_mobile_token_no_offer(self, mock_uuid):
+    def test_get_mobile_token_fail_no_offer(self, mock_uuid):
         responses.add(responses.POST, config.YINZCAM_AUTH_URL,
                       body=self.YINZCAM_AUTH_RESP_XML,
                       status=200)
@@ -444,7 +438,7 @@ class TelstraAuthTests(testtools.TestCase):
 
     @responses.activate
     @mock.patch('uuid.uuid4')
-    def test_get_mobile_token_no_eligible(self, mock_uuid):
+    def test_get_mobile_token_fail_no_eligible(self, mock_uuid):
         responses.add(responses.POST, config.YINZCAM_AUTH_URL,
                       body=self.YINZCAM_AUTH_RESP_XML,
                       status=200)
@@ -465,7 +459,7 @@ class TelstraAuthTests(testtools.TestCase):
 
     @responses.activate
     @mock.patch('uuid.uuid4')
-    def test_get_mobile_token(self, mock_uuid):
+    def test_get_mobile_token_fail_activation(self, mock_uuid):
         responses.add(responses.POST, config.YINZCAM_AUTH_URL,
                       body=self.YINZCAM_AUTH_RESP_XML,
                       status=200)

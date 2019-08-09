@@ -1,13 +1,16 @@
 import os
 import sys
-import xbmcaddon
-import xbmcgui
-import xbmcplugin
+
+from aussieaddonscommon import utils
 
 from resources.lib import comm
 from resources.lib import config
 
-from aussieaddonscommon import utils
+import xbmcaddon
+
+import xbmcgui
+
+import xbmcplugin
 
 addonPath = xbmcaddon.Addon().getAddonInfo("path")
 

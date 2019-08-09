@@ -2,19 +2,20 @@ import binascii
 import json
 import os
 import re
-import requests
 import uuid
-import xbmcgui
+import xml.etree.ElementTree as ET
 
-from future.moves.urllib.parse import urlparse, urlsplit, parse_qsl
+from future.moves.urllib.parse import parse_qsl, urlsplit
+
+import requests
+
+from aussieaddonscommon import session as custom_session
+from aussieaddonscommon import utils
+from aussieaddonscommon.exceptions import AussieAddonsException
 
 from resources.lib import config
 
-from aussieaddonscommon.exceptions import AussieAddonsException
-from aussieaddonscommon import session as custom_session
-from aussieaddonscommon import utils
-
-import xml.etree.ElementTree as ET
+import xbmcgui
 
 
 class TelstraAuthException(AussieAddonsException):
@@ -108,7 +109,7 @@ def get_free_token(username, password):
     # GET to our spc url and receive SSO client ID
     session.headers = config.SPC_HEADERS
     spc_resp = session.get(spc_url)
-    sso_token_match = re.search('ssoClientId = "(\w+)"', spc_resp.text)
+    sso_token_match = re.search('ssoClientId = "(\\w+)"', spc_resp.text)
     try:
         sso_token = sso_token_match.group(1)
     except AttributeError as e:
@@ -213,7 +214,7 @@ def get_free_token(username, password):
             status = order_json['data'].get('status') == 'COMPLETE'
             if status:
                 utils.log('Order status complete')
-        except:
+        except Exception:
             utils.log('Unable to check status of order, continuing anyway')
 
     # Register the ticket
@@ -328,7 +329,7 @@ def get_mobile_token():
             status = order_json['data'].get('status') == 'COMPLETE'
             if status:
                 utils.log('Order status complete')
-        except:
+        except Exception:
             utils.log('Unable to check status of order, continuing anyway')
     # Register the ticket
     prog_dialog.update(83, 'Registering live pass with ticket')

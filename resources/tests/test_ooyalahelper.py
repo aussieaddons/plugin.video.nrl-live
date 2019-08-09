@@ -1,22 +1,22 @@
 from __future__ import absolute_import, unicode_literals
 
-from resources.tests.fakes import fakes
-
+import io
+import os
 try:
     import mock
 except ImportError:
     import unittest.mock as mock
 
-import io
-import os
+from future.moves.urllib.parse import quote_plus
 
 import responses
-import testtools
 
-from future.moves.urllib.parse import parse_qsl, quote_plus
+import testtools
 
 import resources.lib.config as config
 import resources.lib.ooyalahelper as ooyalahelper
+from resources.tests.fakes import fakes
+
 
 class OoyalahelperTests(testtools.TestCase):
     @classmethod
@@ -40,36 +40,42 @@ class OoyalahelperTests(testtools.TestCase):
         ooyalahelper.clear_ticket()
         mock_delete.assert_called_with('NRLTICKET')
 
-    def test_get_user_ticket(self):
-        with mock.patch('resources.lib.ooyalahelper.cache.get') as ticket:
-            ticket.return_value = 'foobar123456'
-            observed = ooyalahelper.get_user_ticket()
-            self.assertEqual('foobar123456', observed)
+    @mock.patch('resources.lib.ooyalahelper.cache.get')
+    def test_get_user_ticket_cached(self, mock_ticket):
+        mock_ticket.return_value = 'foobar123456'
+        observed = ooyalahelper.get_user_ticket()
+        self.assertEqual('foobar123456', observed)
 
-        with mock.patch('resources.lib.ooyalahelper.cache.get') as ticket:
-            ticket.return_value = ''
-            with mock.patch('resources.lib.ooyalahelper.addon.getSetting') as sub_type:
-                with mock.patch(
-                        'resources.lib.ooyalahelper.telstra_auth.get_free_token') as \
-                        free_token:
-                    sub_type.return_value = '1'
-                    free_token.return_value = 'foobar456789'
-                    observed = ooyalahelper.get_user_ticket()
-                    self.assertEqual('foobar456789', observed)
-                with mock.patch(
-                        'resources.lib.ooyalahelper.telstra_auth.get_mobile_token') as \
-                        mobile_token:
-                    sub_type.return_value = '2'
-                    mobile_token.return_value = 'foobar654321'
-                    observed = ooyalahelper.get_user_ticket()
-                    self.assertEqual('foobar654321', observed)
-                with mock.patch(
-                        'resources.lib.ooyalahelper.telstra_auth.get_paid_token') as \
-                        paid_token:
-                    sub_type.return_value = '3'
-                    paid_token.return_value = 'foobar987654'
-                    observed = ooyalahelper.get_user_ticket()
-                    self.assertEqual('foobar987654', observed)
+    @mock.patch('resources.lib.ooyalahelper.telstra_auth.get_free_token')
+    @mock.patch('resources.lib.ooyalahelper.addon.getSetting')
+    @mock.patch('resources.lib.ooyalahelper.cache.get')
+    def test_get_user_ticket_free(self, mock_ticket, mock_sub_type,
+                                  mock_token):
+        mock_ticket.return_value = ''
+        mock_sub_type.return_value = '1'
+        mock_token.return_value = 'foobar456789'
+
+    @mock.patch('resources.lib.ooyalahelper.telstra_auth.get_mobile_token')
+    @mock.patch('resources.lib.ooyalahelper.addon.getSetting')
+    @mock.patch('resources.lib.ooyalahelper.cache.get')
+    def test_get_user_ticket_mobile(self, mock_ticket, mock_sub_type,
+                                    mock_token):
+        mock_ticket.return_value = ''
+        mock_sub_type.return_value = '2'
+        mock_token.return_value = 'foobar654321'
+        observed = ooyalahelper.get_user_ticket()
+        self.assertEqual('foobar654321', observed)
+
+    @mock.patch('resources.lib.ooyalahelper.telstra_auth.get_paid_token')
+    @mock.patch('resources.lib.ooyalahelper.addon.getSetting')
+    @mock.patch('resources.lib.ooyalahelper.cache.get')
+    def test_get_user_ticket_paid(self, mock_ticket, mock_sub_type,
+                                  mock_token):
+        mock_ticket.return_value = ''
+        mock_sub_type.return_value = '0'
+        mock_token.return_value = 'foobar987654'
+        observed = ooyalahelper.get_user_ticket()
+        self.assertEqual('foobar987654', observed)
 
     @responses.activate
     @mock.patch('resources.lib.ooyalahelper.cache.delete')
@@ -102,11 +108,10 @@ class OoyalahelperTests(testtools.TestCase):
 
     @responses.activate
     @mock.patch('resources.lib.ooyalahelper.cache.delete')
-    def test_get_embed_token_fail_403(self, mock_delete):
+    def test_get_embed_token_fail_404(self, mock_delete):
         with responses.RequestsMock() as rsps:
             rsps.add(responses.GET, config.EMBED_TOKEN_URL.format('foo'),
                      body=self.EMBED_TOKEN_FAIL_XML, status=404)
-            #ooyalahelper.get_embed_token('bar123', 'foo')
             self.assertRaises(
                 ooyalahelper.session.requests.exceptions.HTTPError,
                 ooyalahelper.get_embed_token, 'bar123', 'foo')

@@ -2,16 +2,11 @@ from __future__ import absolute_import, unicode_literals
 
 from collections import OrderedDict
 
-from resources.tests.fakes import fakes
-
-try:
-    import mock
-except ImportError:
-    import unittest.mock as mock
-
 import testtools
 
 import resources.lib.classes as classes
+from resources.tests.fakes import fakes
+
 
 class ClassesTests(testtools.TestCase):
 
@@ -28,4 +23,3 @@ class ClassesTests(testtools.TestCase):
         video.parse_kodi_url(fakes.FAKE_VIDEO_URL)
         observed = video.make_kodi_url()
         self.assertEqual(fakes.FAKE_VIDEO_URL, observed)
-

@@ -1,7 +1,8 @@
 import unicodedata
-from future.moves.urllib.parse import parse_qsl, quote_plus, unquote_plus
 from builtins import str
 from collections import OrderedDict
+
+from future.moves.urllib.parse import parse_qsl, quote_plus, unquote_plus
 
 
 class Video():

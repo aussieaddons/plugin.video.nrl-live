@@ -1,12 +1,15 @@
-import xbmcaddon
-import xbmcgui
-import xbmcplugin
 import sys
 
 from aussieaddonscommon import utils
 
 from resources.lib import comm
 from resources.lib import ooyalahelper
+
+import xbmcaddon
+
+import xbmcgui
+
+import xbmcplugin
 
 addon = xbmcaddon.Addon()
 _handle = int(sys.argv[1])
