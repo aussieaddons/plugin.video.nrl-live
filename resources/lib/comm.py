@@ -2,10 +2,11 @@ import datetime
 import json
 import re
 import time
-import urllib
 import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
+
+from future.moves.urllib.parse import quote
 
 from aussieaddonscommon import session
 from aussieaddonscommon import utils
@@ -110,7 +111,7 @@ def get_videos(params):
     category = params.get('category')
     if category in ['Match Highlights', 'Match Replays']:
         data_url = config.TOPICS_URL.format(
-            urllib.quote(config.CATEGORY_LOOKUP[category]))
+            quote(config.CATEGORY_LOOKUP[category]))
     else:
         data_url = config.VIDEO_URL
     tree = ET.fromstring(fetch_url(data_url))
