@@ -1,6 +1,8 @@
 import unicodedata
-import urllib
-import urlparse
+from builtins import str
+from collections import OrderedDict
+
+from future.moves.urllib.parse import parse_qsl, quote_plus, unquote_plus
 
 
 class Video():
@@ -12,27 +14,24 @@ class Video():
         self.title = None
         self.live = None
         self.time = None
-        self.match_id = None
-        self.score = None
         self.desc = None
         self.dummy = None
-        self.livestream_video = None
         self.link_id = None
 
     def make_kodi_url(self):
-        d = self.__dict__
-        for key, value in d.iteritems():
-            if isinstance(value, unicode):
+        d = OrderedDict(sorted(self.__dict__.items(), key=lambda x: x[0]))
+        for key, value in d.items():
+            if isinstance(value, str):
                 d[key] = unicodedata.normalize(
-                    'NFKD', value).encode('ascii', 'ignore')
+                    'NFKD', value).encode('ascii', 'ignore').decode('utf-8')
         url = ''
         if d['thumb']:
-            d['thumb'] = urllib.quote_plus(d['thumb'])
+            d['thumb'] = quote_plus(d['thumb'])
         for item in d.keys():
             url += '&{0}={1}'.format(item, d[item])
         return url
 
     def parse_kodi_url(self, url):
-        params = urlparse.parse_qsl(url)
+        params = dict(parse_qsl(url))
         for item in params.keys():
-            setattr(self, item, urllib.unquote_plus(params[item]))
+            setattr(self, item, unquote_plus(params[item]))

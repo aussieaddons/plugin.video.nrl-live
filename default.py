@@ -1,29 +1,22 @@
-import os
 import sys
-import xbmc
-import xbmcgui
-import xbmcaddon
-from urlparse import parse_qsl
 
 # fix for python importerror bug
 import _strptime  # noqa: F401
 
+from future.moves.urllib.parse import parse_qsl
+
 from aussieaddonscommon import utils
 
+from resources.lib import menu
+from resources.lib import ooyalahelper
+from resources.lib import play
+
+import xbmcaddon
+
+import xbmcgui
+
 addon = xbmcaddon.Addon()
-cwd = xbmc.translatePath(addon.getAddonInfo('path')).decode("utf-8")
-BASE_RESOURCE_PATH = os.path.join(cwd, 'resources', 'lib')
-sys.path.append(BASE_RESOURCE_PATH)
-
-import menu  # noqa: E402
-import ooyalahelper  # noqa: E402
-import play  # noqa: E402
-
-_url = sys.argv[0]
-_handle = int(sys.argv[1])
 addonname = addon.getAddonInfo('name')
-addonPath = xbmcaddon.Addon().getAddonInfo("path")
-fanart = os.path.join(addonPath, 'fanart.jpg')
 
 
 def router(paramstring):

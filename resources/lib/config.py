@@ -107,30 +107,56 @@ SIGNON_DATA = {'goto': 'https://signon.telstra.com/federation/saml2?SPID=telstra
                'username': None,
                'password': None}
 
-OLD_OFFERS_URL = 'https://api.telstra.com/v1/media-products/catalogues/media/offers?category=nrl'
-
-OFFERS_URL = 'https://tapi.telstra.com/v1/media-products/catalogues/media/offers'
+OFFERS_URL = 'https://tapi.telstra.com/v1/media-products/catalogues/media/offers?category=nrl'
 
 HUB_URL = 'http://hub.telstra.com.au/sp2017-nrl-app'
 
-SSO_URL = 'https://tapi.telstra.com/v1/sso/auth'
+MYID_AUTHORIZATION_URL = 'https://myid.telstra.com/identity/as/authorization.oauth2'
 
-SSO_PARAMS = {'redirect_uri': 'https://hub.telstra.com.au/offers/content/cached/callback.html',
-              'response_type': 'id_token token',
-              'scope': 'openid email profile phone telstra.user.sso.profile'}
-              
-SSO_HEADERS = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-               'Accept-Encoding': 'gzip, '
-                                  'deflate',
-               'Accept-Language': 'en-AU,en-US;q=0.9',
-               'Cache-Control': 'max-age=0',
-               'Connection': 'keep-alive',
-               'Referer': 'https://signon.telstra.com.au/login?goto=https%3A%2F%2Fapi.telstra.com%2Fv1%2Fsso%2Fidpcallback%3Fcbs%3DeyJhbGciOiJIUzI1NiJ9.eyJjYWxsYmFja19zdGF0ZSI6IjEyMjcyMDQ3LWU3N2ItNGRiZC1hNGZiLTBlYTcwMDMyYmRlMSIsImF1ZCI6InJhYSIsImV4cCI6MTUyMDczNTMyMTk0OCwiaWF0IjoxNTIwNjQ4OTIxOTQ4fQ.-I05HQE9eIpRS0LLSYB_pJ4iVKZZzyziVYarvjCe_2o%26app_name%3DOne%20Place%20portal',
-               'Upgrade-Insecure-Requests': '1',
-               'User-Agent': USER_AGENT_LONG,
-               'X-Requested-With': 'com.telstra.nrl'}
+MYID_TOKEN_URL = 'https://myid.telstra.com/identity/as/token.oauth2'
 
-SPC_HEADERS = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+MYID_TOKEN_PARAMS = {
+    'redirect_uri': 'https://hub.telstra.com.au/offers/content/cached'
+                    '/callback.html',
+    'grant_type': 'authorization_code'
+}
+
+MYID_RESUME_AUTHORIZATION_URL = 'https://myid.telstra.com/identity/as/{0}/resume/as/authorization.ping'
+
+MYID_AUTH_RESUME_DATA = {
+    'pf.rememberUsername': 'on',
+    'pf.ok': 'clicked',
+    'pf.cancel': '',
+    'pf.adapterId': 'upAdapter'
+}
+
+SSO_SESSION_HANDLER_URLS = [
+    'https://signon.telstra.com/SSOSessionHandler',
+    'https://signon.bigpond.com/SSOSessionHandler',
+    'https://signon.telstra.com.au/SSOSessionHandler'
+]
+
+MYID_AUTH_PARAMS = {
+    'redirect_uri': 'https://hub.telstra.com.au/offers/content/cached'
+                    '/callback.html',
+    'response_type': 'code',
+    'scope': 'openid app.oneplace',
+    'code_challenge_method': 'S256',
+    'response_mode': 'query'}
+
+MYID_HEADERS = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,'
+              'image/webp,image/apng,*/*;q=0.8',
+    'Accept-Encoding': 'gzip, '
+                       'deflate',
+    'Accept-Language': 'en-AU,en-US;q=0.9',
+    'Cache-Control': 'max-age=0',
+    'Connection': 'keep-alive',
+    'X-Requested-With': 'com.telstra.nrl'}
+
+SPC_HEADERS = {'Accept': 'text/html,application/xhtml+xml,'
+                         'application/xml;q=0.9,image/webp,image/apng,'
+                         '*/*;q=0.8',
                'Accept-Encoding': 'gzip, '
                                   'deflate',
                'Accept-Language': 'en-AU,en-US;q=0.9',
@@ -147,9 +173,7 @@ MEDIA_ORDER_HEADERS = {'Content-Type': 'application/json',
                        'Accept-Language': 'en-AU,en-US;q=0.8',
                        'X-Requested-With': 'com.telstra.nrl'}
 
-OLD_MEDIA_ORDER_URL = 'https://api.telstra.com/v1/media-commerce/orders?category=nrl'
-
-MEDIA_ORDER_URL = 'https://tapi.telstra.com/v1/media-commerce/orders'
+MEDIA_ORDER_URL = 'https://tapi.telstra.com/v1/media-commerce/orders?category=nrl'
 
 MEDIA_ORDER_JSON = '{{"serviceId":"{0}","serviceType":"MSISDN","offer":{{"id":"{1}"}},"pai":"{2}"}}'
 
@@ -161,13 +185,13 @@ OFFER_ID = '69b1f3e1-5196-4a57-9a46-472d20b78bc8'
 OAUTH_HEADERS = {'User-Agent': 'AFL(Android) / 40656',
                  'Accept-Encoding': 'gzip'}
 
-OAUTH_URL = 'https://api.telstra.com/v1/media-commerce/oauth/token'
+MOBILE_OAUTH_URL = 'https://tapi.telstra.com/v1/media-commerce/oauth/token'
 
 MOBILE_ID_URL = 'http://medrx.telstra.com.au/online.php'
 
-MOBILE_CLIENT_ID = 'cZ2XmZETvgidptCNUYDctQAWv1kixMac'
+MOBILE_CLIENT_ID = '4twlIr9DB2ga3lEjsxjxfivI4bNqIAG0'
 
-MOBILE_CLIENT_SECRET = 'zGABA9ugrOySIJ4N'
+MOBILE_CLIENT_SECRET = 'UhTzt1XPpIXUhqPD'
 
 MOBILE_TOKEN_PARAMS = {'client_id': MOBILE_CLIENT_ID,
                       'client_secret': MOBILE_CLIENT_SECRET,

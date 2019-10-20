@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Scores>
+  <Day Name="THU 4 JUL 2019" MoreHeading="GO TO DRAW" MoreUrl="yc://feature/SCORES/">
+    <Game Id="20191111610">
+      <Timestamp>2019-07-04T09:50:00Z</Timestamp>
+      <GameState>Full Time</GameState>
+      <PercentComplete>1</PercentComplete>
+      <HomeTeam TriCode="SGI" Id="500022" City="St George-Illawarra" Name="Dragons" FullName="St George-Illawarra Dragons" Record="10th" LastResults="LWL" Score="14" />
+      <AwayTeam TriCode="MEL" Id="500021" City="Melbourne" Name="Storm" FullName="Melbourne Storm" Record="1st" LastResults="WWW" Score="16" />
+    </Game>
+  </Day>
+  <Day Name="FRI 5 JUL 2019">
+    <Game Id="20191111620">
+      <Timestamp>2019-07-05T09:55:00Z</Timestamp>
+      <GameState>Scheduled</GameState>
+      <PercentComplete>0</PercentComplete>
+      <HomeTeam TriCode="WST" Id="500023" City="" Name="Wests Tigers" FullName="Wests Tigers" Record="9th" LastResults="WWL" Score="" />
+      <AwayTeam TriCode="SYD" Id="500001" City="Sydney" Name="Roosters" FullName="Sydney Roosters" Record="3rd" LastResults="LWL" Score="" />
+    </Game>
+  </Day>
+  <Day Name="SAT 6 JUL 2019">
+    <Game Id="20191111630">
+      <Timestamp>2019-07-06T09:35:00Z</Timestamp>
+      <GameState>Scheduled</GameState>
+      <PercentComplete>0</PercentComplete>
+      <HomeTeam TriCode="NEW" Id="500003" City="Newcastle" Name="Knights" FullName="Newcastle Knights" Record="5th" LastResults="WLW" Score="" />
+      <AwayTeam TriCode="WAR" Id="500032" City="New Zealand" Name="Warriors" FullName="New Zealand Warriors" Record="12th" LastResults="LWL" Score="" />
+    </Game>
+  </Day>
+  <Day Name="SUN 7 JUL 2019">
+    <Game Id="20191111640">
+      <Timestamp>2019-07-07T06:05:00Z</Timestamp>
+      <GameState>Scheduled</GameState>
+      <PercentComplete>0</PercentComplete>
+      <HomeTeam TriCode="CRO" Id="500028" City="Cronulla-Sutherland" Name="Sharks" FullName="Cronulla-Sutherland Sharks" Record="7th" LastResults="LLW" Score="" />
+      <AwayTeam TriCode="BRI" Id="500011" City="Brisbane" Name="Broncos" FullName="Brisbane Broncos" Record="14th" LastResults="LLL" Score="" />
+    </Game>
+  </Day>
+</Scores>

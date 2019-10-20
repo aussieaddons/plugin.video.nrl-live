@@ -1,23 +1,27 @@
 import base64
-import config
 import json
-import re
-import requests
-import StringIO
-import telstra_auth
-import urllib
-import xbmcaddon
 import xml.etree.ElementTree as ET
+from builtins import str
 
-from aussieaddonscommon.exceptions import AussieAddonsException
+from future.moves.urllib.parse import quote_plus
+
+import requests
+
 from aussieaddonscommon import session
 from aussieaddonscommon import utils
+from aussieaddonscommon.exceptions import AussieAddonsException
+
+from resources.lib import config
+from resources.lib import telstra_auth
 
 try:
     import StorageServer
-except:
+except Exception:
     utils.log("script.common.plugin.cache not found!")
-    import storageserverdummy as StorageServer
+    import resources.lib.storageserverdummy as StorageServer
+
+import xbmcaddon
+
 cache = StorageServer.StorageServer(config.ADDON_ID, 1)
 sess = session.Session()
 addon = xbmcaddon.Addon()
@@ -46,30 +50,16 @@ def get_user_ticket():
     sub_type = int(addon.getSetting('SUBSCRIPTION_TYPE'))
 
     if sub_type == 1:
-        ticket = telstra_auth.get_free_token(telstra_username,
-                                             telstra_password)
+        auth = telstra_auth.TelstraAuth(telstra_username, telstra_password)
+        ticket = auth.get_free_token()
     elif sub_type == 2:  # mobile activated subscription
-            ticket = telstra_auth.get_mobile_token()
+        auth = telstra_auth.TelstraAuth()
+        ticket = auth.get_mobile_token()
     else:
-        ticket = telstra_auth.get_paid_token(nrl_username,
-                                             nrl_password)
+        auth = telstra_auth.TelstraAuth(nrl_username, nrl_password)
+        ticket = auth.get_paid_token()
     cache.set('NRLTICKET', ticket)
     return ticket
-
-
-def create_nrl_userid_xml(user_id):
-    """
-    create a small xml file to send with http POST
-    when starting a new video request
-    """
-    root = ET.Element('Subscription')
-    ut = ET.SubElement(root, 'UserToken')
-    ut.text = user_id
-    fakefile = StringIO.StringIO()
-    tree = ET.ElementTree(root)
-    tree.write(fakefile, encoding='UTF-8')
-    output = fakefile.getvalue()
-    return output
 
 
 def get_embed_token(login_ticket, videoId):
@@ -92,11 +82,9 @@ def get_embed_token(login_ticket, videoId):
             xml = req.text
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 401:
-                cache.delete('NRLTICKET')
                 raise AussieAddonsException('Login token has expired, '
                                             'please try again.')
             elif e.response.status_code == 403:
-                cache.delete('NRLTICKET')
                 tree = ET.fromstring(e.response.text)
                 msg = str(tree.find('UserMessage').find('Content').text)
                 raise AussieAddonsException(msg)
@@ -106,14 +94,13 @@ def get_embed_token(login_ticket, videoId):
             tree = ET.fromstring(xml)
         except ET.ParseError as e:
             utils.log('Embed token response is: {0}'.format(xml))
-            cache.delete('NRLTICKET')
             raise e
         if tree.find('ErrorCode') is not None:
             utils.log('Errorcode found: {0}'.format(xml))
             raise AussieAddonsException('Login token has expired, '
                                         'please try again.')
         token = tree.find('VideoToken').text
-    except AussieAddonsException as e:
+    except Exception as e:
         cache.delete('NRLTICKET')
         raise e
     return token
@@ -148,64 +135,7 @@ def get_secure_token(secure_url, videoId):
     return base64.b64decode(token)
 
 
-def get_m3u8_streams(secure_token_url):
-    """
-    fetch our m3u8 file which contains streams of various qualities
-    """
-    res = sess.get(secure_token_url)
-    data = res.text.splitlines()
-    return data
-
-
-def parse_m3u8_streams(data, live, secure_token_url):
-    """
-    Parse the retrieved m3u8 stream list into a list of dictionaries
-    then return the url for the highest quality stream. Different
-    handling is required of live m3u8 files as they seem to only contain
-    the destination filename and not the domain/path.
-    """
-    qual = int(addon.getSetting('LIVEQUALITY'))
-    if qual == config.MAX_LIVEQUAL:
-        qual = -1
-    # fix for values too high from previous API config
-    if qual > config.MAX_LIVEQUAL:
-        addon.setSetting('LIVEQUALITY', str(config.MAX_LIVEQUAL))
-        qual = -1
-
-    m3u_list = []
-    base_url = secure_token_url[:secure_token_url.rfind('/') + 1]
-    base_domain = secure_token_url[:secure_token_url.find('/', 8) + 1]
-    m3u8_lines = iter(data)
-    for line in m3u8_lines:
-            stream_inf = '#EXT-X-STREAM-INF:'
-            if line.startswith(stream_inf):
-                line = line[len(stream_inf):]
-            else:
-                continue
-
-            csv_list = re.split(',(?=(?:(?:[^"]*"){2})*[^"]*$)', line)
-            linelist = [i.split('=') for i in csv_list]
-
-            uri = next(m3u8_lines)
-
-            if uri.startswith('/'):
-                linelist.append(['URL', base_domain + uri])
-            elif uri.find('://') == -1:
-                linelist.append(['URL', base_url + uri])
-            else:
-                linelist.append(['URL', uri])
-            m3u_list.append(dict((i[0], i[1]) for i in linelist))
-    sorted_m3u_list = sorted(m3u_list, key=lambda k: int(k['BANDWIDTH']))
-    try:
-        stream = sorted_m3u_list[qual]['URL']
-    except IndexError as e:
-        utils.log('Quality setting: {0}'.format(qual))
-        utils.log('Sorted m3u8 list: {0}'.format(sorted_m3u_list))
-        raise e
-    return stream
-
-
-def get_m3u8_playlist(video_id, pcode, live):
+def get_m3u8_playlist(video_id, pcode):
     """
     Main function to call other functions that will return us our m3u8 HLS
     playlist as a string, which we can then write to a file for Kodi
@@ -217,6 +147,6 @@ def get_m3u8_playlist(video_id, pcode, live):
     embed_token = get_embed_token(login_ticket, video_id)
     authorize_url = config.AUTH_URL.format(pcode,
                                            video_id,
-                                           urllib.quote_plus(embed_token))
+                                           quote_plus(embed_token))
     secure_token_url = get_secure_token(authorize_url, video_id)
     return secure_token_url
