@@ -61,7 +61,8 @@ class PlayTests(testtools.TestCase):
                       body=self.EMBED_TOKEN_XML, status=200)
 
         escaped_stream_url = re.escape(
-            config.STREAM_API_URL).replace('\\{', '{').replace('\\}', '}').replace('\\_', '_')
+            config.STREAM_API_URL).replace('\\{', '{').replace('\\}', '}')
+        escaped_stream_url = escaped_stream_url.replace('\\_', '_')
         stream_url = re.compile(escaped_stream_url.format(video_id='.*'))
         responses.add(responses.GET, stream_url,
                       body=self.STREAM_API_JSON, status=200)
@@ -73,4 +74,5 @@ class PlayTests(testtools.TestCase):
         with mock.patch.dict('sys.modules', xbmcplugin=mock_plugin):
             import resources.lib.play as play
             play.play_video(params)
-            self.assertEqual(fakes.M3U8_URL, mock_plugin.resolved[2].getPath())
+            self.assertEqual(fakes.M3U8_URL.decode(),
+                             mock_plugin.resolved[2].getPath())

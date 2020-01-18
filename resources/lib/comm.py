@@ -24,6 +24,7 @@ def get_tz_delta():
         delta += 1
     return delta
 
+
 def get_airtime(timestamp):
     try:
         delta = get_tz_delta()
@@ -53,10 +54,10 @@ def get_authorization():
     ts = tm.strftime("%Y-%m-%dT%H:00")
     auth_str = config.STREAM_AUTH_SECRET + ts
     m = hashlib.sha1()
-    m.update(bytes(auth_str))
+    m.update(auth_str.encode())
     password = base64.b64encode(m.digest())
     auth = 'mobile-app-nrl:{0}'.format(password)
-    return base64.b64encode(auth)
+    return base64.b64encode(auth.encode())
 
 
 def list_matches(params):
@@ -145,7 +146,6 @@ def get_videos(params):
             v.time = item.find('Timestamp').text
             video_id = item.find('Video')
             if video_id is not None:
-                #v.p_code = video_id.attrib.get('PCode')
                 v.video_id = video_id.attrib.get('Id')
             v.thumb = item.find('FullImageUrl').text
             v.link_id = item.find('Id').text
@@ -192,14 +192,6 @@ def get_box_numbers():
     for item in tree.find('HeadlineItems'):
         if item.attrib['Type'] == 'BoxScore':
             listing.append(item.attrib['Id'])
-    return listing
-
-
-def get_categories():
-    tree = ET.fromstring(fetch_url(config.SHORTLIST_URL.format('')))
-    listing = []
-    for item in tree.find('Filters').find('Filter').find('FilterItems'):
-        listing.append(item.attrib['Id'])
     return listing
 
 

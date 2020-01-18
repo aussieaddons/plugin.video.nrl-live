@@ -35,7 +35,7 @@ VIDEO_URL =  'https://app-live-nrl.yinzcam.com/V1/Media/LongList?mnc=0&ff=mobile
 # url for xml that contains match scores
 SCORE_URL = 'https://app-live-nrl.yinzcam.com/V1/Game/Scores?compId=1&a=0&ff=mobile&mnc=0&b=0&app_version=4.4.0&carrier=&version=5.2&width=1080&height=1776&mcc=0&application=NRL_LIVE&error=100000000&os=Android'
 
-TOPICS_URL = 'http://app-live-nrl.yinzcam.com/V1/Media/ShortList?categoryId={0}&mnc=0&ff=mobile&app_version=4.0.4&carrier=&version=5.0&width=1080&height=1776&mcc=0&application=NRL_LIVE&os=Android'
+TOPICS_URL = 'http://app-live-nrl.yinzcam.com/V1/Media/ShortList?categoryId={0}&mnc=0&ff=mobile&app_version=4.5.0&carrier=&version=6.0&height=1776&width=1080&mcc=0&application=NRL_LIVE&os=Android'
 
 # url for xml that contains video metadata for recent/news/misc videos
 SHORTLIST_URL = 'http://app-live-nrl.yinzcam.com/V1/Media/ShortList?{0}mnc=0&ff=mobile&app_version=4.0.4&carrier=&version=5.0&width=1080&height=1776&mcc=0&application=NRL_LIVE&os=Android'

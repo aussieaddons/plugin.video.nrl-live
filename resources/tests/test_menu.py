@@ -35,7 +35,8 @@ class MenuTests(testtools.TestCase):
             self.SCORE_XML = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/VIDEO.xml'), 'rb') as f:
             self.VIDEO_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(cwd, 'fakes/xml/VIDEO_LONGLIST.xml'), 'rb') as f:
+        with open(os.path.join(cwd, 'fakes/xml/VIDEO_LONGLIST.xml'),
+                  'rb') as f:
             self.VIDEO_LONGLIST_XML = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/EMBED_TOKEN.xml'),
                   'rb') as f:
