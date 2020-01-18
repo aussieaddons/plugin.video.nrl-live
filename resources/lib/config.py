@@ -30,7 +30,7 @@ EMBED_TOKEN_URL = 'https://signon-live-nrl.yinzcam.com/subscription/videotoken?e
 AUTH_URL = 'http://player.ooyala.com/sas/player_api/v1/authorization/embed_code/{0}/{1}?device=android_html&domain=https%3A%2F%2Fnrl.official.production.android&embedToken={2}&supportedFormats=dash%2Cakamai_hd2_vod_hls%2Cmp4%2Cm3u8%2Chls%2Cakamai_hd2_hls'
 
 # main url for xml that contains all our video metadata
-VIDEO_URL =  'http://app-live-nrl.yinzcam.com/V1/Media/VideoList?&mediaTypes=V&carrier=&height=1776&error=100000000&os=Android&a=0&ff=mobile&mnc=0&b=0&app_version=4.0.4&version=5.0&width=1080&mcc=0&application=NRL_LIVE'
+VIDEO_URL =  'https://app-live-nrl.yinzcam.com/V1/Media/LongList?mnc=0&ff=mobile&app_version=4.5.0&carrier=&version=6.0&height=1776&width=1080&mcc=0&application=NRL_LIVE&os=Android'
 
 # url for xml that contains match scores
 SCORE_URL = 'https://app-live-nrl.yinzcam.com/V1/Game/Scores?compId=1&a=0&ff=mobile&mnc=0&b=0&app_version=4.4.0&carrier=&version=5.2&width=1080&height=1776&mcc=0&application=NRL_LIVE&error=100000000&os=Android'
@@ -49,6 +49,9 @@ BOX_URL = 'https://app-live-nrl.yinzcam.com/V1/Game/Box/{0}?mnc=0&ff=mobile&app_
 
 HOME_URL = 'https://app-live-nrl.yinzcam.com/V1/Home/Index?a=0&ff=mobile&mnc=0&b=0&app_version=4.3.0&carrier=&version=5.2&width=1080&height=1776&mcc=0&application=NRL_LIVE&error=100000000&os=Android'
 
+STREAM_API_URL = 'https://www.nrl.com/api/videos/{video_id}/streams'
+
+STREAM_AUTH_SECRET = 'wT8FhLpxmi8lrjGYJxCbJfzp7hr'
 
 # ooyala provider indentifier code used in contructing request uris
 PCODE = 'BjZ2oyOsA0g9SvHHgrgYMEu0p1j1'

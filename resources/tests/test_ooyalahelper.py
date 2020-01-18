@@ -140,6 +140,7 @@ class OoyalahelperTests(testtools.TestCase):
                               ooyalahelper.get_embed_token, 'bar123', 'foo')
             mock_delete.assert_called_with('NRLTICKET')
 
+    @testtools.skip("Ooyalahelper may no longer be needed...")
     @responses.activate
     def test_get_secure_token(self):
         with responses.RequestsMock() as rsps:
@@ -160,6 +161,7 @@ class OoyalahelperTests(testtools.TestCase):
                               'https://foo.bar/',
                               fakes.VIDEO_ID)
 
+    @testtools.skip("Ooyalahelper may no longer be needed...")
     @responses.activate
     @mock.patch('resources.lib.ooyalahelper.cache.get')
     def test_get_m3u8_playlist(self, mock_ticket):

@@ -1,4 +1,6 @@
+import base64
 import datetime
+import hashlib
 import json
 import re
 import time
@@ -15,12 +17,16 @@ from resources.lib import classes
 from resources.lib import config
 
 
+def get_tz_delta():
+    delta = (time.mktime(time.localtime()) -
+             time.mktime(time.gmtime())) / 3600
+    if time.localtime().tm_isdst:
+        delta += 1
+    return delta
+
 def get_airtime(timestamp):
     try:
-        delta = (time.mktime(time.localtime()) -
-                 time.mktime(time.gmtime())) / 3600
-        if time.localtime().tm_isdst:
-            delta += 1
+        delta = get_tz_delta()
         ts = datetime.datetime.fromtimestamp(
             time.mktime(time.strptime(timestamp[:-1], "%Y-%m-%dT%H:%M:%S")))
         ts += datetime.timedelta(hours=delta)
@@ -29,15 +35,28 @@ def get_airtime(timestamp):
         return ''
 
 
-def fetch_url(url, remove_bom=True):
+def fetch_url(url, remove_bom=True, headers=None):
     """
     HTTP GET on url, remove byte order mark
     """
     with session.Session() as sess:
+        if headers:
+            sess.headers.update(headers)
         resp = sess.get(url)
         if remove_bom:
             resp.encoding = 'utf-8-sig'
         return resp.text.encode("utf-8")
+
+
+def get_authorization():
+    tm = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+    ts = tm.strftime("%Y-%m-%dT%H:00")
+    auth_str = config.STREAM_AUTH_SECRET + ts
+    m = hashlib.sha1()
+    m.update(bytes(auth_str))
+    password = base64.b64encode(m.digest())
+    auth = 'mobile-app-nrl:{0}'.format(password)
+    return base64.b64encode(auth)
 
 
 def list_matches(params):
@@ -116,18 +135,21 @@ def get_videos(params):
         data_url = config.VIDEO_URL
     tree = ET.fromstring(fetch_url(data_url))
     listing = []
-    for item in tree.find('MediaSection'):
-        v = classes.Video()
-        v.desc = item.find('Description').text
-        v.title = item.find('Title').text
-        v.time = item.find('Timestamp').text
-        video_id = item.find('Video')
-        if video_id is not None:
-            v.p_code = video_id.attrib.get('PCode')
-            v.video_id = video_id.attrib.get('Id')
-        v.thumb = item.find('FullImageUrl').text
-        v.link_id = item.find('Id').text
-        listing.append(v)
+    for section in tree.findall('MediaSection'):
+        for item in section:
+            if not item.attrib['Type'] == 'V':
+                continue
+            v = classes.Video()
+            v.desc = item.find('Description').text
+            v.title = item.find('Title').text
+            v.time = item.find('Timestamp').text
+            video_id = item.find('Video')
+            if video_id is not None:
+                #v.p_code = video_id.attrib.get('PCode')
+                v.video_id = video_id.attrib.get('Id')
+            v.thumb = item.find('FullImageUrl').text
+            v.link_id = item.find('Id').text
+            listing.append(v)
     return listing
 
 
@@ -179,3 +201,11 @@ def get_categories():
     for item in tree.find('Filters').find('Filter').find('FilterItems'):
         listing.append(item.attrib['Id'])
     return listing
+
+
+def get_stream_url(video_id):
+    headers = {'authorization': 'basic {0}'.format(get_authorization())}
+    data = fetch_url(config.STREAM_API_URL.format(video_id=video_id),
+                     headers=headers)
+    hls_url = json.loads(data).get('hls')
+    return str(hls_url.replace('[[FILTER]]', 'nrl-vidset-ms'))

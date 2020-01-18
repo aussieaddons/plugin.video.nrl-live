@@ -27,14 +27,16 @@ class MenuTests(testtools.TestCase):
         cwd = os.path.join(os.getcwd(), 'resources/tests')
         with open(os.path.join(cwd, 'fakes/xml/BOX.xml'), 'rb') as f:
             self.BOX_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(cwd, 'fakes/xml/HOME.xml'), 'rb') as f:
-            self.HOME_XML = io.BytesIO(f.read()).read()
+        with open(os.path.join(cwd, 'fakes/xml/HOME_BOX.xml'), 'rb') as f:
+            self.HOME_BOX_XML = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/MATCH.xml'), 'rb') as f:
             self.MATCH_XML = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/SCORE.xml'), 'rb') as f:
             self.SCORE_XML = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/VIDEO.xml'), 'rb') as f:
             self.VIDEO_XML = io.BytesIO(f.read()).read()
+        with open(os.path.join(cwd, 'fakes/xml/VIDEO_LONGLIST.xml'), 'rb') as f:
+            self.VIDEO_LONGLIST_XML = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/EMBED_TOKEN.xml'),
                   'rb') as f:
             self.EMBED_TOKEN_XML = io.BytesIO(f.read()).read()
@@ -119,7 +121,7 @@ class MenuTests(testtools.TestCase):
                  'resume:false'])
     def test_list_matches_live(self, mock_listitem):
         responses.add(responses.GET, config.HOME_URL,
-                      body=self.HOME_XML, status=200)
+                      body=self.HOME_BOX_XML, status=200)
         escaped_box_url = re.escape(
             config.BOX_URL).replace('\\{', '{').replace('\\}', '}')
         box_url = re.compile(escaped_box_url.format('.*'))

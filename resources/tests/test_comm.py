@@ -25,15 +25,19 @@ class CommTests(testtools.TestCase):
         cwd = os.path.join(os.getcwd(), 'resources/tests')
         with open(os.path.join(cwd, 'fakes/xml/BOX.xml'), 'rb') as f:
             self.BOX_XML = io.BytesIO(f.read()).read()
-        with open(os.path.join(cwd, 'fakes/xml/HOME.xml'), 'rb') as f:
-            self.HOME_XML = io.BytesIO(f.read()).read()
+        with open(os.path.join(cwd, 'fakes/xml/HOME_BOX.xml'), 'rb') as f:
+            self.HOME_BOX_XML = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/MATCH.xml'), 'rb') as f:
             self.MATCH_XML = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/SCORE.xml'), 'rb') as f:
             self.SCORE_XML = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/VIDEO.xml'), 'rb') as f:
             self.VIDEO_XML = io.BytesIO(f.read()).read()
+        with open(os.path.join(cwd, 'fakes/xml/VIDEO_LONGLIST.xml'),
+                  'rb') as f:
+            self.VIDEO_LONGLIST_XML = io.BytesIO(f.read()).read()
 
+    @mock.patch('resources.lib.comm.get_tz_delta', lambda: 10)
     def test_get_airtime(self):
         ts = '2019-03-14T00:58:00Z'
         expected = 'Thursday 14 Mar @ 10:58 AM'
@@ -72,15 +76,14 @@ class CommTests(testtools.TestCase):
     @responses.activate
     def test_get_videos(self):
         responses.add(responses.GET, config.VIDEO_URL,
-                      body=self.VIDEO_XML, status=200)
+                      body=self.VIDEO_LONGLIST_XML, status=200)
         videos = comm.get_videos({'category': 'Videos'})
-        self.assertEqual(10, len(videos))
-        self.assertEqual('1sbmc0aTE6v-w-7izv-_5ch2tP4ojgeY',
-                         videos[4].video_id)
+        self.assertEqual(21, len(videos))
+        self.assertEqual('1010517', videos[4].video_id)
 
     @responses.activate
     def test_get_box_numbers(self):
-        responses.add(responses.GET, config.HOME_URL, body=self.HOME_XML,
+        responses.add(responses.GET, config.HOME_URL, body=self.HOME_BOX_XML,
                       status=200)
         observed = comm.get_box_numbers()
         self.assertEqual(['12345', '45678'], observed)

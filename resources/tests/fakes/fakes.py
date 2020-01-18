@@ -167,8 +167,11 @@ FAKE_VIDEO_URL = '&desc=Game of foo vs ' \
                  '%2Ffoo.com%2Fbar.jpg&time=2019-07-07T03:00:00Z&title' \
                  '=FooBar&video_id=12345'
 
-M3U8_URL = b'http://player.ooyala.com/player/iphone' \
-           b'/44azdwNDpSWUvfd8F30d55tXY0YH9njH.m3u8'
+M3U8_URL = b'https://vcdn3.nrl.com/752e981d-a9b3-4656-9d41-d0da56cb9fc9' \
+           b'/manifest.ism/manifest(format=m3u8-aapl,encryption=cbc,filter=' \
+           b'nrl-vidset-ms).m3u8?hdnea=exp=1579090000~acl=/752e981d-a9b3-' \
+           b'4656-9d41-d0da56cb9fc9/manifest.ism/*~hmac' \
+           b'=D7B7E5C08E34FC2A62BB4DDFA26D08F9E09A40D5CA752D6D41FE66984CB88610'
 
 VIDEO_ID = '44azdwNDpSWUvfd8F30d55tXY0YH9njH'
 

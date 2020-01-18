@@ -25,11 +25,10 @@ def play_video(params):
             return
 
     try:
-        if params.get('video_id') == 'None':
-            if ooyalahelper.get_user_ticket():
-                playlist = comm.get_replay_playlist(params)
+        video_id = params['video_id']
+        if params.get('live') != 'true':
+            playlist = comm.get_stream_url(video_id)
         else:
-            video_id = params['video_id']
             pcode = ''
             if 'p_code' in params:
                 pcode = params['p_code']
