@@ -163,6 +163,9 @@ def get_live_matches():
                 v.title = item.find('Title').text
                 v.time = item.find('Timestamp').text
                 v.video_id = item.find('Video').attrib.get('Id')
+                v.account_id = item.find('Video').attrib.get('AccountId')
+                v.policy_key = item.find('Video').attrib.get('PolicyKey')
+                v.type = item.find('Video').attrib.get('Type')
                 v.p_code = item.find('Video').attrib.get('PCode')
                 v.thumb = item.find('FullImageUrl').text
                 v.link_id = item.find('Id').text
@@ -180,9 +183,43 @@ def get_box_numbers():
     return listing
 
 
-def get_stream_url(video_id):
-    headers = {u'authorization': u'basic {0}'.format(get_authorization())}
-    data = fetch_url(config.STREAM_API_URL.format(video_id=video_id),
-                     headers=headers)
-    hls_url = json.loads(data).get('hls')
-    return str(hls_url.replace('[[FILTER]]', 'nrl-vidset-ms'))
+def get_stream_url(video, media_auth_token):
+    if not video.type == 'B':
+        headers = {'authorization': 'basic {0}'.format(get_authorization())}
+        data = fetch_url(config.STREAM_API_URL.format(video_id=video.video_id),
+                         headers=headers)
+        hls_url = json.loads(data).get('hls')
+        return str(hls_url.replace('[[FILTER]]', 'nrl-vidset-ms'))
+    else:
+        bc_url = config.BC_URL.format(video.account_id, video.video_id)
+        data = json.loads(
+            fetch_url(bc_url, headers={'BCOV-POLICY': video.policy_key}))
+        src = None
+        sources = data.get('sources')
+        if len(sources) == 1:
+            src = sources[0].get('src')
+        else:
+            for source in sources:
+                ext_ver = source.get('ext_x_version')
+                src = source.get('src')
+                if ext_ver == '4' and src:
+                    if src.startswith('https'):
+                        break
+        if not src:
+            utils.log(data.get('sources'))
+            raise Exception('Unable to locate video source.')
+        if not media_auth_token:
+            return str(src)
+        else:
+            src = sign_url(src, media_auth_token)
+            return src
+
+
+def sign_url(url, media_auth_token):
+    headers = {'authorization': 'JWT{0}'.format(media_auth_token)}
+    data = json.loads(
+        fetch_url(config.SIGN_URL.format(quote(url)), headers=headers))
+    if data.get('message') == 'SUCCESS':
+        return str(data.get('url'))
+    else:
+        raise Exception('error in signing url')

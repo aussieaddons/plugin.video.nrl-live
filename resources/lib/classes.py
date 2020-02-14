@@ -10,6 +10,9 @@ class Video():
         eventually will try to make this script more OO"""
     def __init__(self):
         self.video_id = None
+        self.account_id = None
+        self.policy_key = None
+        self.type = None
         self.thumb = None
         self.title = None
         self.live = None
@@ -33,5 +36,9 @@ class Video():
 
     def parse_kodi_url(self, url):
         params = dict(parse_qsl(url))
+        for item in params.keys():
+            setattr(self, item, unquote_plus(params[item]))
+
+    def parse_params(self, params):
         for item in params.keys():
             setattr(self, item, unquote_plus(params[item]))

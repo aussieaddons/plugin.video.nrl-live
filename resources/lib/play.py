@@ -2,6 +2,7 @@ import sys
 
 from aussieaddonscommon import utils
 
+from resources.lib import classes
 from resources.lib import comm
 from resources.lib import stream_auth
 
@@ -24,9 +25,14 @@ def play_video(params):
         if params['dummy'] == 'True':
             return
 
+    v = classes.Video()
+    v.parse_params(params)
+
     try:
-        video_id = params['video_id']
-        playlist = comm.get_stream_url(video_id)
+        ticket = stream_auth.get_user_ticket()
+        media_auth_token = stream_auth.get_media_auth_token(
+            ticket, v.video_id)
+        playlist = comm.get_stream_url(v, media_auth_token)
         play_item = xbmcgui.ListItem(path=playlist)
         xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)
 

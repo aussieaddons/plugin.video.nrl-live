@@ -29,6 +29,12 @@ EMBED_TOKEN_URL = 'https://signon-live-nrl.yinzcam.com/subscription/videotoken?e
 # url used to request playlist
 AUTH_URL = 'http://player.ooyala.com/sas/player_api/v1/authorization/embed_code/{0}/{1}?device=android_html&domain=https%3A%2F%2Fnrl.official.production.android&embedToken={2}&supportedFormats=dash%2Cakamai_hd2_vod_hls%2Cmp4%2Cm3u8%2Chls%2Cakamai_hd2_hls'
 
+BC_URL = 'https://edge.api.brightcove.com/playback/v1/accounts/{0}/videos/{1}'
+
+SIGN_URL = 'https://api.mediaservices.com.au/keyserver/urlSigning?url={0}'
+
+MEDIA_AUTH_URL = 'https://signon-live-nrl.yinzcam.com/subscription/videotoken?embed_code={embed_code}&free_preview=false&mnc=0&ff=mobile&app_version=4.5.1&carrier=&version=6.0&height=1776&width=1080&mcc=0&application=NRL_LIVE&os=Android'
+
 # main url for xml that contains all our video metadata
 VIDEO_URL =  'https://app-live-nrl.yinzcam.com/V1/Media/LongList?mnc=0&ff=mobile&app_version=4.5.0&carrier=&version=6.0&height=1776&width=1080&mcc=0&application=NRL_LIVE&os=Android'
 

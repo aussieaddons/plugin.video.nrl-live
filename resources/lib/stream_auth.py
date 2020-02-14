@@ -150,3 +150,34 @@ def get_m3u8_playlist(video_id, pcode):
                                            quote_plus(embed_token))
     secure_token_url = get_secure_token(authorize_url, video_id)
     return secure_token_url
+
+
+def get_media_auth_token(ticket, video_id):
+    """
+    send our user token to get our embed token, including api key
+    """
+    url = config.MEDIA_AUTH_URL.format(embed_code=video_id)
+    sess.headers = {}
+    sess.headers.update(
+        {'x-yinzcam-ticket': ticket,
+         'x-yinzcam-appid': 'NRL_LIVE',
+         'accept': 'application/json',
+         'Accept-Encoding': 'gzip'})
+    try:
+        req = sess.get(url)
+        data = req.text
+        json_data = json.loads(data)
+        if json_data.get('Fault'):
+            raise AussieAddonsException(
+                json_data.get('fault').get('faultstring'))
+        media_auth_token = json_data.get('VideoToken')
+    except requests.exceptions.HTTPError as e:
+        utils.log('Error getting embed token. '
+                  'Response: {0}'.format(e.response.text))
+        cache.delete('NRLTICKET')
+        if e.response.status_code == 401:
+            raise AussieAddonsException('Login token has expired, '
+                                        'please try again.')
+        else:
+            raise e
+    return media_auth_token
