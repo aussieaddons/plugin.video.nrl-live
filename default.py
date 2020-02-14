@@ -8,7 +8,7 @@ from future.moves.urllib.parse import parse_qsl
 from aussieaddonscommon import utils
 
 from resources.lib import menu
-from resources.lib import ooyalahelper
+from resources.lib import stream_auth
 from resources.lib import play
 
 import xbmcaddon
@@ -38,7 +38,7 @@ def router(paramstring):
         elif params['action'] in ['listvideos', 'listmatches']:
             play.play_video(params)
         elif params['action'] == 'clearticket':
-            ooyalahelper.clear_ticket()
+            stream_auth.clear_ticket()
     else:
         menu.list_categories()
 

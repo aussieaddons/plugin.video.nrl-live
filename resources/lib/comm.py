@@ -6,8 +6,6 @@ import re
 import time
 import xml.etree.ElementTree as ET
 
-from bs4 import BeautifulSoup
-
 from future.moves.urllib.parse import quote
 
 from aussieaddonscommon import session
@@ -57,7 +55,7 @@ def get_authorization():
     m.update(auth_str.encode())
     password = base64.b64encode(m.digest())
     auth = 'mobile-app-nrl:{0}'.format(password)
-    return base64.b64encode(auth.encode())
+    return base64.b64encode(auth.encode()).decode()
 
 
 def list_matches(params):
@@ -147,25 +145,12 @@ def get_videos(params):
             video_id = item.find('Video')
             if video_id is not None:
                 v.video_id = video_id.attrib.get('Id')
+                v.policy_key = video_id.attrib.get('PolicyKey')
+                v.account_id = video_id.attrib.get('AccountId')
             v.thumb = item.find('FullImageUrl').text
             v.link_id = item.find('Id').text
             listing.append(v)
     return listing
-
-
-def get_replay_playlist(params):
-    data_url = config.MEDIA_URL.format(params.get('link_id'))
-    tree = ET.fromstring(fetch_url(data_url))
-    html_data = tree.find('StoryHtml').text
-    soup = BeautifulSoup(html_data, 'html.parser')
-    src = soup.findAll(id=re.compile("^ls_embed"))[0].get('src')
-    ls_soup = BeautifulSoup(fetch_url(src), 'html.parser')
-    ls_text = ls_soup.findAll(
-        'script', string=re.compile("^window.config"))[0].string
-    ls_json = json.loads(ls_text[ls_text.find('{'):ls_text.rfind('}') + 1])
-    stream_json = ls_json.get('event').get('feed').get('data')
-    stream = stream_json[0].get('data').get('secure_m3u8_url')
-    return stream
 
 
 def get_live_matches():
@@ -196,7 +181,7 @@ def get_box_numbers():
 
 
 def get_stream_url(video_id):
-    headers = {'authorization': 'basic {0}'.format(get_authorization())}
+    headers = {u'authorization': u'basic {0}'.format(get_authorization())}
     data = fetch_url(config.STREAM_API_URL.format(video_id=video_id),
                      headers=headers)
     hls_url = json.loads(data).get('hls')

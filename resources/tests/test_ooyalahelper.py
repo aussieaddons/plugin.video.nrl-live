@@ -14,7 +14,7 @@ import responses
 import testtools
 
 import resources.lib.config as config
-import resources.lib.ooyalahelper as ooyalahelper
+import resources.lib.stream_auth as ooyalahelper
 from resources.tests.fakes import fakes
 
 
