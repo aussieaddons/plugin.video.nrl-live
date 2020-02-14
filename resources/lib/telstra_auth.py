@@ -57,7 +57,12 @@ class TelstraAuth(object):
         requests for Ooyala embed tokens
         """
         session = custom_session.Session(force_tlsv1=False)
-        auth_resp = session.get(config.NRL_AUTH, allow_redirects=False)
+        self.code_verifier = self.get_code_verifier()
+        params = config.NRL_AUTH_PARAMS
+        params.update({'scope': base64.b64encode(os.urandom(16)).rstrip('='),
+                       'code_challenge': self.get_code_challenge(
+                           self.code_verifier)})
+        auth_resp = session.get(config.NRL_AUTH, params=params, allow_redirects=False)
 
         xsrf = auth_resp.cookies['XSRF-TOKEN']
         session.headers.update({'x-xsrf-token': xsrf})
@@ -71,12 +76,15 @@ class TelstraAuth(object):
                 'Login failed for nrl.com: {0}'.format(
                     login_resp_json.get('error')))
 
-        auth2_resp = session.get(config.NRL_AUTH, allow_redirects=False)
-        redirect_url = auth2_resp.headers.get('Location')
+        auth2_resp = session.get(config.NRL_AUTH_ACCEPT,
+                                 params=params,
+                                 allow_redirects=False)
+        redirect_url = auth2_resp.headers.get('location')
         redirect_pieces = urlsplit(redirect_url)
         redirect_query = dict(parse_qsl(redirect_pieces.query))
         code = redirect_query.get('code')
-        token_form = {'code': code}
+        token_form = {'code': code,
+                      'code_verifier': self.code_verifier}
         token_form.update(config.TOKEN_DATA)
         session.headers = {}
         session.cookies.clear()

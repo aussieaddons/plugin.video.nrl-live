@@ -68,25 +68,35 @@ CATEGORY_LOOKUP = {'Match Highlights': 'Match Highlight',
                    'Match Replays': 'Full Match Replay'}
 
 # New auth config for 2018
+NRL_AUTH = 'https://www.nrl.com/account/authorize'
 
-NRL_AUTH = 'https://www.nrl.com/account/authorize?response_type=code&scope=openid%20email%20profile%20offline_access&client_id=nrlapp-ios&redirect_uri=https://redirect.nrl-live.app.openid.yinzcam.com'
+NRL_AUTH_ACCEPT = 'https://www.nrl.com/account/authorize/accept'
+
+NRL_AUTH_PARAMS = {
+    'redirect_uri': 'yc-nrl-live://redirect.nrl-live.app.openid.yinzcam.com',
+    'client_id': 'nrlapp-android',
+    'response_type': 'code',
+    'scope': 'openid email profile offline_access',
+    'code_challenge_method': 'S256'
+}
 
 NRL_LOGIN = 'https://www.nrl.com/account/login'
 
 NRL_TOKEN = 'https://www.nrl.com/account/token'
 
-TOKEN_DATA = {'client_id': 'nrlapp-ios',
+TOKEN_DATA = {'client_id': 'nrlapp-android',
               'grant_type': 'authorization_code',
-              'redirect_uri': 'https://redirect.nrl-live.app.openid.yinzcam.com'}
+              'redirect_uri': 'yc-nrl-live://redirect.nrl-live.app.openid.yinzcam.com',
+              'scope': 'openid email profile offline_access'}
 
 
 NEW_LOGIN_DATA1 = '<TicketRequest><Anonymous><AppId>NRL_LIVE</AppId><VendorId>{adid}</VendorId><InstallId>{deviceid}</InstallId></Anonymous></TicketRequest>'
 
-NEW_LOGIN_DATA2 = '<TicketRequest><NRLAccount><AppId>NRL_LIVE</AppId><RefreshToken>{0}</RefreshToken></NRLAccount></TicketRequest>'
+NEW_LOGIN_DATA2 = '<TicketRequest><NRLAccount><AppId>NRL_LIVE</AppId><ClientId>nrlapp-android</ClientId><RefreshToken>{0}</RefreshToken></NRLAccount></TicketRequest>'
 
 STATUS_URL = 'https://signon-live-nrl.yinzcam.com/subscription/status?application=NRL_LIVE'
 
-YINZCAM_AUTH_URL = 'https://signon-live-nrl.yinzcam.com/ticket?ff=mobile&carrier=Telstra+Mobile&mnc=1&os=Android&application=NRL_LIVE&app_version=4.1.0&width=1080&mcc=505&version=5.1&height=1794'
+YINZCAM_AUTH_URL = 'https://signon-live-nrl.yinzcam.com/ticket?mnc=0&ff=mobile&app_version=4.5.1&carrier=&version=6.0&height=1776&width=1080&mcc=0&application=NRL_LIVE&os=Android'
 
 YINZCAM_AUTH_URL2 = 'https://signon-live-nrl.yinzcam.com/telstra/oneplace/url?application=NRL_LIVE'
 
