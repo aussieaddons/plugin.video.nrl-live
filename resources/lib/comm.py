@@ -53,7 +53,7 @@ def get_authorization():
     auth_str = config.STREAM_AUTH_SECRET + ts
     m = hashlib.sha1()
     m.update(auth_str.encode())
-    password = base64.b64encode(m.digest())
+    password = base64.b64encode(m.digest()).decode()
     auth = 'mobile-app-nrl:{0}'.format(password)
     return base64.b64encode(auth.encode()).decode()
 
