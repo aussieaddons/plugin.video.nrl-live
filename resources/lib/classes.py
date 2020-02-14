@@ -22,16 +22,23 @@ class Video():
         self.link_id = None
 
     def make_kodi_url(self):
-        d = OrderedDict(sorted(self.__dict__.items(), key=lambda x: x[0]))
-        for key, value in d.items():
+        d_original = OrderedDict(
+            sorted(self.__dict__.items(), key=lambda x: x[0]))
+        d = d_original.copy()
+        for key, value in d_original.items():
+            if not value:
+                d.pop(key)
+                continue
             if isinstance(value, str):
                 d[key] = unicodedata.normalize(
                     'NFKD', value).encode('ascii', 'ignore').decode('utf-8')
         url = ''
-        if d['thumb']:
-            d['thumb'] = quote_plus(d['thumb'])
-        for item in d.keys():
-            url += '&{0}={1}'.format(item, d[item])
+        for key in d.keys():
+            if isinstance(d[key], (str, bytes)):
+                val = quote_plus(d[key])
+            else:
+                val = d[key]
+            url += '&{0}={1}'.format(key, val)
         return url
 
     def parse_kodi_url(self, url):

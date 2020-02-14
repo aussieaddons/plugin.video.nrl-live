@@ -8,8 +8,8 @@ from future.moves.urllib.parse import parse_qsl
 from aussieaddonscommon import utils
 
 from resources.lib import menu
-from resources.lib import stream_auth
 from resources.lib import play
+from resources.lib import stream_auth
 
 import xbmcaddon
 

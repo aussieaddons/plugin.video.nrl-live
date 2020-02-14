@@ -2,7 +2,6 @@ import base64
 import datetime
 import hashlib
 import json
-import re
 import time
 import xml.etree.ElementTree as ET
 

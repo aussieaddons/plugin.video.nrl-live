@@ -32,20 +32,21 @@ class PlayTests(testtools.TestCase):
             self.AUTH_JSON = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/json/STREAM_API.json'), 'rb') as f:
             self.STREAM_API_JSON = io.BytesIO(f.read()).read()
+        with open(os.path.join(cwd, 'fakes/json/VIDEOTOKEN.json'), 'rb') as f:
+            self.VIDEOTOKEN_JSON = io.BytesIO(f.read()).read()
         with open(os.path.join(cwd, 'fakes/xml/EMBED_TOKEN.xml'),
                   'rb') as f:
             self.EMBED_TOKEN_XML = io.BytesIO(f.read()).read()
 
     @responses.activate
-    @mock.patch('resources.lib.ooyalahelper.cache.get')
+    @mock.patch('resources.lib.stream_auth.cache.get')
     @mock.patch('xbmcgui.ListItem')
     @mock.patch('sys.argv',
                 ['plugin://plugin.video.nrl-live/',
                  '2',
-                 '?action=listmatches&dummy=None&p_code'
-                 '=p3ZWsyOiMLEluThqwB_eQUFngsCZ&match_id=None&title=Match '
+                 '?action=listmatches&dummy=None&match_id=None&title=Match '
                  'Highlights: Titans v '
-                 'Broncos&video_id=44azdwNDpSWUvfd8F30d55tXY0YH9njH',
+                 'Broncos&video_id=123456',
                  'resume:false'])
     def test_play_video(self, mock_listitem, mock_ticket):
         escaped_auth_url = re.escape(
@@ -66,6 +67,10 @@ class PlayTests(testtools.TestCase):
         stream_url = re.compile(escaped_stream_url.format(video_id='.*'))
         responses.add(responses.GET, stream_url,
                       body=self.STREAM_API_JSON, status=200)
+
+        responses.add(responses.GET,
+                      config.MEDIA_AUTH_URL.format(embed_code='123456'),
+                      body=self.VIDEOTOKEN_JSON)
 
         mock_ticket.return_value = 'foobar123456'
         mock_listitem.side_effect = fakes.FakeListItem
