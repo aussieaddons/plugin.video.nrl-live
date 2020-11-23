@@ -41,7 +41,8 @@ def list_videos(params):
         video_list = comm.get_videos(params)
         listing = []
         for v in video_list:
-            li = xbmcgui.ListItem(v.title, thumbnailImage=v.thumb)
+            li = xbmcgui.ListItem(v.title)
+            li.setArt({'thumb': v.thumb, 'icon': v.thumb})
             li.setProperty('IsPlayable', 'true')
             li.setInfo('video', {'plot': v.desc, 'plotoutline': v.desc})
             url = '{0}?action=listvideos{1}'.format(plugin_url,
@@ -69,8 +70,8 @@ def list_matches(params, live=False):
             matches = comm.get_live_matches()
 
         for m in matches:
-            li = xbmcgui.ListItem(label=str(m.title), iconImage=m.thumb,
-                                  thumbnailImage=m.thumb)
+            li = xbmcgui.ListItem(label=str(m.title))
+            li.setArt({'thumb': m.thumb, 'icon': m.thumb})
             url = '{0}?action=listmatches{1}'.format(plugin_url,
                                                      m.make_kodi_url())
             is_folder = False

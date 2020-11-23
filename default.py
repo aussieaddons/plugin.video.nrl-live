@@ -39,6 +39,18 @@ def router(paramstring):
             play.play_video(params)
         elif params['action'] == 'clearticket':
             stream_auth.clear_ticket()
+        elif params['action'] == 'open_ia_settings':
+            try:
+                import drmhelper
+                if drmhelper.check_inputstream(drm=False):
+                    ia = drmhelper.get_addon()
+                    ia.openSettings()
+                else:
+                    utils.dialog_message(
+                        "Can't open inputstream.adaptive settings")
+            except Exception:
+                utils.dialog_message(
+                    "Can't open inputstream.adaptive settings")
     else:
         menu.list_categories()
 

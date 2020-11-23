@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-  <category label="32000">
-    <setting label="32070" type="enum" id="SUBSCRIPTION_TYPE" values="Paid (in app purchase)|Free offer (Telstra Mobile)|Mobile data" default="1"/>
-    <setting label="32020" type="text" id="LIVE_USERNAME" enable="gt(-1, 0)+lt(-1, 2)" default=""/>
-    <setting label="32030" type="text" id="LIVE_PASSWORD" enable="gt(-2, 0)+lt(-2, 2)" option="hidden" default=""/>
-    <setting label="32021" type="text" id="NRL_USERNAME" enable="lt(-3, 1)" default=""/>
-    <setting label="32022" type="text" id="NRL_PASSWORD" enable="lt(-4, 1)" option="hidden" default=""/>
-    <setting label="32031" type="bool" id="firstrun" default="true" visible="false"/>
-    <setting label="32002" type="lsep"/>
-    <setting label="32032" type="action" action="RunPlugin(plugin://plugin.video.nrl-live/?action=clearticket)"/>
+  <category label="30001">
+    <setting label="30002" type="enum" id="SUBSCRIPTION_TYPE" values="Paid (in app purchase)|Free offer (Telstra Mobile)|Mobile data" default="1"/>
+    <setting label="30003" type="text" id="LIVE_USERNAME" enable="gt(-1, 0)+lt(-1, 2)" default=""/>
+    <setting label="30004" type="text" id="LIVE_PASSWORD" enable="gt(-2, 0)+lt(-2, 2)" option="hidden" default=""/>
+    <setting label="30005" type="text" id="NRL_USERNAME" enable="lt(-3, 1)" default=""/>
+    <setting label="30006" type="text" id="NRL_PASSWORD" enable="lt(-4, 1)" option="hidden" default=""/>
+    <setting type="bool" id="firstrun" default="true" visible="false"/>
+    <setting label="30007" type="lsep"/>
+    <setting label="30008" type="action" action="RunPlugin(plugin://plugin.video.nrl-live/?action=open_ia_settings)" option="close"/>
+    <setting label="30009" type="lsep"/>
+    <setting label="30010" type="action" action="RunPlugin(plugin://plugin.video.nrl-live/?action=clearticket)"/>
   </category>
 </settings>
