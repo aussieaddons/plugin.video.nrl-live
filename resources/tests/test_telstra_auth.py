@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 import io
 import json
 import os
+import re
 try:
     import mock
 except ImportError:
@@ -93,6 +94,9 @@ class TelstraAuthTests(testtools.TestCase):
 
         responses.add_callback(responses.GET, config.NRL_AUTH,
                                callback=auth_callback)
+        responses.add(responses.GET, re.compile(config.NRL_AUTH_ACCEPT),
+                      body='',
+                      headers={'location': 'http://foo.bar/?code=abc'})
         responses.add_callback(responses.POST, config.NRL_LOGIN,
                                callback=login_callback)
         responses.add(responses.POST, config.NRL_TOKEN,
@@ -175,6 +179,9 @@ class TelstraAuthTests(testtools.TestCase):
 
         responses.add_callback(responses.GET, config.NRL_AUTH,
                                callback=auth_callback)
+        responses.add(responses.GET, re.compile(config.NRL_AUTH_ACCEPT),
+                      body='',
+                      headers={'location': 'http://foo.bar/?code=abc'})
         responses.add_callback(responses.POST, config.NRL_LOGIN,
                                callback=login_callback)
         responses.add(responses.POST, config.NRL_TOKEN,

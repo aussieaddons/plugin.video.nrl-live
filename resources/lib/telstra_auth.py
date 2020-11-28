@@ -59,10 +59,13 @@ class TelstraAuth(object):
         session = custom_session.Session(force_tlsv1=False)
         self.code_verifier = self.get_code_verifier()
         params = config.NRL_AUTH_PARAMS
-        params.update({'scope': base64.b64encode(os.urandom(16)).rstrip('='),
+        scope = base64.b64encode(
+            os.urandom(16)).decode('utf-8').rstrip('=')
+        params.update({'scope': scope,
                        'code_challenge': self.get_code_challenge(
                            self.code_verifier)})
-        auth_resp = session.get(config.NRL_AUTH, params=params, allow_redirects=False)
+        auth_resp = session.get(config.NRL_AUTH, params=params,
+                                allow_redirects=False)
 
         xsrf = auth_resp.cookies['XSRF-TOKEN']
         session.headers.update({'x-xsrf-token': xsrf})

@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Boxscore>
+  <Id>20201780110</Id>
+  <Timestamp>2020-02-14T08:05:00Z</Timestamp>
+  <Competition Id="21" Name="NRL WOMENS NINES">
+    <LogoUrl>https://resources-nrl.yinzcam.com/shared/logos/nrl_comp_club_nines.png</LogoUrl>
+  </Competition>
+  <Round>Round 1</Round>
+  <BroadcasterUrls>
+    <Url>https://s3-ap-southeast-2.amazonaws.com/resources-nrl.yinzcam.com/shared/nrl_live/images/broadcasters/FOX.png</Url>
+    <Url>https://s3-ap-southeast-2.amazonaws.com/resources-nrl.yinzcam.com/shared/nrl_live/images/broadcasters/LIVE+PASS.png</Url>
+    <Url>https://s3-ap-southeast-2.amazonaws.com/resources-nrl.yinzcam.com/shared/nrl_live/images/broadcasters/KAYO.png</Url>
+  </BroadcasterUrls>
+  <Venue>HBF Park</Venue>
+  <VenueCity>Perth, WA</VenueCity>
+  <VenueId>500064</VenueId>
+  <VenueImageUrl>https://s3-ap-southeast-2.amazonaws.com/resources-nrl.yinzcam.com/shared/nrl_live/images/stadium/nib_stadium_1280x720.jpg</VenueImageUrl>
+  <MatchCenterVenueImageUrl>https://s3-ap-southeast-2.amazonaws.com/resources-nrl.yinzcam.com/shared/nrl_live/images/stadium/generic_1280x720.jpg</MatchCenterVenueImageUrl>
+  <Attendance />
+  <AwayTeam TriCode="SYDW" Id="500586" Name="Roosters" FullName="Sydney Roosters Women" Record="" LastResults="" Score="4">
+    <Last />
+  </AwayTeam>
+  <HomeTeam TriCode="WARW" Id="500585" Name="Warriors" FullName="New Zealand Warriors Women" Record="" LastResults="" Score="6">
+    <Last />
+  </HomeTeam>
+  <Unavailable>No stats are currently available.  Please check back when the game starts.</Unavailable>
+  <HighlightsUnavailable>Match highlights are not yet available.</HighlightsUnavailable>
+  <GameMediaUnavailable>Match report is not yet available.</GameMediaUnavailable>
+  <State>C</State>
+  <GameState>6:25</GameState>
+  <Period>1st</Period>
+  <PercentComplete>0.34</PercentComplete>
+  <Result>6-4</Result>
+  <HasTweets>false</HasTweets>
+  <GroundCondition>N/A</GroundCondition>
+  <Weather Temperature="--°" TemperatureMin="--°" TemperatureMax="--°" Description="Unknown">
+    <ImageUrl />
+  </Weather>
+  <Tickets HasLink="false" Label="">
+    <Link />
+  </Tickets>
+  <TelstraTickets HasLink="false" Label="">
+    <Link />
+    <ImageUrl>http://resources-nrl.yinzcam.com.s3.amazonaws.com/shared/nrl_live/images/telstra_thanks_home.png</ImageUrl>
+  </TelstraTickets>
+  <LiveVideoPromoImageUrl>http://resources-nrl.yinzcam.com.s3.amazonaws.com/shared/nrl_live/images/nontelstra__mobile_banner.png</LiveVideoPromoImageUrl>
+  <Score State="6:25" HasOT="false">
+    <ScorePeriod Column="1" Away="4" Home="6" />
+    <ScorePeriod Column="2" Away="" Home="" />
+    <ScorePeriod Column="T" Away="4" Home="6" />
+  </Score>
+  <Leaders>
+    <Category0 Title="MOST TACKLES">
+      <HomePlayer Name="Madison Bartlett" Id="510825" Stat0="2">
+        <ImageUrl>http://prozone.staff.s3.amazonaws.com/Player%20Bodyshots/161/2019/500472/Madison-Bartlett31-body-shot.png</ImageUrl>
+      </HomePlayer>
+      <AwayPlayer Name="Hannah Southwell" Id="100002344" Stat0="5">
+        <ImageUrl>http://prozone.staff.s3-ap-southeast-2.amazonaws.com/Player%20Bodyshots/161/2019/500469/Hannah_Southwell_2I8A1729-body-shot.png</ImageUrl>
+      </AwayPlayer>
+</Category0>
+    <Category1 Title="MOST RUN METRES">
+      <HomePlayer Name="Rhiarna Ferris" Id="100006706" Stat0="32">
+        <ImageUrl />
+      </HomePlayer>
+      <AwayPlayer Name="Kirra Dibb" Id="100005421" Stat0="14">
+        <ImageUrl>http://prozone.staff.s3-ap-southeast-2.amazonaws.com/Player%20Bodyshots/161/2019/500469/Kirra_Dibb_2I8A1570-body-shot.png</ImageUrl>
+      </AwayPlayer>
+    </Category1>
+    <Category2 Title="MOST LINE BREAKS">
+      <HomePlayer Name="Rhiarna Ferris" Id="100006706" Stat0="1">
+        <ImageUrl />
+      </HomePlayer>
+      <AwayPlayer Name="Zahara Temara" Id="507729" Stat0="1">
+        <ImageUrl>http://prozone.staff.s3-ap-southeast-2.amazonaws.com/Player%20Bodyshots/161/2019/500469/Zahara_Temara_-body-shot.png</ImageUrl>
+      </AwayPlayer>
+    </Category2>
+  </Leaders>
+  <Stats Heading="POSSESSION">
+    <Stat Type="R" Name="COMPLETION" Home="100%" HomeValue="100" HomeMax="100" Away="0%" AwayValue="0" AwayMax="100" Max="100" Reverse="false" />
+    <Stat Type="A" Name="COMPLETED SETS" Home="2" HomeValue="2" HomeMax="2" Away="0" AwayValue="0" AwayMax="0" Max="2" Reverse="false" />
+    <Stat Type="A" Name="TOTAL SETS" Home="2" HomeValue="2" HomeMax="2" Away="0" AwayValue="0" AwayMax="0" Max="2" Reverse="false" />
+  </Stats>
+  <Stats Heading="ATTACK">
+    <Stat Type="A" Name="ALL RUNS" Home="9" HomeValue="9" HomeMax="9" Away="4" AwayValue="4" AwayMax="4" Max="13" Reverse="false" />
+    <Stat Type="A" Name="ALL RUN METRES" Home="74" HomeValue="74" HomeMax="74" Away="48" AwayValue="48" AwayMax="48" Max="122" Reverse="false" />
+    <Stat Type="A" Name="POST CONTACT METRES" Home="0" HomeValue="0" HomeMax="0" Away="16" AwayValue="16" AwayMax="16" Max="16" Reverse="false" />
+    <Stat Type="A" Name="LINE BREAKS" Home="2" HomeValue="2" HomeMax="2" Away="1" AwayValue="1" AwayMax="1" Max="3" Reverse="false" />
+    <Stat Type="A" Name="TACKLE BREAKS" Home="5" HomeValue="5" HomeMax="5" Away="1" AwayValue="1" AwayMax="1" Max="6" Reverse="false" />
+    <Stat Type="A" Name="KICK RETURN METRES" Home="19" HomeValue="19" HomeMax="19" Away="12" AwayValue="12" AwayMax="12" Max="31" Reverse="false" />
+    <Stat Type="A" Name="AVERAGE PLAY THE BALL SPEED" Home="0" HomeValue="0" HomeMax="0" Away="0" AwayValue="0" AwayMax="0" Max="0" Reverse="false" />
+  </Stats>
+  <Stats Heading="PASSING">
+    <Stat Type="A" Name="OFFLOADS" Home="0" HomeValue="0" HomeMax="0" Away="0" AwayValue="0" AwayMax="0" Max="0" Reverse="false" />
+    <Stat Type="A" Name="RECEIPTS" Home="16" HomeValue="16" HomeMax="16" Away="11" AwayValue="11" AwayMax="11" Max="27" Reverse="false" />
+    <Stat Type="A" Name="TOTAL PASSES" Home="9" HomeValue="9" HomeMax="9" Away="7" AwayValue="7" AwayMax="7" Max="16" Reverse="false" />
+    <Stat Type="A" Name="DUMMY PASSES" Home="5" HomeValue="5" HomeMax="5" Away="1" AwayValue="1" AwayMax="1" Max="6" Reverse="false" />
+  </Stats>
+  <Stats Heading="KICKING">
+    <Stat Type="A" Name="KICKS" Home="0" HomeValue="0" HomeMax="0" Away="0" AwayValue="0" AwayMax="0" Max="0" Reverse="false" />
+    <Stat Type="A" Name="KICKING METRES" Home="0" HomeValue="0" HomeMax="0" Away="0" AwayValue="0" AwayMax="0" Max="0" Reverse="false" />
+    <Stat Type="A" Name="FORCED DROP OUTS" Home="0" HomeValue="0" HomeMax="0" Away="0" AwayValue="0" AwayMax="0" Max="0" Reverse="false" />
+    <Stat Type="A" Name="KICK DEFUSAL %" Home="--" HomeValue="0" HomeMax="1" Away="--" AwayValue="0" AwayMax="1" Max="1" Reverse="false" />
+    <Stat Type="A" Name="BOMBS" Home="0" HomeValue="0" HomeMax="0" Away="0" AwayValue="0" AwayMax="0" Max="0" Reverse="false" />
+    <Stat Type="A" Name="GRUBBERS" Home="0" HomeValue="0" HomeMax="0" Away="0" AwayValue="0" AwayMax="0" Max="0" Reverse="false" />
+  </Stats>
+  <Stats Heading="DEFENCE">
+    <Stat Type="A" Name="40/20" Home="0" HomeValue="0" HomeMax="0" Away="0" AwayValue="0" AwayMax="0" Max="0" Reverse="false" />
+<Stat Type="A" Name="TACKLES" Home="9" HomeValue="9" HomeMax="9" Away="12" AwayValue="12" AwayMax="12" Max="21" Reverse="false" />
+    <Stat Type="A" Name="MISSED TACKLES" Home="1" HomeValue="1" HomeMax="1" Away="5" AwayValue="5" AwayMax="5" Max="6" Reverse="true" />
+  </Stats>
+  <Stats Heading="DISCIPLINE">
+    <Stat Type="A" Name="PENALTIES CONCEDED" Home="0" HomeValue="0" HomeMax="0" Away="1" AwayValue="1" AwayMax="1" Max="1" Reverse="true" />
+    <Stat Type="A" Name="ERRORS" Home="0" HomeValue="0" HomeMax="0" Away="0" AwayValue="0" AwayMax="0" Max="0" Reverse="true" />
+    <Stat Type="A" Name="SEND OFFS" Home="0" HomeValue="0" HomeMax="0" Away="0" AwayValue="0" AwayMax="0" Max="0" Reverse="true" />
+    <Stat Type="A" Name="SIN BINS" Home="0" HomeValue="0" HomeMax="0" Away="0" AwayValue="0" AwayMax="0" Max="0" Reverse="true" />
+  </Stats>
+  <ScoringSummary Title="TRIES" AwayLabel="1" HomeLabel="1">
+    <SummaryRow AwayLabel="Z. Temara - 4'" HomeLabel="H. Harding - 1'" />
+  </ScoringSummary>
+  <ScoringSummary Title="CONVERSIONS" AwayLabel="0/1" HomeLabel="1/1">
+    <SummaryRow HomeLabel="K. Wharton - 2'" />
+  </ScoringSummary>
+  <ScoringSummary Title="FIELD GOALS" AwayLabel="0/0" HomeLabel="0/0" />
+  <ScoringSummary Title="PENALTY GOALS" AwayLabel="0/0" HomeLabel="0/0" />
+  <LiveVideo>
+    <Item Type="V" Featured="false">
+      <Id>LIVE_23145</Id>
+      <Title>Warriors v Roosters LIVE</Title>
+      <ButtonText>WATCH LIVE</ButtonText>
+      <Date>2/14/2020 • 6:55 PM</Date>
+      <Timestamp>2020-02-14T07:55:00Z</Timestamp>
+      <Video Type="B" Id="6112372390001" PCode="p3ZWsyOiMLEluThqwB_eQUFngsCZ" PolicyKey="BCpkADawqM1OU4PrIkpqAL8BJ3STeXqq8QCQ8tU5jhbjS3twNblhcoNO8RQRnKEtfxL6qbr5ZmaMwWyCfPzzls39yZZT8gM0u-5Yf8rmDHEeva_gh4Ula-0M0zDrV1Y-lJ9ljZtcqcTx1oPn" AccountId="6058022040001" />
+      <ImageUrl />
+      <FullImageUrl />
+      <Images>
+        <ListCard />
+        <TileMedium />
+        <TileLarge />
+        <HeroSmall />
+        <HeroMediumPortrait />
+        <HeroMediumLandscape />
+        <HeroLargePortrait />
+        <HeroLargeLandscape />
+        <AsideMediumPortrait />
+        <AsideMediumLandscape />
+        <AsideLargePortrait />
+        <AsideLargeLandscape />
+      </Images>
+      <Exclusive>true</Exclusive>
+      <TelstraExclusive>false</TelstraExclusive>
+      <ExclusiveFlags>
+        <ExclusiveFlag>LivePass</ExclusiveFlag>
+      </ExclusiveFlags>
+      <LiveEvent>true</LiveEvent>
+      <LiveNow>true</LiveNow>
+      <EnableUrlSigning>true</EnableUrlSigning>
+      <IsDelayedBroadcast>false</IsDelayedBroadcast>
+      <DisablePIP>false</DisablePIP>
+      <Fence Geofenced="false" GeofenceAuthorized="false" InVenueAuthorized="false" />
+<Metadata Type="CONVIVA">
+        <Data Key="Asset Name" Value="Warriors v Roosters LIVE" />
+        <Data Key="assetID" Value="6112372390001" />
+        <Data Key="competition" Value="NRL Womens Nines" />
+        <Data Key="matchID" Value="20201780110" />
+        <Data Key="season" Value="2020" />
+        <Data Key="liveContentType" Value="MATCH" />
+      </Metadata>
+      <Metadata Type="GOOGLEANALYTICS">
+        <Data Key="competition" Value="NRL Womens Nines" />
+        <Data Key="round" Value="1" />
+        <Data Key="season" Value="2020" />
+        <Data Key="match" Value="20201780110" />
+        <Data Key="topic" Value="MATCH" />
+      </Metadata>
+    </Item>
+  </LiveVideo>
+  <Metadata Type="DOUBLECLICK">
+    <Data Key="competition" Value="NRL Womens Nines" />
+    <Data Key="season" Value="2020" />
+    <Data Key="Round" Value="Round 1" />
+    <Data Key="teams" Value="New Zealand Warriors Women,Sydney Roosters Women" />
+    <Data Key="match" Value="Warriors v Roosters" />
+  </Metadata>
+  <HeatMaps>
+    <HeatMap Name="MATCH TRENDS" Path="/HeatMap/Game/20201780110" RefreshRate="10000">
+      <TeamSelector QueryParameter="teamId" Type="TEAM">
+        <Options>
+          <Option Id="500585" DisplayText="WARW" Default="true" />
+          <Option Id="500586" DisplayText="SYDW" Default="false" />
+        </Options>
+      </TeamSelector>
+      <ExtraParameters>
+        <ExtraParameter Key="isMatchCentreHeatmap" Value="true" />
+      </ExtraParameters>
+      <Row>
+        <Selectors>
+          <Selector QueryParameter="offenseDefence" Type="RADIO">
+            <Options>
+              <Option Id="OFFENCE" DisplayText="ATTACK" Default="true" />
+              <Option Id="DEFENCE" DisplayText="DEFENCE" Default="false" />
+            </Options>
+          </Selector>
+        </Selectors>
+      </Row>
+      <Row>
+        <Selectors>
+          <Selector QueryParameter="period" Type="OPTIONAL_RADIO">
+            <Options>
+              <Option Id="FIRST_HALF" DisplayText="1ST HALF" Default="false" />
+              <Option Id="SECOND_HALF" DisplayText="2ND HALF" Default="false" />
+              <Option Id="EXTRA_TIME" DisplayText="E/T" Default="false" />
+            </Options>
+          </Selector>
+        </Selectors>
+      </Row>
+      <Row>
+<Selectors>
+          <Selector QueryParameter="category" Type="CAROUSEL" DependentUpon="offenseDefence">
+            <DependentUponOptions>
+              <DependentUponOption DependentSelectedId="OFFENCE">
+                <Options>
+                  <Option Id="TRIES" DisplayText="TRIES SCORED" Default="true" />
+                  <Option Id="ERRORS" DisplayText="ERRORS" Default="false" />
+                  <Option Id="LINE_BREAKS" DisplayText="LINE BREAKS" Default="false" />
+                  <Option Id="PLAY_THE_BALLS" DisplayText="PLAY THE BALLS" Default="false" />
+                  <Option Id="OFFLOADS" DisplayText="OFFLOADS" Default="false" />
+                  <Option Id="GOALS" DisplayText="FIELD GOALS" Default="false" />
+                  <Option Id="GOALS_MISSED" DisplayText="FGS MISSED" Default="false" />
+                </Options>
+              </DependentUponOption>
+              <DependentUponOption DependentSelectedId="DEFENCE">
+                <Options>
+                  <Option Id="TRIES_CONCEDED" DisplayText="TRIES CONCEDED" Default="false" />
+                  <Option Id="MISSED_TACKLES" DisplayText="MISSED TACKLES" Default="false" />
+                  <Option Id="PENALTIES" DisplayText="PENALTIES" Default="false" />
+                </Options>
+              </DependentUponOption>
+            </DependentUponOptions>
+          </Selector>
+        </Selectors>
+      </Row>
+    </HeatMap>
+    <HeatMap Name="SEASON TRENDS" Path="/HeatMap/Season">
+      <TeamSelector QueryParameter="teamId" Type="TEAM">
+        <Options>
+          <Option Id="500585" DisplayText="WARW" Default="true" />
+          <Option Id="500586" DisplayText="SYDW" Default="false" />
+        </Options>
+      </TeamSelector>
+      <ExtraParameters>
+        <ExtraParameter Key="isMatchCentreHeatmap" Value="true" />
+      </ExtraParameters>
+      <Row>
+        <Selectors>
+          <Selector QueryParameter="offenseDefence" Type="RADIO">
+            <Options>
+              <Option Id="OFFENCE" DisplayText="ATTACK" Default="true" />
+              <Option Id="DEFENCE" DisplayText="DEFENCE" Default="false" />
+            </Options>
+          </Selector>
+        </Selectors>
+      </Row>
+      <Row>
+        <Selectors>
+          <Selector QueryParameter="category" Type="CAROUSEL" DependentUpon="offenseDefence">
+            <DependentUponOptions>
+              <DependentUponOption DependentSelectedId="OFFENCE">
+                <Options>
+                  <Option Id="TRIES" DisplayText="TRIES SCORED" Default="true" />
+                  <Option Id="ERRORS" DisplayText="ERRORS" Default="false" />
+                  <Option Id="LINE_BREAKS" DisplayText="LINE BREAKS" Default="false" />
+                  <Option Id="PLAY_THE_BALLS" DisplayText="PLAY THE BALLS" Default="false" />
+<Option Id="OFFLOADS" DisplayText="OFFLOADS" Default="false" />
+                  <Option Id="GOALS" DisplayText="FIELD GOALS" Default="false" />
+                  <Option Id="GOALS_MISSED" DisplayText="FGS MISSED" Default="false" />
+                </Options>
+              </DependentUponOption>
+              <DependentUponOption DependentSelectedId="DEFENCE">
+                <Options>
+                  <Option Id="TRIES_CONCEDED" DisplayText="TRIES CONCEDED" Default="false" />
+                  <Option Id="MISSED_TACKLES" DisplayText="MISSED TACKLES" Default="false" />
+                  <Option Id="PENALTIES" DisplayText="PENALTIES" Default="false" />
+                </Options>
+              </DependentUponOption>
+            </DependentUponOptions>
+          </Selector>
+        </Selectors>
+      </Row>
+    </HeatMap>
+  </HeatMaps>
+  <Resources>
+    <Resource Major="GT_BOX">
+      <Button Title="MATCH" Type="GT_BOX" Selected="true" />
+      <Button Title="TIMELINE" Type="GT_PBP" Selected="false" URL="yc://feature/GT_PBP?id=20201780110" />
+      <Button Title="LINE-UP" Type="GT_PLAYER" Selected="false" URL="yc://feature/GT_PLAYER?id=20201780110" />
+    </Resource>
+    <Resource Major="GT_PBP">
+      <Button Title="MATCH" Type="GT_BOX" Selected="false" URL="yc://feature/GT_BOX?id=20201780110" />
+      <Button Title="TIMELINE" Type="GT_PBP" Selected="true" />
+      <Button Title="LINE-UP" Type="GT_PLAYER" Selected="false" URL="yc://feature/GT_PLAYER?id=20201780110" />
+    </Resource>
+    <Resource Major="GT_PLAYER">
+      <Button Title="MATCH" Type="GT_BOX" Selected="false" URL="yc://feature/GT_BOX?id=20201780110" />
+      <Button Title="TIMELINE" Type="GT_PBP" Selected="false" URL="yc://feature/GT_PBP?id=20201780110" />
+      <Button Title="LINE-UP" Type="GT_PLAYER" Selected="true" />
+    </Resource>
+  </Resources>
+  <YinzNode InVenue="false" VenueStatus="O" Ads="YC" InHomeMarket="O" Generated="2/14/2020 8:00:55 AM" />
+</Boxscore>
