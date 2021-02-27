@@ -83,7 +83,9 @@ def list_matches(params, live=False):
             upcoming = comm.get_upcoming()
             for event in upcoming:
                 thumb = os.path.join(addonPath, 'resources', 'soon.jpg')
-                li = xbmcgui.ListItem(event.title, iconImage=thumb)
+                li = xbmcgui.ListItem(event.title)
+                li.setArt({'icon': thumb,
+                           'thumb': thumb})
                 url = '{0}?action=listmatches{1}'.format(
                     plugin_url, event.make_kodi_url())
                 is_folder = False
