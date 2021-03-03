@@ -4,6 +4,8 @@ from collections import OrderedDict
 
 from future.moves.urllib.parse import parse_qsl, quote_plus, unquote_plus
 
+from aussieaddonscommon import utils
+
 
 class Video():
     """ object that contains all the info for a particular match
@@ -39,10 +41,12 @@ class Video():
             else:
                 val = d[key]
             url += '&{0}={1}'.format(key, val)
+        url += '&addon_version={0}'.format(utils.get_addon_version())
         return url
 
     def parse_kodi_url(self, url):
         params = dict(parse_qsl(url))
+        params.pop('addon_version', '')
         for item in params.keys():
             setattr(self, item, unquote_plus(params[item]))
 

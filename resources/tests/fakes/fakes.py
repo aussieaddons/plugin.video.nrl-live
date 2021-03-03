@@ -163,7 +163,7 @@ FAKE_VIDEO_ATTRS = {
 FAKE_VIDEO_URL = '&desc=Game+of+foo+vs+' \
                  'bar&live=true&thumb=https%3A%2F' \
                  '%2Ffoo.com%2Fbar.jpg&time=2019-07-07T03%3A00%3A00Z&title' \
-                 '=FooBar&video_id=12345'
+                 '=FooBar&video_id=12345&addon_version=1.0.0'
 
 M3U8_URL = b'https://vcdn3.nrl.com/752e981d-a9b3-4656-9d41-d0da56cb9fc9' \
            b'/manifest.ism/manifest(format=m3u8-aapl,encryption=cbc,filter=' \
