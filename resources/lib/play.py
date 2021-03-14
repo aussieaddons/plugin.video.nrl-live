@@ -4,7 +4,7 @@ from aussieaddonscommon import utils
 
 from resources.lib import classes
 from resources.lib import comm
-from resources.lib import stream_auth
+# from resources.lib import stream_auth
 
 import xbmcaddon
 
@@ -29,11 +29,11 @@ def play_video(params):
     v.parse_params(params)
 
     try:
-        ticket = stream_auth.get_user_ticket()
+        # ticket = stream_auth.get_user_ticket()
         media_auth_token = None
-        if v.live == 'true':
-            media_auth_token = stream_auth.get_media_auth_token(
-                ticket, v.video_id)
+        # if v.live == 'true':
+        #    media_auth_token = stream_auth.get_media_auth_token(
+        #        ticket, v.video_id)
         playlist = comm.get_stream_url(v, media_auth_token)
         play_item = xbmcgui.ListItem(path=playlist)
         xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)
