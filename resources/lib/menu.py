@@ -76,7 +76,7 @@ def list_matches(params, live=False):
                                                      m.make_kodi_url())
             is_folder = False
             li.setProperty('IsPlayable', 'true')
-            li.setInfo('video', {'plot': m.desc, 'plotoutline': m.desc})
+            li.setInfo('video', {'plot': m.title, 'plotoutline': m.title})
             listing.append((url, li, is_folder))
 
         if live:
